@@ -239,7 +239,7 @@
 <br>
 
 ### <U>서비스 아키텍처</U>
-![서비스 아키텍처 이미지]()
+![서비스 아키텍처 이미지](https://lab.ssafy.com/s11-webmobile1-sub1/S11P11D202/uploads/9a389432a91fa59aeaf490552db393db/architecture.jpg)
 
 <br>
 
