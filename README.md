@@ -1,4 +1,4 @@
-d# 우려차차
+# 우려차차
 
 <!-- 필수 항목 -->
 
@@ -64,57 +64,75 @@ d# 우려차차
 * 김범중: 백엔드 개발 및 QA 담당
 * 김소연: 백엔드 개발, Swagger API 문서 관리
 * 김의근: 코드 리뷰 및 인프라 담당, CI/CD, HTTPS, Docker 구성 -->
-## 팀 소개: 마자용
-<table align=center>
+## 멤버 소개
+<table align="center">
     <thead>
         <tr>
             <th>김봉상 (FE)</th>
             <th>권대호 (FE)</th>
             <th>최진오 (FE)</th>
-            <th>김의근 (BE)</th>
-            <th>김범중 (BE)</th>
-            <th>김소연 (BE)</th>
         </tr>
     </thead>
-    <tbody align=center>
+    <tbody align="center">
         <tr>
             <td width="150">
-              <a href="https://github.com/BongSangKim"><img width="120" height="120" src="" /></a>
+                <a href="https://github.com/BongSangKim"><img width="100" height="100" src="https://avatars.githubusercontent.com/u/47958731?v=4" /></a>
             </td>
             <td width="150">
-              <a href="https://github.com/vaaast-lake"><img width="120" height="120" src="" /></a>
+                <a href="https://github.com/vaaast-lake"><img width="100" height="100" src="https://avatars.githubusercontent.com/u/101388919?v=4" /></a>
             </td>
             <td width="150">
-              <a href="https://github.com/sidamodev"><img width="120" height="120" src="" /></a>
-            </td>
-            <td width="150">
-              <a href="https://github.com/ramen4598"><img width="120" height="120" src="" /></a>
-            </td>
-            <td width="150">
-              <a href="https://github.com/bbamjoong"><img width="120" height="120" src="" /></a>
-            </td>
-            <td width="150">
-              <a href="https://github.com/so-oyeon"><img width="120" height="120" src="" /></a>
+                <a href="https://github.com/sidamodev"><img width="100" height="100" src="https://avatars.githubusercontent.com/u/144210451?v=4" /></a>
             </td>
         </tr>
         <tr>
             <td><a href="https://github.com/BongSangKim">@BongSangKim</a></td>
             <td><a href="https://github.com/vaaast-lake">@vaaast-lake</a></td>
             <td><a href="https://github.com/sidamodev">@sidamodev</a></td>
+        </tr>
+        <tr>
+            <td>팀장 <br> 프론트엔드 팀장</td>
+            <td>팀원</td>
+            <td>팀원</td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+
+<table align="center">
+    <thead>
+        <tr>
+            <th>김의근 (BE)</th>
+            <th>김범중 (BE)</th>
+            <th>김소연 (BE)</th>
+        </tr>
+    </thead>
+    <tbody align="center">
+        <tr>
+            <td width="150">
+                <a href="https://github.com/ramen4598"><img width="100" height="100" src="https://avatars.githubusercontent.com/u/99334790?v=4" /></a>
+            </td>
+            <td width="150">
+                <a href="https://github.com/bbamjoong"><img width="100" height="100" src="https://avatars.githubusercontent.com/u/121084350?v=4" /></a>
+            </td>
+            <td width="150">
+                <a href="https://github.com/so-oyeon"><img width="100" height="100" src="https://avatars.githubusercontent.com/u/162855515?v=4" /></a>
+            </td>
+        </tr>
+        <tr>
             <td><a href="https://github.com/ramen4598">@ramen4598</a></td>
             <td><a href="https://github.com/bbamjoong">@bbamjoong</a></td>
             <td><a href="https://github.com/so-oyeon">@so-oyeon</a></td>
         </tr>
-        <tr align=left>
-            <td width="150">팀장, 프론트엔드 팀장</td>
-            <td width="150">팀원</td>
-            <td width="150">팀원</td>
-            <td width="150">백엔트 팀장</td>
-            <td width="150">팀원</td>
-            <td width="150">팀원</td>
+        <tr>
+            <td>백엔드 팀장</td>
+            <td>팀원</td>
+            <td>팀원</td>
         </tr>
     </tbody>
 </table>
+
 
 <!-- 자유 양식 -->
 
@@ -186,7 +204,7 @@ d# 우려차차
 <br>
 
 ### <U>개발 환경</U>
-🛠️Backend
+🛠️**Backend**
 - IntelliJ
 - spring boot
 - spring-boot-jpa
@@ -196,17 +214,17 @@ d# 우려차차
 - MySQL
 - Redis
 
-🛠️Frontend
+🛠️**Frontend**
 - Visual Studio Code
 - React.js
 - daysiUI
 - Zustand
 - react-query
 
-🛠️Web RTC
+🛠️**Web RTC**
 - 미정
 
-🛠️CI/CD
+🛠️**CI/CD**
 - aws ec2
 - docker
 - nginx
@@ -219,12 +237,10 @@ d# 우려차차
 [기능 명세서](./docs/기능명세서.md)
 
 <br>
-<br>
 
 ### <U>서비스 아키텍처</U>
 ![서비스 아키텍처 이미지]()
 
-<br>
 <br>
 
 ### <U>ERDiagram</U>
