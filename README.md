@@ -215,8 +215,8 @@
 🛠️**Backend**
 
 - IntelliJ
-- spring boot
-- spring-boot-jpa
+- Spring Boot
+- Spring-Boot-Jpa
 - Spring Security
 - OAuth2
 - Java 17
@@ -227,9 +227,9 @@
 
 - Visual Studio Code
 - React.js
-- daysiUI
+- DaysiUI
 - Zustand
-- react-query
+- React-Query
 
 🛠️**Web RTC**
 
@@ -237,10 +237,10 @@
 
 🛠️**CI/CD**
 
-- aws ec2
-- docker
-- nginx
-- jenkins
+- Aws Ec2
+- Docker
+- Nginx
+- Jenkins
 
 <br>
 <br>
@@ -264,5 +264,3 @@
 ### <ins>그라운드 룰
 
 ![팀그라운드 이미지](./images/팀그라운드룰_최종.png)
-
-// 개발 환경, 기술 스택, 시스템 구성도, ERD, 기능 상세 설명 등
