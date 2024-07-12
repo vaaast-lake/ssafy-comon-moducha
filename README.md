@@ -4,40 +4,40 @@
 
 ## 카테고리
 
-| Application | Domain | Language | Framework |
-| ---- | ---- | ---- | ---- |
-| :white_check_mark: Desktop Web | :white_check_mark: AI | :black_square_button: JavaScript | :black_square_button: Vue.js |
-| :white_check_mark: Mobile Web | :black_square_button: Big Data | :white_check_mark: TypeScript | :white_check_mark: React |
-| :white_check_mark: Responsive Web | :black_square_button: Blockchain | :black_square_button: C/C++ | :black_square_button: Angular |
-| :black_square_button: Android App | :black_square_button: IoT | :black_square_button: C# | :white_check_mark: NginX |
-| :black_square_button: iOS App | :black_square_button: AR/VR/Metaverse | :black_square_button: Python | :black_square_button: Flask/Django |
-| :black_square_button: Desktop App | :black_square_button: Game | :white_check_mark: Java | :white_check_mark: Spring/Springboot |
-| | | :black_square_button: Kotlin | |
+| Application                       | Domain                                | Language                         | Framework                            |
+| --------------------------------- | ------------------------------------- | -------------------------------- | ------------------------------------ |
+| :white_check_mark: Desktop Web    | :white_check_mark: AI                 | :black_square_button: JavaScript | :black_square_button: Vue.js         |
+| :white_check_mark: Mobile Web     | :black_square_button: Big Data        | :white_check_mark: TypeScript    | :white_check_mark: React             |
+| :white_check_mark: Responsive Web | :black_square_button: Blockchain      | :black_square_button: C/C++      | :black_square_button: Angular        |
+| :black_square_button: Android App | :black_square_button: IoT             | :black_square_button: C#         | :white_check_mark: NginX             |
+| :black_square_button: iOS App     | :black_square_button: AR/VR/Metaverse | :black_square_button: Python     | :black_square_button: Flask/Django   |
+| :black_square_button: Desktop App | :black_square_button: Game            | :white_check_mark: Java          | :white_check_mark: Spring/Springboot |
+|                                   |                                       | :black_square_button: Kotlin     |                                      |
 
 <!-- 필수 항목 -->
 
 ## 프로젝트 소개
 
-* 프로젝트명: 우려차차
-* 서비스 특징: 웹 기술 프로젝트를 위한 온라인 차(Tea)시음회 및 커뮤니티 프로젝트
-* 주요 기능
+- 프로젝트명: 우려차차
+- 서비스 특징: 웹 기술 프로젝트를 위한 온라인 차(Tea)시음회 및 커뮤니티 프로젝트
+- 주요 기능
   - 온라인 화상회의를 통한 시음회
   - 차 나눔/교환 게시판
   - 생성형 AI 기반 차 추천 & 데이터를 이용한 이달의 차 추천
-* 주요 기술
+- 주요 기술
   - WebRTC
   - WebSocket
   - JWT Authentication
   - OAuth2
   - REST API
-* 참조 리소스
-  * Vuetify: 디자인 전반 적용
-  * Vue Argon Design System: 디자인 전반 적용
-  * Vue Black Dashboard Pro(유료): 캘린더 컴포넌트 사용
-  * AR Core: 구글에서 제공하는 AR 지원 라이브러리. 이미지 인식 및 오버레이 영상에 활용
-  * Color Thief: 이미지 색상 추출 라이브러리. 커버 사진 색상 추출 및 배경 변경에 활용
-  * Animation.css: CSS 애니메이션 지원 라이브러리. 메인 페이지 진입 애니메이션에 활용
-* 배포 환경
+- 참조 리소스
+  - Vuetify: 디자인 전반 적용
+  - Vue Argon Design System: 디자인 전반 적용
+  - Vue Black Dashboard Pro(유료): 캘린더 컴포넌트 사용
+  - AR Core: 구글에서 제공하는 AR 지원 라이브러리. 이미지 인식 및 오버레이 영상에 활용
+  - Color Thief: 이미지 색상 추출 라이브러리. 커버 사진 색상 추출 및 배경 변경에 활용
+  - Animation.css: CSS 애니메이션 지원 라이브러리. 메인 페이지 진입 애니메이션에 활용
+- 배포 환경
   - URL: // 미정
   - 테스트 계정: // 미정
 
@@ -60,11 +60,13 @@
 <!-- ## 팀 소개
 * 김봉상: 팀장, 프론트엔드 개발
 * 권대호: 부팀장, 기획 및 와이어프레임 작성, 프론트엔드 개발
-* 최진오 : 
+* 최진오 :
 * 김범중: 백엔드 개발 및 QA 담당
 * 김소연: 백엔드 개발, Swagger API 문서 관리
 * 김의근: 코드 리뷰 및 인프라 담당, CI/CD, HTTPS, Docker 구성 -->
+
 ## 멤버 소개
+
 <table align="center">
     <thead>
         <tr>
@@ -133,20 +135,19 @@
     </tbody>
 </table>
 
-
 <!-- 자유 양식 -->
 
 ## 프로젝트 상세 설명
 
 ### <U>기획 배경</U>
 
->**온라인 시음회**를 통해 차 문화를 즐기고, 차를 소분하며 서로 나누는 문화를 함께하는 플랫폼
+> **온라인 시음회**를 통해 차 문화를 즐기고, 차를 소분하며 서로 나누는 문화를 함께하는 플랫폼
 
 <br>
 
-**❓ 왜 시음회를 온라인으로 하나요?** 
+**❓ 왜 시음회를 온라인으로 하나요?**
 
- 차는 단순히 우리고 마시는 것만이 전부가 아닙니다.<br> 차를 우리고 시음하고 즐기는 과정 그 자체를 **함께하고 싶은 사람들**이 많습니다. <br>우리는 차를 즐기는 사람, 차를 즐기고 싶어하는 사람 모두 같이 즐거움을 느낄 수 있는 **공간을 제공**합니다. 
+차는 단순히 우리고 마시는 것만이 전부가 아닙니다.<br> 차를 우리고 시음하고 즐기는 과정 그 자체를 **함께하고 싶은 사람들**이 많습니다. <br>우리는 차를 즐기는 사람, 차를 즐기고 싶어하는 사람 모두 같이 즐거움을 느낄 수 있는 **공간을 제공**합니다.
 
 <br>
 <br>
@@ -172,7 +173,9 @@
 <br>
 
 ### <U>차별점</U>
+
 #### 기술 관점
+
 1. CI/CD 파이프라인 구축 및 배포 자동화
 2. PWA 구현으로 시음회 알림 등의 네이티브 애플리케이션 사용자 경험
 3. WebSocket 기반의 실시간 스트리밍 및 채팅 기능 제공
@@ -183,28 +186,34 @@
 <br>
 
 #### 기능 관점
+
 1. 차 문화를 활성화 할 수 있는 다양한 기능 제공.
-    - 원격 회의 서비스를 이용한 실시간 원격 시음회 지원
-    - 원활한 시음회 진행을 위한 강력한 보조기능 제공 (타이머 등)
-    - 방송 화면에서 호스트가 차 관련 정보 제공 기능
+
+   - 원격 회의 서비스를 이용한 실시간 원격 시음회 지원
+   - 원활한 시음회 진행을 위한 강력한 보조기능 제공 (타이머 등)
+   - 방송 화면에서 호스트가 차 관련 정보 제공 기능
 
 2. 차를 나눔 / 교환할 수 있는 커뮤니티 제공
-    - 채팅을 통한 편리한 의사소통 제공
-    - 작성자에게 배송정보 리스트 제공
+
+   - 채팅을 통한 편리한 의사소통 제공
+   - 작성자에게 배송정보 리스트 제공
 
 3. 자신의 정보를 공유할 수 있는 커뮤니티 제공
-    - 게시글을 통한 모두가 공유 가능(레시피, 정보 등)
+
+   - 게시글을 통한 모두가 공유 가능(레시피, 정보 등)
 
 4. 차 나눔 / 교환 게시글을 통해 유저들을 연결 후, 온라인 시음회의 스케쥴 관리 및 알림 제공 기능
 
 5. 마이페이지
-    - 자신이 쓴 글, 관심 있는 글 목록 제공
+   - 자신이 쓴 글, 관심 있는 글 목록 제공
 
 <br>
 <br>
 
 ### <U>개발 환경</U>
+
 🛠️**Backend**
+
 - IntelliJ
 - spring boot
 - spring-boot-jpa
@@ -215,6 +224,7 @@
 - Redis
 
 🛠️**Frontend**
+
 - Visual Studio Code
 - React.js
 - daysiUI
@@ -222,9 +232,11 @@
 - react-query
 
 🛠️**Web RTC**
+
 - 미정
 
 🛠️**CI/CD**
+
 - aws ec2
 - docker
 - nginx
@@ -234,16 +246,23 @@
 <br>
 
 ### <U>기능 명세서</U>
+
 [기능 명세서](./docs/기능명세서.md)
 
 <br>
 
 ### <U>서비스 아키텍처</U>
+
 ![서비스 아키텍처 이미지](https://lab.ssafy.com/s11-webmobile1-sub1/S11P11D202/uploads/9a389432a91fa59aeaf490552db393db/architecture.jpg)
 
 <br>
 
 ### <U>ERDiagram</U>
+
 ![ERD 이미지]()
 
 // 개발 환경, 기술 스택, 시스템 구성도, ERD, 기능 상세 설명 등
+
+### <U>그라운드 룰</U>
+
+![](./images/팀그라운드룰_최종.png)
