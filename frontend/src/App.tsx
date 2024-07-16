@@ -1,5 +1,7 @@
+import Bear from './pages/Bear';
+
 const App = () => {
-  return <></>;
+  return <Bear />;
 };
 
 export default App;
