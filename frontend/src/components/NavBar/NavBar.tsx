@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../../stores/authStore';
 import './NavBar.css';
 
-const NavBar: React.FC = () => {
+const NavBar = () => {
   const { isLoggedIn, logout } = useAuthStore();
   const navigate = useNavigate();
 
@@ -27,7 +26,7 @@ const NavBar: React.FC = () => {
               <Link to="/teatime">티타임</Link>
             </li>
             <li>
-              <Link to="/sharing">나눔</Link>
+              <Link to="/nanum">나눔</Link>
             </li>
             <li>
               <button onClick={handleLoginClick}>로그인</button>
@@ -46,7 +45,7 @@ const NavBar: React.FC = () => {
               <Link to="/sharing">나눔</Link>
             </li>
             <li>
-              <button >마이페이지(구현안되어있음)</button>
+              <button>마이페이지(구현안되어있음)</button>
             </li>
             <li>
               <button onClick={handleLogoutClick}>로그아웃</button>
