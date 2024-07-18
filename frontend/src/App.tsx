@@ -1,36 +1,51 @@
-// import Bear from './pages/Bear';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Layout from './components/Layout/Layout';
+import Home from './pages/Home/Home';
+import Login from './pages/Login/Login';
+import Profile from './pages/Profile/Profile';
+import TeaTime from './pages/TeaTime/TeaTime';
+import Nanum from './pages/Nanum/Nanum';
+import Notifications from './pages/Notifications/Notifications';
 
-// const App = () => {
-//   return <Bear />;
-// };
+// Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
+// 새로운 컴포넌트를 추가하려면 children에 등록해 주세요
+// 추가된 컴포넌트들은 Layout의 Outlet에 렌더링 됩니다
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: 'login',
+        element: <Login />,
+      },
+      {
+        path: 'teatime',
+        element: <TeaTime />,
+      },
+      {
+        path: 'nanum',
+        element: <Nanum />,
+      },
+      {
+        path: 'mypage',
+        element: <Profile />,
+      },
+      {
+        path: 'notifications',
+        element: <Notifications />,
+      },
+    ],
+  },
+]);
 
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import NavBar from './components/NavBar';
-import Login from './pages/Login';
-// 임시 페이지(라우팅 테스팅 용)
-import TeaTime from './pages/TeaTime';
-import Sharing from './pages/Sharing';
-import MyPage from './pages/MyPage';
-import Notifications from './pages/Notifications';
-// 나브바 구현 테스팅 중
-
-const App: React.FC = () => {
-  return (
-    <Router>
-      <NavBar />
-
-      <Routes>
-        <Route path="/" element={<div>Home Page</div>} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/teatime" element={<TeaTime />} />
-        <Route path="/sharing" element={<Sharing />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/notifications" element={<Notifications />} />
-        {/* 필요한 다른 경로들도 설정해줍니다 */}
-      </Routes>
-    </Router>
-  );
+// RouterProvider에 라우트 객체들이 렌더링
+const App = () => {
+  return <RouterProvider router={router} />;
 };
 
 export default App;

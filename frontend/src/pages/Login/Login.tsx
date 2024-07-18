@@ -1,8 +1,7 @@
-import React from 'react';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../../stores/authStore';
 import { useNavigate } from 'react-router-dom';
 
-const Login: React.FC = () => {
+const Login = () => {
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
@@ -13,15 +12,18 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <h1>로그인 페이지입니다. 로그인 State 테스트 버튼과, OAuth2 버튼이 있습니다.</h1>
+      <h1>
+        로그인 페이지입니다. 로그인 State 테스트 버튼과, OAuth2 버튼이 있습니다.
+      </h1>
       <br></br>
       <p> OAuth2는 구현중입니다. 로그인 안됩니다. </p>
       <br></br>
       <button onClick={handleLogin}>로그인State로!</button>
       <br></br>
       <br></br>
-      <a href="localhost:8080/oauth2/authorization/google">google login(OAuth2)</a>
-
+      <a href="localhost:8080/oauth2/authorization/google">
+        google login(OAuth2)
+      </a>
     </>
   );
 };

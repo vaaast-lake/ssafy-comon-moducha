@@ -1,8 +1,6 @@
-import React from 'react';
-
 interface TeaTime {}
 
-const TeaTime: React.FC = () => {
+const TeaTime = ({}) => {
   return (
     <div>
       <h1>TeaTime</h1>
