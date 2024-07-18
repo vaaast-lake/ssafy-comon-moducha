@@ -29,6 +29,9 @@ const NavBar = () => {
               <Link to="/nanum">나눔</Link>
             </li>
             <li>
+              <Link to="/webrtc">WebRTC</Link>
+            </li>
+            <li>
               <button onClick={handleLoginClick}>로그인</button>
             </li>
           </>
@@ -43,6 +46,9 @@ const NavBar = () => {
             </li>
             <li>
               <Link to="/sharing">나눔</Link>
+            </li>
+            <li>
+              <Link to="/webrtc">WebRTC</Link>
             </li>
             <li>
               <button>마이페이지(구현안되어있음)</button>
