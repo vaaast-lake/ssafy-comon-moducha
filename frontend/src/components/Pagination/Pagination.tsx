@@ -1,22 +1,22 @@
-type PageType = {
-  page: Number;
-  currentPage: Number;
-};
+import PaginationButton from './PaginationButton';
 
+interface pageType {
+  limit: number;
+  currentPage: number;
+}
 
-const PaginationButton = ({ page, currentPage }: PageType) => {
-  
-  return (
-    <button
-      className={`join-item btn ${page === currentPage ? 'btn-active' : ''}`}
-    >
-      1
-    </button>
-  );
-};
-
-const Pagination = () => {
-  return <div className="join">{PaginationButton}</div>;
+const Pagination = ({ limit, currentPage }: pageType) => {
+  const pageButtonArray = [];
+  for (let page = 1; page < limit + 1; page++) {
+    pageButtonArray.push(
+      <PaginationButton
+        page={page}
+        currentPage={currentPage}
+        key={'page' + page}
+      />
+    );
+  }
+  return <div className="join">{pageButtonArray}</div>;
 };
 
 export default Pagination;

@@ -4,7 +4,7 @@ import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Profile from './pages/Profile/Profile';
 import TeaTime from './pages/TeaTime/TeaTime';
-import Nanum from './pages/Nanum/Nanum';
+import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
 
 // Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
@@ -28,8 +28,8 @@ const router = createBrowserRouter([
         element: <TeaTime />,
       },
       {
-        path: 'nanum',
-        element: <Nanum />,
+        path: 'sharing',
+        element: <Share />,
       },
       {
         path: 'mypage',
