@@ -26,7 +26,7 @@ const NavBar = () => {
               <Link to="/teatime">티타임</Link>
             </li>
             <li>
-              <Link to="/nanum">나눔</Link>
+              <Link to="/sharing">나눔</Link>
             </li>
             <li>
               <Link to="/webrtc">WebRTC</Link>

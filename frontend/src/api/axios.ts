@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const API_URL = `https://httpbin.org/get`;
-
 const instance = axios.create({
-  baseURL: API_URL,
+  baseURL: `${import.meta.env.VITE_API_SERVER_URL}/api/1v`,
 });
 
 export default instance;

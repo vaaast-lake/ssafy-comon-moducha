@@ -4,7 +4,7 @@ import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Profile from './pages/Profile/Profile';
 import TeaTime from './pages/TeaTime/TeaTime';
-import Nanum from './pages/Nanum/Nanum';
+import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
 import WebRTC from './pages/WebRTC/WebRTC';
 
@@ -29,8 +29,8 @@ const router = createBrowserRouter([
         element: <TeaTime />,
       },
       {
-        path: 'nanum',
-        element: <Nanum />,
+        path: 'sharing',
+        element: <Share />,
       },
       {
         path: 'mypage',
