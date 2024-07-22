@@ -1,7 +1,9 @@
 import ShareCard from './components/ShareCard';
 import ShareSearch from './components/ShareSearch';
+import ShareTitle from './components/ShareTitle';
 import Pagination from '../../components/Pagination/Pagination';
 import { useShareStore } from '../../stores/shareStore';
+import { useState } from 'react';
 
 const ShareCardList = () => {
   const ShareCardArray = [];
@@ -12,6 +14,9 @@ const ShareCardList = () => {
 };
 
 const Share = () => {
+  const { shareList, fetchShareList } = useShareStore();
+  console.log(shareList);
+  fetchShareList();
   const pageObj = {
     limit: 10,
     currentPage: 5,
@@ -23,11 +28,9 @@ const Share = () => {
 
       <main id="nanum-body" className="flex flex-col gap-4">
         <header>
-          <div className="flex justify-between bg-base-100 min-w-80 p-4 shadow-lg bg-base-100 rounded-lg">
-            <div className="text-3xl font-bold text-tea my-auto">나눔</div>
-          </div>
+          <ShareTitle />
           <div className="divider"></div>
-          <div className="flex justify-end">
+          <div className='flex justify-between'>
             <ShareSearch />
           </div>
         </header>
