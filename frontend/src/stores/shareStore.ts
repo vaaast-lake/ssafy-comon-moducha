@@ -1,9 +1,8 @@
 import { create } from 'zustand';
-import axiosInstance from '../api/axios';
 
 interface ShareState {
   shareList: object;
-  fetchShareList: () => void;
+  setShareList: (fetchedShareList: object) => void;
 }
 const testShare = {
   // 테스트를 위한 shareList JSON response 객체
@@ -38,14 +37,5 @@ const testShare = {
 
 export const useShareStore = create<ShareState>((set) => ({
   shareList: testShare,
-  fetchShareList: () => {
-    axiosInstance
-      .get('shares')
-      .then((res) => {
-        set({ shareList: res.data });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  },
+  setShareList: (fetchedShareList) => set({ shareList: fetchedShareList }),
 }));

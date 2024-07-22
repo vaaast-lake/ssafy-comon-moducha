@@ -3,7 +3,8 @@ import ShareSearch from './components/ShareSearch';
 import ShareTitle from './components/ShareTitle';
 import Pagination from '../../components/Pagination/Pagination';
 import { useShareStore } from '../../stores/shareStore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axiosInstance from '../../api/axios';
 
 const ShareCardList = () => {
   const ShareCardArray = [];
@@ -13,10 +14,19 @@ const ShareCardList = () => {
   return ShareCardArray;
 };
 
+const fetchShareList = async (setShareList: (data: object) => void) => {
+  const response = await axiosInstance.get('/shares');
+  console.log(response)
+  setShareList(response);
+};
+
 const Share = () => {
-  const { shareList, fetchShareList } = useShareStore();
-  console.log(shareList);
-  fetchShareList();
+  const { shareList, setShareList } = useShareStore();
+
+  useEffect(() => {
+    fetchShareList(setShareList);
+  }, []);
+
   const pageObj = {
     limit: 10,
     currentPage: 5,
@@ -30,7 +40,7 @@ const Share = () => {
         <header>
           <ShareTitle />
           <div className="divider"></div>
-          <div className='flex justify-between'>
+          <div className="flex justify-between">
             <ShareSearch />
           </div>
         </header>
