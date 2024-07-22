@@ -12,6 +12,8 @@ const NavBar = () => {
 
   const handleLogoutClick = () => {
     logout(); // 로그아웃
+    console.log('로그아웃(at AuthStore)');
+    navigate('/'); 
   };
 
   return (
