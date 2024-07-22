@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.4.1
+    volumes:
+      - ./db_data:/var/lib/mysql
+    restart: always
+    enviroment:
+      MYSQL_ROOT_PASSWORD:${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE:${MYSQL_DB}
+      MYSQL_USER:${MYSQL_USER}
+      MYSQL_PASSWORD:${MYSQL_PASSWORD}
+      
+  backend:
+    depends_on:
+      - db
+    build:
+      context: ./backend
+      dockerfile: dockerfile
+    image: backend
+    restart: 'always'
+    ports:
+      - "8080:8080"
+    container_name: backend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+    image: frontend
+    restart: 'always'
+    ports:
+      - "5173:5173"
+    container_name: frontend
+
+
