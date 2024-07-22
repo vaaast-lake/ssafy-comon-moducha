@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore'; 
-import GoogleLogin from '../../components/OAuth/GoogleLogin.jsx';
-import GoogleLogout from '../../components/OAuth/GoogleLogout.jsx';
+import GoogleLogin from './components/GoogleLogin.jsx';
+import GoogleLogout from './components/GoogleLogout.jsx';
 import { postLoginToken } from '../../api/postLoginToken.js';
 
 const Login = () => {
