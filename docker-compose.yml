@@ -7,11 +7,11 @@ services:
     volumes:
       - ./db_data:/var/lib/mysql
     restart: always
-    enviroment:
-      MYSQL_ROOT_PASSWORD:${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE:${MYSQL_DB}
-      MYSQL_USER:${MYSQL_USER}
-      MYSQL_PASSWORD:${MYSQL_PASSWORD}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       
   backend:
     depends_on:
