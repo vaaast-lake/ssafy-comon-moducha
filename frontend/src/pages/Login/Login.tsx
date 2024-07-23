@@ -3,6 +3,7 @@ import { useAuthStore } from '../../stores/authStore';
 import GoogleLogin from './components/GoogleLogin.jsx';
 import GoogleLogout from './components/GoogleLogout.jsx';
 import { postLoginToken } from '../../api/postLoginToken.js';
+import './Login.css';
 
 const Login = () => {
   const login = useAuthStore((state) => state.login);
@@ -16,7 +17,8 @@ const Login = () => {
   }
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    console.log('로그아웃(at AuthStore) by GoogleLogout')
+    navigate('/');
   }
 
   const onGoogleSignIn = async (res) => {
@@ -39,13 +41,23 @@ const Login = () => {
   };
 
   return (
-    <div>
-      {isLoggedIn ? (
-        <GoogleLogout onGoogleSignOut={onGoogleSignOut}/>
-      ) : (
-        <GoogleLogin onGoogleSignIn={onGoogleSignIn} text="로그인" />
-      )}
+    <>
+    <div className="login-container">
+      <div className="image-container">
+        <img src="https://images.unsplash.com/photo-1514733670139-4d87a1941d55?q=80&w=2678&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+        alt="Login Background" />
+      </div>
+      <div className="button-container">
+        <div className="google-button">
+          {isLoggedIn ? (
+            <GoogleLogout onGoogleSignOut={onGoogleSignOut}/>
+          ) : (
+            <GoogleLogin onGoogleSignIn={onGoogleSignIn} text="로그인" />
+          )}
+        </div>    
+      </div>
     </div>
+    </>
   );
 };
 
