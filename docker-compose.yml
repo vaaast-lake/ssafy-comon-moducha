@@ -1,11 +1,16 @@
-version: '3.8'
+# 선행 조건
+# 1. npm run build
+# 2. spring boot build
+# 3. profile 설정
+### 3-1. docker compose --profile dev up
+### 3-2. docker compose --profile prod up
 
 services:
 
   db:
     image: mysql:8.4.1
     volumes:
-      - ./db_data:/var/lib/mysql
+      - ./db_data:/var/lib/mysql # TODO: ./db_data 경로가 올바른가?
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -18,7 +23,7 @@ services:
       - db
     build:
       context: ./backend
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     image: backend
     restart: 'always'
     ports:
@@ -28,11 +33,11 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     image: frontend
     restart: 'always'
     ports:
       - "5173:5173"
+    environment:
+      PROFILE: ${PROFILE}
     container_name: frontend
-
-
