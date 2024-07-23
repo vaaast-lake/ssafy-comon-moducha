@@ -1,30 +1,24 @@
 import ShareCard from './components/ShareCard';
-import ShareSearch from './components/ShareSearch';
-import ShareTitle from './components/ShareTitle';
+import ShareHeader from './components/ShareHeader';
+import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
 import { useShareStore } from '../../stores/shareStore';
-import { useEffect, useState } from 'react';
+import { ShareItem } from '../../types/ShareItem';
 import axiosInstance from '../../api/axios';
+import { useEffect } from 'react';
+import shareResponse from '../../constants/shareResponseTest';
 
-const ShareCardList = () => {
-  const ShareCardArray = [];
-  for (let i = 0; i < 8; i++) {
-    ShareCardArray.push(<ShareCard key={`nanum_${i}`} />);
-  }
-  return ShareCardArray;
-};
-
-const fetchShareList = async (setShareList: (data: object) => void) => {
+const fetchShareList = async (setShareList: (data: ShareItem[]) => void) => {
   const response = await axiosInstance.get('/shares');
-  console.log(response)
-  setShareList(response);
+  setShareList(response.data);
 };
 
 const Share = () => {
   const { shareList, setShareList } = useShareStore();
 
   useEffect(() => {
-    fetchShareList(setShareList);
+    // fetchShareList(setShareList);
+    setShareList(shareResponse);
   }, []);
 
   const pageObj = {
@@ -33,30 +27,40 @@ const Share = () => {
   };
 
   return (
-    <div className="flex h-full justify-center m-5">
-      <aside></aside>
+    <div className="flex justify-center m-5">
+      {/* 좌측 사이드바 영역 */}
+      <aside className="lg:w-1/5"></aside>
 
-      <main id="nanum-body" className="flex flex-col gap-4">
+      <main id="share-body" className="lg:w-3/5 flex flex-col gap-4">
         <header>
-          <ShareTitle />
+          <TitleCard title="나눔" />
           <div className="divider"></div>
           <div className="flex justify-between">
-            <ShareSearch />
+            <ShareHeader />
           </div>
         </header>
 
-        <section id="nanum-list" className="grid gap-4 xl:grid-cols-2">
-          <ShareCardList />
+        <section
+          id="share-list"
+          className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3"
+        >
+          <ShareCardList shareItems={shareList} />
         </section>
 
         <footer className="flex justify-center">
           <Pagination {...pageObj} />
         </footer>
       </main>
-
-      <aside></aside>
+      {/* 우측 사이드바 영역 */}
+      <aside className="lg:w-1/5"></aside>
     </div>
   );
 };
 
 export default Share;
+
+const ShareCardList = ({ shareItems }: { shareItems: ShareItem[] }) => {
+  return shareItems.map((shareItem) => (
+    <ShareCard key={shareItem.shareBoardId} {...shareItem} />
+  ));
+};
