@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -62,4 +63,16 @@ public class ShareBoard extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "shareBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShareParticipant> shareParticipants = new ArrayList<>();
+
+    @Builder
+    public ShareBoard(String title, String content, Integer maxParticipants, LocalDateTime endDate, Users user) {
+        this.title = title;
+        this.content = content;
+        this.maxParticipants = maxParticipants;
+        this.endDate = endDate;
+        this.user = user;
+        this.viewCount = 0;
+        this.activated = true;
+    }
+
 }
