@@ -1,26 +1,28 @@
-const ShareCard = () => {
+import { ShareItem } from '../../../types/ShareItem';
+import { UserIcon } from '@heroicons/react/24/outline';
+const ShareCard = ({ title, maxParticipants, participants }: ShareItem) => {
   return (
     <>
-      <div className="card card-side bg-base-100 shadow-xl w-full min-w-80">
-        <figure className="size-40 shrink-0">
+      <div className="flex bg-base-100 overflow-hidden shadow-lg rounded-lg transition ease-in-out hover:bg-beige hover:scale-105 duration-150">
+        <figure className="size-32 shrink-0">
           <img
+            className=""
             src="https://the-chinese-tea-company.com/cdn/shop/files/Loose_Leaf_Tea_1600x.jpg?v=1613558529"
             alt="Album"
           />
         </figure>
-        <div className="card-body p-0">
-          <div className="p-4">
-            <h2 className="card-title">보이차 나눔합니다.</h2>
-            <p></p>
-            <div className="flex shrink-0">
-              <div className="badge badge-info shadow-xl">티타임</div>
-              <div className="badge badge-warning">
-                어쩌구
-              </div>
-              <div className="badge badge-error">저쩌구</div>
-            </div>
-          </div>
-        </div>
+        <article className="flex flex-col w-full p-2 h-32 overflow-hidden">
+          <h2 className="font-bold truncate">{title}</h2>
+          <section className="flex items-center pe-2 gap-1">
+            <UserIcon className="inline size-6" />
+            {/* progress바 -> value / max의 비율만큼 표시 */}
+            <progress
+              className="progress progress-success w-full"
+              value={participants}
+              max={maxParticipants}
+            />
+          </section>
+        </article>
       </div>
     </>
   );

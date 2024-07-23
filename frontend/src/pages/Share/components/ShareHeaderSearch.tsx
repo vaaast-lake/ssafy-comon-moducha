@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 
-const ShareSearchForm = () => {
+const ShareHeaderSearch = ({ className }: { className: string }) => {
+  // const [searchInput, setSearchInput] = useState('');
+  // const handleSearchInput = (searchValue: string): void => {
+  //   setSearchInput(searchValue);
+  // };
   return (
-    <div className="join mt-3">
-      <input className="input input-bordered join-item" placeholder="검색" />
+    <div className={className}>
+      <input className="input input-bordered w-full join-item" placeholder="검색" />
       <select className="select select-bordered join-item">
         <option value="title">제목</option>
         <option value="content">내용</option>
@@ -18,4 +23,4 @@ const ShareSearchForm = () => {
   );
 };
 
-export default ShareSearchForm;
+export default ShareHeaderSearch;
