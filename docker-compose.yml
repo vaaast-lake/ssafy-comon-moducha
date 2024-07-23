@@ -1,9 +1,9 @@
 # 선행 조건
-# 1. npm run build
-# 2. spring boot build
-# 3. profile 설정
-### 3-1. docker compose --profile dev up
-### 3-2. docker compose --profile prod up
+# 1. React build : npm run build
+# 2. spring boot build : ./gradlew build
+# 3. profile 설정 후  compose
+### 3-1. PROFILE=dev docker compose up
+### 3-2. PROFILE=prod docker compose up
 
 services:
 
@@ -34,10 +34,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        PROFILE: ${PROFILE}
     image: frontend
     restart: 'always'
     ports:
-      - "5173:5173"
-    environment:
-      PROFILE: ${PROFILE}
+      - "80:80"
+      - "443:443"
     container_name: frontend

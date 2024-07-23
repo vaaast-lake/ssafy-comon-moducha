@@ -10,21 +10,20 @@ RUN mkdir /app
 WORKDIR /app
 
 # work dir 에 build 폴더 생성 /app/build
-RUN mkdir ./build
+RUN mkdir /build
 
-# host pc의 현재경로의 build 폴더를 workdir 의 build 폴더로 복사
-ADD ./build ./build
+# host pc의 현재경로의 dist 폴더를 workdir 의 build 폴더로 복사
+ADD ./dist ./build
 
 # profile에 대한 정보 전달
 ARG PROFILE
 
 # nginx 의 default.conf 를 삭제
 RUN rm /etc/nginx/conf.d/default.conf
-RUN rm /etc/nginx/conf.d/nginx-dev.conf
-RUN rm /etc/nginx/conf.d/nginx-prod.conf
 
 # host pc 의 nginx 설정 파일을 아래 경로에 복사
-COPY nginx-${PROFILE}.conf /etc/nginx/conf.d
+#COPY nginx-$PROFILE.conf /etc/nginx/conf.d
+COPY nginx-dev.conf /etc/nginx/conf.d
 
 # PROFILE이 dev일 경우 ./certs 폴더 아래 https 인증서 생성
 RUN if [ "$PROFILE" = "dev" ]; then \
