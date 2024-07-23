@@ -22,8 +22,8 @@ ARG PROFILE
 RUN rm /etc/nginx/conf.d/default.conf
 
 # host pc 의 nginx 설정 파일을 아래 경로에 복사
-#COPY nginx-$PROFILE.conf /etc/nginx/conf.d
-COPY nginx-dev.conf /etc/nginx/conf.d
+COPY nginx-$PROFILE.conf /etc/nginx/conf.d
+#COPY nginx-dev.conf /etc/nginx/conf.d
 
 # PROFILE이 dev일 경우 ./certs 폴더 아래 https 인증서 생성
 RUN if [ "$PROFILE" = "dev" ]; then \
