@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import useScript from '../../hooks/useScript';
+import useScript from '../../../hooks/useScript';
 
 export default function GoogleLogin({
   onGoogleSignIn = () => {}, 
