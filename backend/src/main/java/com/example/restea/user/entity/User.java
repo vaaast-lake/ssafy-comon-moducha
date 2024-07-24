@@ -3,6 +3,7 @@ package com.example.restea.user.entity;
 
 import com.example.restea.auth.entity.RefreshToken;
 import com.example.restea.common.entity.BaseTimeEntity;
+import com.example.restea.oauth2.entity.AuthToken;
 import com.example.restea.record.entity.Record;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
@@ -62,6 +63,10 @@ public class User extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "auth_token_id")
+    private AuthToken authToken;
 
     // 기록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
