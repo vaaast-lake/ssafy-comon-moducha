@@ -101,6 +101,10 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
 
+    public void addRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
     @Builder
     public User(String nickname, String authId) {
         this.nickname = nickname;
