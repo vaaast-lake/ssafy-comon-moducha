@@ -10,6 +10,7 @@ import './WebRTC.css';
 import { useState } from 'react';
 import VideoComponent from './components/VideoComponent';
 import AudioComponent from './components/AudioComponent';
+import axios from 'axios';
 
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -18,7 +19,11 @@ type TrackInfo = {
 
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = '';
+let APPLICATION_SERVER_URL = import.meta.env.VITE_SERVER_URL;
+// let APPLICATION_SERVER_URL = 'http://192.168.100.128:6080/';
+
+// let LIVEKIT_URL = 'http://192.168.100.128:7880/';
+// let APPLICATION_SERVER_URL = '';
 let LIVEKIT_URL = '';
 configureUrls();
 
@@ -92,10 +97,15 @@ export default function WebRTC() {
 
     try {
       // Get a token from your application server with the room name and participant name
+      // console.log('1');
+      
       const token = await getToken(roomName, participantName);
+      // console.log('2');
+      // console.log(token);
 
       // Connect to the room with the LiveKit URL and the token
       await room.connect(LIVEKIT_URL, token);
+      // console.log('3');
 
       // Publish your camera and microphone
       await room.localParticipant.enableCameraAndMicrophone();
@@ -135,30 +145,55 @@ export default function WebRTC() {
    * environment, your application server must identify the user to allow
    * access to the endpoints.
    */
+
+  // /lives/token/1
   async function getToken(roomName: string, participantName: string) {
-    const response = await fetch(APPLICATION_SERVER_URL + 'token', {
-      method: 'POST',
+    const data = {
+      token: 'token',
+    };
+
+    await axios({
+      method: 'get',
+      url: `${APPLICATION_SERVER_URL}/lives/token/1`,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
+      data: {
         roomName: roomName,
         participantName: participantName,
-      }),
-    });
+      },
+    })
+      .then((res) => {
+        data.token = res.data.token;
+      })
+      .catch((err) => {
+        new Error(`Failed to get token: ${err.errorMessage}`);
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`Failed to get token: ${error.errorMessage}`);
-    }
+    // const response = await fetch(APPLICATION_SERVER_URL + 'token', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     roomName: roomName,
+    //     participantName: participantName,
+    //   }),
+    // });
 
-    const data = await response.json();
+    // if (!response.ok) {
+    //   const error = await response.json();
+    //   throw new Error(`Failed to get token: ${error.errorMessage}`);
+    // }
+
+    // const data = await response.json();
+
     return data.token;
   }
 
   return (
     <>
-      {!room ? (
+      {!room && (
         <div id="join">
           <div id="join-dialog">
             <h2>Join a Video Room</h2>
@@ -200,7 +235,8 @@ export default function WebRTC() {
             </form>
           </div>
         </div>
-      ) : (
+      )}
+      {room && (
         <div id="room">
           <div id="room-header">
             <h2 id="room-title">{roomName}</h2>

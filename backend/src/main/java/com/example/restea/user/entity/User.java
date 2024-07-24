@@ -60,7 +60,7 @@ public class User extends BaseTimeEntity {
     private Boolean activated;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "refresh_token_id", nullable = false)
+    @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
     // 기록
