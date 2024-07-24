@@ -1,7 +1,7 @@
 package com.example.restea.share.entity;
 
 import com.example.restea.common.entity.BaseTimeEntity;
-import com.example.restea.user.entity.Users;
+import com.example.restea.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,7 +55,7 @@ public class ShareBoard extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
-    private Users user;
+    private User user;
 
     @OneToMany(mappedBy = "shareBoard") // 글 비활성화 시  댓글 비활성화
     private List<ShareComment> shareComments = new ArrayList<>();
