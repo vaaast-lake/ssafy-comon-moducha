@@ -1,6 +1,6 @@
 package com.example.restea.oauth2.service;
 
-import com.example.restea.auth.entity.RefreshToken;
+import com.example.restea.oauth2.entity.RefreshToken;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;

@@ -1,9 +1,9 @@
 package com.example.restea.user.entity;
 
 
-import com.example.restea.auth.entity.RefreshToken;
 import com.example.restea.common.entity.BaseTimeEntity;
 import com.example.restea.oauth2.entity.AuthToken;
+import com.example.restea.oauth2.entity.RefreshToken;
 import com.example.restea.record.entity.Record;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
