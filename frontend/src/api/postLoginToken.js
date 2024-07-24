@@ -12,6 +12,7 @@ export const postLoginToken = async idToken => {
       },
       body: JSON.stringify(idToken), // idToken을 JSON 문자열로 변환하여 요청 본문에 포함
     });
+    console.log('로그인 이후 response는' + JSON.stringify(response));
     if (!response.ok) {
       const errorDetail = await response.text();
       throw new Error(`Server responded with ${response.status}: ${errorDetail}`);
