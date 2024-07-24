@@ -1,7 +1,7 @@
 package com.example.restea.share.entity;
 
 import com.example.restea.common.entity.BaseTimeEntity;
-import com.example.restea.user.entity.Users;
+import com.example.restea.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,5 +42,5 @@ public class ShareParticipant extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
-    private Users user;
+    private User user;
 }
