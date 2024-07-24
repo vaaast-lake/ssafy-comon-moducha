@@ -1,7 +1,7 @@
 package com.example.restea.teatime.entity;
 
 import com.example.restea.common.entity.BaseTimeEntity;
-import com.example.restea.user.entity.Users;
+import com.example.restea.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -43,7 +43,7 @@ public class TeatimeComment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
-    private Users user;
+    private User user;
 
     @OneToMany(mappedBy = "teatimeComment") // 댓글이 삭제되어도 대댓글은 보존
     private List<TeatimeReply> teatimeReplies = new ArrayList<>();

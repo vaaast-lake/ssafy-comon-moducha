@@ -1,6 +1,6 @@
 package com.example.restea.auth.entity;
 
-import com.example.restea.user.entity.Users;
+import com.example.restea.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -40,5 +40,5 @@ public class RefreshToken {
     private Boolean revoked;
 
     @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
-    private Users user;
+    private User user;
 }
