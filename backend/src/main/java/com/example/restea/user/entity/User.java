@@ -28,6 +28,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -99,4 +100,10 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
+
+    @Builder
+    public User(String nickname, String authId) {
+        this.nickname = nickname;
+        this.authId = authId;
+    }
 }
