@@ -1,5 +1,6 @@
 package com.example.restea.config;
 
+import com.example.restea.oauth2.handler.CustomSuccessHandler;
 import com.example.restea.oauth2.jwt.JWTFilter;
 import com.example.restea.oauth2.jwt.JWTUtil;
 import com.example.restea.oauth2.service.CustomOAuth2UserService;
@@ -21,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -71,7 +73,8 @@ public class SecurityConfig {
                         // 커스텀 로그인 페이지 추가
                         .loginPage("/api/v1/login")
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService))));
+                                .userService(customOAuth2UserService)))
+                        .successHandler(customSuccessHandler));
 
         //경로별 인가 작업
         http
