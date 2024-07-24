@@ -27,10 +27,11 @@ public class ShareService {
   // 입력된 값이 유효한지 확인하는 메소드
   private void checkCreateArgs(ShareCreationRequest request) {
     boolean emptyTitle = request.getTitle().isEmpty();
+    boolean overTitleLength = request.getTitle().length() > 50;
     boolean emptyContent = request.getContent().isEmpty();
     boolean invalidMaxParticipants = request.getMaxParticipants() < 1;
     boolean invalidEndDate = request.getEndDate().isBefore(LocalDateTime.now());
-    if (emptyContent || emptyTitle || invalidMaxParticipants || invalidEndDate) {
+    if (emptyContent || emptyTitle || invalidMaxParticipants || invalidEndDate || overTitleLength) {
       throw new IllegalArgumentException();
     }
   }
