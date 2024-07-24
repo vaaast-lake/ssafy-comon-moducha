@@ -53,7 +53,7 @@ public class JWTUtil {
     }
 
     // 토큰 발급
-    public String createJwt(String category, String userId, String nickname, String role, Long expiredMs) {
+    public String createJwt(String category, Integer userId, String nickname, String role, Long expiredMs) {
         return Jwts.builder()
                 .claim("category", category) // access, refresh 판단
                 .claim("userId", userId)
