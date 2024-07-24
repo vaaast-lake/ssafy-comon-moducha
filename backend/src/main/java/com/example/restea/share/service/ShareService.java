@@ -3,9 +3,11 @@ package com.example.restea.share.service;
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.repository.ShareBoardRepository;
+import com.example.restea.user.repository.UserRepository;
 import com.example.restea.user.entity.User;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +16,18 @@ import org.springframework.stereotype.Service;
 public class ShareService {
 
   private final ShareBoardRepository shareBoardRepository;
-  private final UserResitory userRepository;
+  private final UserRepository userRepository;
 
   @Transactional
   public ShareBoard createShare(ShareCreationRequest request, Integer userId) {
     checkCreateArgs(request);
-    User user = userRepository.findById(userId);
-    ShareBoard shareBoard = request.toEntity().addUser(user);
+
+    Optional<User> user = userRepository.findById(userId);
+    if (user.isEmpty()) {
+      throw new IllegalArgumentException();
+    }
+
+    ShareBoard shareBoard = request.toEntity().addUser(user.get());
     return shareBoardRepository.save(request.toEntity());
   }
 
