@@ -6,12 +6,8 @@ import com.example.restea.share.dto.ShareCreationResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.service.ShareService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,17 +47,6 @@ public class ShareController {
         .body(ResponseDTO.builder()
             .data(response)
             .build());
-  }
-
-  // TODO : 별도의 ControllerAdvice 클래스로 분리할 것
-  @ExceptionHandler(DataAccessException.class)
-  public ResponseEntity<String> handleDataAccessException(DataAccessException e) {
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-  }
-
-  @ExceptionHandler(IllegalArgumentException.class)
-  public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
   }
 
 }
