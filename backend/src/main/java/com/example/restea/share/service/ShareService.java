@@ -3,7 +3,7 @@ package com.example.restea.share.service;
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.repository.ShareBoardRepository;
-import com.example.restea.user.entity.Users;
+import com.example.restea.user.entity.User;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ShareService {
   @Transactional
   public ShareBoard createShare(ShareCreationRequest request, Integer userId) {
     checkCreateArgs(request);
-    Users user = userRepository.findById(userId);
+    User user = userRepository.findById(userId);
     ShareBoard shareBoard = request.toEntity().addUser(user);
     return shareBoardRepository.save(request.toEntity());
   }

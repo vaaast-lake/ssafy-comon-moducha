@@ -65,7 +65,8 @@ public class ShareBoard extends BaseTimeEntity {
     private List<ShareParticipant> shareParticipants = new ArrayList<>();
 
     @Builder
-    public ShareBoard(String title, String content, Integer maxParticipants, LocalDateTime endDate, Users user) {
+    public ShareBoard
+        (String title, String content, Integer maxParticipants, LocalDateTime endDate, User user) {
         this.title = title;
         this.content = content;
         this.maxParticipants = maxParticipants;
@@ -75,7 +76,7 @@ public class ShareBoard extends BaseTimeEntity {
         this.activated = true;
     }
 
-    public ShareBoard addUser(Users user) {
+    public ShareBoard addUser(User user) {
         this.user = user;
         return this;
     }
