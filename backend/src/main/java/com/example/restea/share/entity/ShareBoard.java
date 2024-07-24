@@ -75,4 +75,8 @@ public class ShareBoard extends BaseTimeEntity {
         this.activated = true;
     }
 
+    public ShareBoard addUser(Users user) {
+        this.user = user;
+        return this;
+    }
 }
