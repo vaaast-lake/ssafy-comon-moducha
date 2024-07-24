@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,12 +25,17 @@ public class ShareController {
   private final ShareService shareService;
 
   @PostMapping
-  // TODO : @PreAuthorize 어노테이션을 사용하여 권한을 확인할 것
-  // @PreAuthorize("hasRole('USER', 'ADMIN')")
-  public ResponseEntity<ResponseDTO<?>> createShare(
-      @RequestBody ShareCreationRequest request, @AuthenticationPrincipal CustomOAuth2User user) {
+//   TODO : @PreAuthorize 어노테이션을 사용하여 권한을 확인할 것
+//   @PreAuthorize("hasRole('USER', 'ADMIN')")
 
-    ShareBoard result = shareService.createShare(request, user.getUserId());
+// TODO : @AuthenticationPrincipal 어노테이션을 사용하여 로그인한 사용자 정보를 가져올 것
+//  public ResponseEntity<ResponseDTO<?>> createShare(
+//      @RequestBody ShareCreationRequest request, @AuthenticationPrincipal CustomOAuth2User user) {
+//    ShareBoard result = shareService.createShare(request, user.getUserId());
+
+  public ResponseEntity<ResponseDTO<?>> createShare(
+      @RequestBody ShareCreationRequest request, Integer userId) {
+    ShareBoard result = shareService.createShare(request, userId);
 
     // if fail to create share then throw Exception
     // if success to create share then return response
