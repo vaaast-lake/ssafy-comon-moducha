@@ -16,7 +16,7 @@ const genShareListItems = () => {
   return shareItems;
 };
 
-const shareResponse = {
+export const shareResponse = {
   message: '200 OK',
   data: {
     pagination: {
@@ -28,4 +28,17 @@ const shareResponse = {
   },
 };
 
-export default shareResponse;
+export const ShareDetailResponse = {
+  data: {
+    shareBoardId: 1,
+    title: 'share Event',
+    content: 'Join us for a tea share event.',
+    createdDate: '2023-07-15T10:00:00Z',
+    lastUpdated: '2023-07-16T15:30:00Z',
+    maxParticipants: 50,
+    endDate: '2023-07-19T23:59:59Z',
+    viewCount: 100,
+    participants: 30, // 현재 참가자
+    nickname: '홍길동',
+  },
+};
