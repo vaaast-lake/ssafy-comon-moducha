@@ -2,29 +2,29 @@ import ShareCard from './components/ShareCard';
 import ShareHeader from './components/ShareHeader';
 import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
-import { useShareStore } from '../../stores/shareStore';
-import { ShareItem } from '../../types/ShareItem';
-import axiosInstance from '../../api/axios';
-import { useEffect } from 'react';
 import shareResponse from '../../constants/shareResponseTest';
 
-const fetchShareList = async (setShareList: (data: ShareItem[]) => void) => {
-  const response = await axiosInstance.get('/shares');
-  setShareList(response.data);
-};
+import { useShareStore } from '../../stores/shareStore';
+import { ShareListItem } from '../../types/ShareType';
+import { fetchShareList } from '../../api/fetchShare';
+import { useEffect, useState } from 'react';
 
 const Share = () => {
   const { shareList, setShareList } = useShareStore();
+  const [sortOption, setSortOption] = useState('latest');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(10);
+  const perPage = 12;
 
   useEffect(() => {
-    // fetchShareList(setShareList);
+    fetchShareList(sortOption, currentPage, perPage)
+      .then((res) => {
+        setShareList(res.data);
+        setTotalPage(res.data.pagination.total)
+      })
+      .catch((err) => console.log(err));
     setShareList(shareResponse);
-  }, []);
-
-  const pageObj = {
-    limit: 10,
-    currentPage: 5,
-  };
+  }, [currentPage, setShareList, sortOption]);
 
   return (
     <div className="flex justify-center m-5">
@@ -36,7 +36,7 @@ const Share = () => {
           <TitleCard title="나눔" />
           <div className="divider"></div>
           <div className="flex justify-between">
-            <ShareHeader />
+            <ShareHeader {...{ sortOption, setSortOption }} />
           </div>
         </header>
 
@@ -48,7 +48,7 @@ const Share = () => {
         </section>
 
         <footer className="flex justify-center">
-          <Pagination {...pageObj} />
+          <Pagination {...{ currentPage, totalPage, setCurrentPage }} />
         </footer>
       </main>
       {/* 우측 사이드바 영역 */}
@@ -59,7 +59,7 @@ const Share = () => {
 
 export default Share;
 
-const ShareCardList = ({ shareItems }: { shareItems: ShareItem[] }) => {
+const ShareCardList = ({ shareItems }: { shareItems: ShareListItem[] }) => {
   return shareItems.map((shareItem) => (
     <ShareCard key={shareItem.shareBoardId} {...shareItem} />
   ));

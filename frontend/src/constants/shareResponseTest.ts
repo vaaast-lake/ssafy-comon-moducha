@@ -1,5 +1,5 @@
 // 아이템 12개의 테스트 나눔리스트 생성
-const genShareItems = () => {
+const genShareListItems = () => {
   const shareItems = [];
   for (let i = 1; i < 13; i++) {
     const shareItem = {
@@ -17,12 +17,15 @@ const genShareItems = () => {
 };
 
 const shareResponse = {
-  pagination: {
-    total: 25,
-    page: 1,
-    perPage: 10,
+  message: '200 OK',
+  data: {
+    pagination: {
+      total: 25,
+      page: 1,
+      perPage: 10,
+    },
+    items: genShareListItems(),
   },
-  items: genShareItems(),
 };
 
 export default shareResponse;
