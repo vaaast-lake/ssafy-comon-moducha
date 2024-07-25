@@ -10,13 +10,17 @@ import com.example.restea.oauth2.util.AuthIdCreator;
 import com.example.restea.oauth2.util.NicknameCreator;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
+import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +49,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .orElseGet(() -> handleNewUser(authId, authValue));
     }
 
-    private CustomOAuth2User handleNewUser(String authId, String authValue) {
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public CustomOAuth2User handleNewUser(String authId, String authValue) {
         // user 저장
         User user = createNewUser(authId);
         userRepository.save(user);
@@ -61,10 +66,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private User createNewUser(String authId) {
+        String nickname = getUniqueNickname();
         return User.builder()
-                .nickname(NicknameCreator.getNickname())
+                .nickname(nickname)
                 .authId(authId)
                 .build();
+    }
+
+    // DB에 닉네임이 존재하지 않을 때 까지 닉네임 생성
+    @Transactional
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    public String getUniqueNickname() {
+        String nickname = NicknameCreator.getNickname();
+        while (userRepository.existsByNickname(nickname)) {
+            nickname = NicknameCreator.getNickname();
+        }
+        return nickname;
     }
 
     private AuthToken createAuthToken(String authValue) {
