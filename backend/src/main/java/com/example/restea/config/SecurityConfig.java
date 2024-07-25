@@ -1,9 +1,13 @@
 package com.example.restea.config;
 
 import com.example.restea.oauth2.handler.CustomSuccessHandler;
+import com.example.restea.oauth2.jwt.CustomLogoutFilter;
 import com.example.restea.oauth2.jwt.JWTFilter;
 import com.example.restea.oauth2.jwt.JWTUtil;
+import com.example.restea.oauth2.repository.AuthTokenRepository;
+import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.oauth2.service.CustomOAuth2UserService;
+import com.example.restea.user.repository.UserRepository;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
@@ -23,6 +28,9 @@ public class SecurityConfig {
     private final JWTUtil jwtUtil;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
+    private final AuthTokenRepository authTokenRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -71,15 +79,30 @@ public class SecurityConfig {
         http
                 .oauth2Login((oauth2) -> oauth2
                         // 커스텀 로그인 페이지 추가
-                        .loginPage("/api/v1/login")
+                        .loginPage("/login")
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)))
                         .successHandler(customSuccessHandler));
 
+        /*
+          SpringSecurity의 LogoutFilter가 작동하기 전에 RefreshToken을 제거하는 필터를 추가하는 것
+         */
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository, userRepository,
+                                authTokenRepository),
+                        LogoutFilter.class);
+
+        // 로그아웃 설정
+        http
+                .logout((oauth2) -> oauth2
+                        .logoutUrl("/api/v1/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll());
+
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/v1/", "/api/v1/oauth2/**", "/api/v1/login/**", "/api/v1/reissue")
+                        .requestMatchers("/", "/api/v1/oauth2/**", "/login/**", "/api/v1/reissue")
                         .permitAll()
                         .anyRequest().authenticated());
 

@@ -105,13 +105,18 @@ public class User extends BaseTimeEntity {
         this.refreshToken = refreshToken;
     }
 
+    public void deleteRefreshToken() {
+        this.refreshToken = null;
+    }
+
     public void deleteAuthToken() {
         this.authToken = null;
     }
 
     @Builder
-    public User(String nickname, String authId) {
+    public User(String nickname, String authId, AuthToken authToken) {
         this.nickname = nickname;
         this.authId = authId;
+        this.authToken = authToken;
     }
 }
