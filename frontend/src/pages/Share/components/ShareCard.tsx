@@ -12,7 +12,7 @@ const ShareCard = ({
     <>
       <Link
         to={shareBoardId.toString()}
-        className="flex bg-base-100 overflow-hidden shadow-lg rounded-lg transition ease-in-out hover:bg-beige hover:scale-105 duration-150"
+        className="flex bg-base-100 overflow-hidden shadow border border-1.5 border-[#C5C5C5] rounded-lg transition ease-in-out hover:bg-beige hover:shadow-lg hover:scale-105 duration-150"
       >
         <figure className="size-32 shrink-0">
           <img

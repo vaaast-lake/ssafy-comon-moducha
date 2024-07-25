@@ -24,7 +24,7 @@ const Share = () => {
       })
       .catch((err) => console.log(err));
     setShareList(shareResponse);
-  },[sortOption, currentPage, perPage]);
+  }, [sortOption, currentPage, perPage]);
 
   return (
     <div className="grid grid-cols-12 h-screen">
@@ -36,7 +36,7 @@ const Share = () => {
         className="col-span-12 m-5 lg:col-span-8 flex flex-col gap-4"
       >
         <header>
-          <TitleCard title="나눔" />
+          <TitleCard>나눔</TitleCard>
           <div className="divider"></div>
           <div className="flex justify-between">
             <ShareHeader {...{ sortOption, setSortOption }} />
