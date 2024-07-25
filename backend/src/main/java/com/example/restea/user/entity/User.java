@@ -46,7 +46,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "users_id")
     private Integer id;
 
-    @Column(unique = true, length = 12)
+    @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 
     @Enumerated(value = EnumType.STRING)
@@ -103,6 +103,10 @@ public class User extends BaseTimeEntity {
 
     public void addRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public void deleteAuthToken() {
+        this.authToken = null;
     }
 
     @Builder
