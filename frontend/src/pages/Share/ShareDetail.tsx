@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { ShareDetailItem } from '../../types/ShareType';
 import ArticleCard from '../../components/Article/ArticleCard';
 import { ShareDetailResponse } from '../../constants/shareResponseTest';
+import ArticleContent from '../../components/Article/ArticleContent';
 
 const ShareDetail = () => {
   const [shareDetail, setsShareDetail] = useState<ShareDetailItem>(
@@ -18,16 +19,16 @@ const ShareDetail = () => {
   }, [shareId]);
   return (
     <div className="grid grid-cols-12 h-screen">
-      <aside className="hidden lg:flex col-span-2 bg-gray-300">leftAside</aside>
-      <main className="col-span-12 lg:col-span-8 grid grid-cols-12">
-        <aside className="col-span-4 p-2">
+      <aside className="hidden lg:flex col-span-2"></aside>
+      <div className="col-span-12 lg:col-span-8 sm:grid sm:grid-cols-12">
+        <aside className="sm:col-span-4 p-2">
           <ArticleCard {...shareDetail} />
         </aside>
-        <main className="col-span-8 bg-success p-2">innerArticle</main>
-      </main>
-      <aside className="hidden lg:flex col-span-2 bg-gray-300">
-        reightAside
-      </aside>
+        <main className="sm:col-span-8 p-2">
+          <ArticleContent {...shareDetail} />
+        </main>
+      </div>
+      <aside className="hidden lg:flex col-span-2"></aside>
     </div>
   );
 };

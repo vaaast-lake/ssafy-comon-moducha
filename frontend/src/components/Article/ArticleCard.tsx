@@ -10,27 +10,25 @@ const ArticleCard = ({
   maxParticipants,
 }: ShareDetailItem) => {
   return (
-    <div className="card p-2 overflow-clip shadow-md">
+    <div className="flex flex-col p-2 overflow-clip border shadow gap-4">
       <figure
         className="bg-contain bg-center bg-no-repeat h-48"
         style={{ backgroundImage: `url(/logo.png)` }}
       />
       <div id="card-body">
         <header>
-          <h5 className="card-title">{title}</h5>
           <div className="flex gap-1">
-            <span>{nickname}</span>|<span>조회 {viewCount}</span>|
-            <span>{createdDate}</span>
+            <span>{nickname}</span>|<span>조회 {viewCount}</span>
           </div>
         </header>
-        <div className="card-body pl-0">
+        <div className="pl-0 flex flex-col">
+          <span>작성 : {createdDate}</span>
           <span>신청 : {participants + ' / ' + maxParticipants}</span>
           <span id="share-end_date">기간 : {endDate}</span>
-          <span>{content}</span>
         </div>
       </div>
-      <button className="btn bg-rose-300 hover:bg-rose-400 text-white">
-        나눔 신청하기
+      <button className="btn bg-success hover:bg-rose-500 text-white">
+        나눔 참여하기
       </button>
     </div>
   );
