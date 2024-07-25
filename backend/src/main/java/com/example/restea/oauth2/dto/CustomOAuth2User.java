@@ -26,7 +26,7 @@ public class CustomOAuth2User implements OAuth2User {
 
     @Override
     public String getName() {
-        return null;
+        return OAuth2JwtMemberDTO.getNickname();
     }
 
     public Integer getUserId() {
