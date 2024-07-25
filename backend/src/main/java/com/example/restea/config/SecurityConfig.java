@@ -1,7 +1,9 @@
 package com.example.restea.config;
 
+import com.example.restea.oauth2.handler.CustomSuccessHandler;
 import com.example.restea.oauth2.jwt.JWTFilter;
 import com.example.restea.oauth2.jwt.JWTUtil;
+import com.example.restea.oauth2.service.CustomOAuth2UserService;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JWTUtil jwtUtil;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomSuccessHandler customSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -64,10 +68,19 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
 
+        http
+                .oauth2Login((oauth2) -> oauth2
+                        // 커스텀 로그인 페이지 추가
+                        .loginPage("/api/v1/login")
+                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)))
+                        .successHandler(customSuccessHandler));
+
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("api/v1/", "api/v1/oauth2/**", "api/v1/login/**", "api/v1/reissue").permitAll()
+                        .requestMatchers("/api/v1/", "/api/v1/oauth2/**", "/api/v1/login/**", "/api/v1/reissue")
+                        .permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
