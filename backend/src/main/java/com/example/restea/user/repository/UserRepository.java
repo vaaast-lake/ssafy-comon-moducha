@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByAuthId(String username);
+
+    boolean existsByNickname(String nickname);
 }

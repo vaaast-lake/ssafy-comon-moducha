@@ -1,4 +1,4 @@
-package com.example.restea.auth.entity;
+package com.example.restea.oauth2.entity;
 
 import com.example.restea.user.entity.User;
 import jakarta.persistence.Column;
