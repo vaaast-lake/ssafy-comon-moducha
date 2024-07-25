@@ -2,7 +2,7 @@ import ShareCard from './components/ShareCard';
 import ShareHeader from './components/ShareHeader';
 import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
-import shareResponse from '../../constants/shareResponseTest';
+import { shareResponse } from '../../constants/shareResponseTest';
 
 import { useShareStore } from '../../stores/shareStore';
 import { ShareListItem } from '../../types/ShareType';
@@ -20,20 +20,23 @@ const Share = () => {
     fetchShareList(sortOption, currentPage, perPage)
       .then((res) => {
         setShareList(res.data);
-        setTotalPage(res.data.pagination.total)
+        setTotalPage(res.data.pagination.total);
       })
       .catch((err) => console.log(err));
     setShareList(shareResponse);
-  }, [currentPage, setShareList, sortOption]);
+  }, [sortOption, currentPage, perPage]);
 
   return (
-    <div className="flex justify-center m-5">
+    <div className="grid grid-cols-12 h-screen">
       {/* 좌측 사이드바 영역 */}
-      <aside className="lg:w-1/5"></aside>
+      <aside className="hidden lg:flex col-span-2"></aside>
 
-      <main id="share-body" className="lg:w-3/5 flex flex-col gap-4">
+      <main
+        id="share-body"
+        className="col-span-12 m-5 lg:col-span-8 flex flex-col gap-4"
+      >
         <header>
-          <TitleCard title="나눔" />
+          <TitleCard>나눔</TitleCard>
           <div className="divider"></div>
           <div className="flex justify-between">
             <ShareHeader {...{ sortOption, setSortOption }} />
@@ -52,7 +55,7 @@ const Share = () => {
         </footer>
       </main>
       {/* 우측 사이드바 영역 */}
-      <aside className="lg:w-1/5"></aside>
+      <aside className="hidden lg:flex col-span-2"></aside>
     </div>
   );
 };

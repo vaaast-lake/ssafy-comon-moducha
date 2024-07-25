@@ -21,7 +21,7 @@ import org.hibernate.annotations.DynamicInsert;
 public class Live extends BaseTimeEntity {
   @Id
   @Column(name = "live_id")
-  private String liveId = UUID.randomUUID().toString();
+  private String id = UUID.randomUUID().toString();
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "teatime_board_id")
