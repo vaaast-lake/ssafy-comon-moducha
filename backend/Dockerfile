@@ -1,6 +1,5 @@
 # springboot image
-FROM openjdk:17-jdk
-CMD ["./gradlew", "clean", "build"]
+FROM openjdk:17-oracle
 EXPOSE 8080
 ARG PROFILE
 ARG JAR_FILE=build/libs/*.jar
