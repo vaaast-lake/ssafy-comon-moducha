@@ -19,9 +19,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -55,7 +57,9 @@ public class ShareBoard extends BaseTimeEntity {
     private Boolean activated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
+// TODO : why insertable = false, updatable = false?
+//    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "shareBoard") // 글 비활성화 시  댓글 비활성화
