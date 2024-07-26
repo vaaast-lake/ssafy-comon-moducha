@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 #join {
     display: flex;
     flex-direction: column;
@@ -91,8 +95,9 @@
     margin: 0;
 }
 
-#layout-container {
+#video-container {
     display: grid;
+    /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 10px;
     justify-content: center;
@@ -100,6 +105,19 @@
     width: 100%;
     max-width: 1000px;
     height: 100%;
+}
+
+/* chatting */
+#chat-container {
+    margin-left: 20px;
+    width: 300px;
+    height: 500px;
+}
+
+#chat-box {
+    background-color: white;
+    width: 300px;
+    height: 500px;
 }
 
 /* Media Queries */
