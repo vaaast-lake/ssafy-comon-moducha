@@ -1,4 +1,4 @@
-package com.example.restea.auth.entity;
+package com.example.restea.oauth2.entity;
 
 import com.example.restea.user.entity.User;
 import jakarta.persistence.Column;
@@ -10,6 +10,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -41,4 +42,11 @@ public class RefreshToken {
 
     @OneToOne(mappedBy = "refreshToken", fetch = FetchType.LAZY)
     private User user;
+
+    @Builder
+    public RefreshToken(String value, LocalDateTime issuedAt, LocalDateTime expiredAt) {
+        this.value = value;
+        this.issuedAt = issuedAt;
+        this.expiredAt = expiredAt;
+    }
 }

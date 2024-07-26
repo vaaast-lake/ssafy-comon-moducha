@@ -1,19 +1,22 @@
-import PaginationButton from './PaginationButton';
+import { Dispatch, SetStateAction } from 'react';
 
-interface pageType {
-  limit: number;
+export interface Page {
   currentPage: number;
+  totalPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
 }
 
-const Pagination = ({ limit, currentPage }: pageType) => {
+const Pagination = ({ currentPage, totalPage, setCurrentPage }: Page) => {
   const pageButtonArray = [];
-  for (let page = 1; page < limit + 1; page++) {
+  for (let page = 1; page <= totalPage; page++) {
     pageButtonArray.push(
-      <PaginationButton
-        page={page}
-        currentPage={currentPage}
-        key={'page' + page}
-      />
+      <button
+        key={page}
+        className={`join-item btn ${page === currentPage ? 'btn-active' : ''}`}
+        onClick={() => setCurrentPage(page)}
+      >
+        {page}
+      </button>
     );
   }
   return <div className="join">{pageButtonArray}</div>;

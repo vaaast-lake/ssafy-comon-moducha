@@ -1,14 +1,14 @@
 import { create } from 'zustand';
-import { ShareItem, ShareJson } from '../types/ShareItem';
+import { ShareListItem, ShareList } from '../types/ShareType';
 
 interface ShareState {
-  shareList: ShareItem[];
-  setShareList: (fetchedShareList: ShareJson) => void;
+  shareList: ShareListItem[];
+  setShareList: (fetchedShareList: ShareList) => void;
 }
 
 export const useShareStore = create<ShareState>((set) => ({
   shareList: [],
   pageInfo: {},
   setShareList: (fetchedShareList) =>
-    set({ shareList: fetchedShareList.items }),
+    set({ shareList: fetchedShareList.data.items }),
 }));

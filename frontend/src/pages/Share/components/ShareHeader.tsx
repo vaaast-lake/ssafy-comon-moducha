@@ -5,10 +5,14 @@ import {
   DisclosurePanel,
 } from '@headlessui/react';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
-const ShareHeader = () => {
-  const [sortOption, setSortOption] = useState('latest');
+interface Prop {
+  sortOption: string;
+  setSortOption: Dispatch<SetStateAction<string>>;
+}
+
+const ShareHeader = ({ sortOption, setSortOption }: Prop) => {
   return (
     <>
       <Disclosure as="div" className="justify-between w-full">
@@ -23,7 +27,7 @@ const ShareHeader = () => {
               className="hidden h-6 w-6 group-data-[open]:block"
             />
           </DisclosureButton>
-          
+
           {/* md 이상인 경우 검색창 노출 */}
           <div className="hidden md:block">
             <ShareHeaderSearch className="join" />
