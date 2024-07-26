@@ -5,23 +5,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.restea.oauth2.dto.CustomOAuth2User;
-import com.example.restea.oauth2.dto.OAuth2JwtMemberDTO;
-import com.example.restea.oauth2.entity.AuthToken;
-import com.example.restea.oauth2.repository.AuthTokenRepository;
 import com.example.restea.oauth2.service.CustomOAuth2UserService;
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.repository.ShareBoardRepository;
-import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import com.example.restea.util.SecurityTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,12 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.annotation.SecurityTestExecutionListeners;
-import org.springframework.security.test.context.support.WithSecurityContext;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -91,9 +78,8 @@ class ShareControllerTest {
   @DisplayName("createShare : 공유 게시글 생성에 성공한다.")
   @Test
   public void createShare_Success() throws Exception {
-    // given
 
-    // request 설정
+    // given
     final String url = "/api/v1/shares";
     final String title = "TestTitle";
     final String content = "TestContent";
@@ -103,7 +89,6 @@ class ShareControllerTest {
 
     // when
     ResultActions result = mockMvc.perform(post(url)
-        .with(SecurityMockMvcRequestPostProcessors.oauth2Login().oauth2User(customOAuth2User))
         .accept(MediaType.APPLICATION_JSON_VALUE)
         .contentType(MediaType.APPLICATION_JSON_VALUE)
         .content(requestBody));
