@@ -1,8 +1,9 @@
 package com.example.restea.user.entity;
 
 
-import com.example.restea.auth.entity.RefreshToken;
 import com.example.restea.common.entity.BaseTimeEntity;
+import com.example.restea.oauth2.entity.AuthToken;
+import com.example.restea.oauth2.entity.RefreshToken;
 import com.example.restea.record.entity.Record;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
@@ -27,6 +28,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -44,7 +46,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "users_id")
     private Integer id;
 
-    @Column(unique = true, length = 12)
+    @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 
     @Enumerated(value = EnumType.STRING)
@@ -62,6 +64,10 @@ public class User extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "auth_token_id")
+    private AuthToken authToken;
 
     // 기록
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -94,4 +100,23 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
+
+    public void addRefreshToken(RefreshToken refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void deleteRefreshToken() {
+        this.refreshToken = null;
+    }
+
+    public void deleteAuthToken() {
+        this.authToken = null;
+    }
+
+    @Builder
+    public User(String nickname, String authId, AuthToken authToken) {
+        this.nickname = nickname;
+        this.authId = authId;
+        this.authToken = authToken;
+    }
 }

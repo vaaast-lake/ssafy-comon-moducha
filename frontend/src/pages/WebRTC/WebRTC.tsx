@@ -1,4 +1,5 @@
 import {
+  DataPacket_Kind,
   LocalVideoTrack,
   RemoteParticipant,
   RemoteTrack,
@@ -10,7 +11,7 @@ import './WebRTC.css';
 import { useState } from 'react';
 import VideoComponent from './components/VideoComponent';
 import AudioComponent from './components/AudioComponent';
-import axios from 'axios';
+// import axios from 'axios';
 
 type TrackInfo = {
   trackPublication: RemoteTrackPublication;
@@ -19,11 +20,7 @@ type TrackInfo = {
 
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
-let APPLICATION_SERVER_URL = import.meta.env.VITE_SERVER_URL;
-// let APPLICATION_SERVER_URL = 'http://192.168.100.128:6080/';
-
-// let LIVEKIT_URL = 'http://192.168.100.128:7880/';
-// let APPLICATION_SERVER_URL = '';
+let APPLICATION_SERVER_URL = '';
 let LIVEKIT_URL = '';
 configureUrls();
 
@@ -58,6 +55,20 @@ export default function WebRTC() {
     'Participant' + Math.floor(Math.random() * 100)
   );
   const [roomName, setRoomName] = useState('Test Room');
+
+  // Chat state
+  const [messages, setMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState('');
+
+  const sendMessage = () => {
+    if (inputMessage.trim() && room) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(inputMessage);
+      room.localParticipant.publishData(data, { reliable: true });
+      setMessages(prevMessages => [...prevMessages, { sender: 'Me', content: inputMessage }]);
+      setInputMessage('');
+    }
+  };
 
   async function joinRoom() {
     // Initialize a new Room object
@@ -95,17 +106,22 @@ export default function WebRTC() {
       }
     );
 
+    // message receiver
+    room.on(RoomEvent.DataReceived, (payload, participant) => {
+      const decoder = new TextDecoder();
+      const message = decoder.decode(payload);
+      setMessages(prevMessages => [...prevMessages, { sender: participant.identity, content: message }]);
+    });
+
+
     try {
+      console.log(APPLICATION_SERVER_URL);
+
       // Get a token from your application server with the room name and participant name
-      // console.log('1');
-      
       const token = await getToken(roomName, participantName);
-      // console.log('2');
-      // console.log(token);
 
       // Connect to the room with the LiveKit URL and the token
       await room.connect(LIVEKIT_URL, token);
-      // console.log('3');
 
       // Publish your camera and microphone
       await room.localParticipant.enableCameraAndMicrophone();
@@ -146,54 +162,53 @@ export default function WebRTC() {
    * access to the endpoints.
    */
 
-  // /lives/token/1
   async function getToken(roomName: string, participantName: string) {
-    const data = {
-      token: 'token',
-    };
+    // const data = {
+    //   token: 'token',
+    // };
 
-    await axios({
-      method: 'get',
-      url: `${APPLICATION_SERVER_URL}/lives/token/1`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        roomName: roomName,
-        participantName: participantName,
-      },
-    })
-      .then((res) => {
-        data.token = res.data.token;
-      })
-      .catch((err) => {
-        new Error(`Failed to get token: ${err.errorMessage}`);
-      });
-
-    // const response = await fetch(APPLICATION_SERVER_URL + 'token', {
-    //   method: 'POST',
+    // await axios({
+    //   method: 'get',
+    //   url: `${APPLICATION_SERVER_URL}/lives/token/1`,
     //   headers: {
     //     'Content-Type': 'application/json',
     //   },
-    //   body: JSON.stringify({
+    //   data: {
     //     roomName: roomName,
     //     participantName: participantName,
-    //   }),
-    // });
+    //   },
+    // })
+    //   .then((res) => {
+    //     data.token = res.data.token;
+    //   })
+    //   .catch((err) => {
+    //     new Error(`Failed to get token: ${err.errorMessage}`);
+    //   });
 
-    // if (!response.ok) {
-    //   const error = await response.json();
-    //   throw new Error(`Failed to get token: ${error.errorMessage}`);
-    // }
+    const response = await fetch(APPLICATION_SERVER_URL + 'token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        roomName: roomName,
+        participantName: participantName,
+      }),
+    });
 
-    // const data = await response.json();
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Failed to get token: ${error.errorMessage}`);
+    }
+
+    const data = await response.json();
 
     return data.token;
   }
 
   return (
     <>
-      {!room && (
+      {!room ? (
         <div id="join">
           <div id="join-dialog">
             <h2>Join a Video Room</h2>
@@ -235,8 +250,7 @@ export default function WebRTC() {
             </form>
           </div>
         </div>
-      )}
-      {room && (
+      ) : (
         <div id="room">
           <div id="room-header">
             <h2 id="room-title">{roomName}</h2>
@@ -248,28 +262,54 @@ export default function WebRTC() {
               Leave Room
             </button>
           </div>
-          <div id="layout-container">
-            {localTrack && (
-              <VideoComponent
-                track={localTrack}
-                participantIdentity={participantName}
-                local={true}
-              />
-            )}
-            {remoteTracks.map((remoteTrack) =>
-              remoteTrack.trackPublication.kind === 'video' ? (
+          <div id="layout-container" className="flex">
+            <div id="video-container" className="">
+              {localTrack && (
                 <VideoComponent
-                  key={remoteTrack.trackPublication.trackSid}
-                  track={remoteTrack.trackPublication.videoTrack!}
-                  participantIdentity={remoteTrack.participantIdentity}
+                  track={localTrack}
+                  participantIdentity={participantName}
+                  local={true}
                 />
-              ) : (
-                <AudioComponent
-                  key={remoteTrack.trackPublication.trackSid}
-                  track={remoteTrack.trackPublication.audioTrack!}
+              )}
+              {remoteTracks.map((remoteTrack) =>
+                remoteTrack.trackPublication.kind === 'video' ? (
+                  <VideoComponent
+                    key={remoteTrack.trackPublication.trackSid}
+                    track={remoteTrack.trackPublication.videoTrack!}
+                    participantIdentity={remoteTrack.participantIdentity}
+                  />
+                ) : (
+                  <AudioComponent
+                    key={remoteTrack.trackPublication.trackSid}
+                    track={remoteTrack.trackPublication.audioTrack!}
+                  />
+                )
+              )}
+            </div>
+            <div id="chat-container" className="">
+              <div className="h-72 bg-white overflow-y-scroll">
+                {messages.map((msg, index) => (
+                  <div key={index}>
+                    <strong>{msg.sender}:</strong> {msg.content}
+                  </div>
+                ))}
+              </div>
+              <div className='flex'>
+                <input
+                  type="text"
+                  className="border border-gray-300 rounded px-2 py-1"
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 />
-              )
-            )}
+                <button
+                  className="bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600"
+                  onClick={sendMessage}
+                >
+                  Send
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

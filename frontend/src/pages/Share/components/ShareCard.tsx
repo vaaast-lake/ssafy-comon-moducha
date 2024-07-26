@@ -1,9 +1,19 @@
-import { ShareItem } from '../../../types/ShareItem';
+import { ShareListItem } from '../../../types/ShareType';
 import { UserIcon } from '@heroicons/react/24/outline';
-const ShareCard = ({ title, maxParticipants, participants }: ShareItem) => {
+import { Link } from 'react-router-dom';
+
+const ShareCard = ({
+  shareBoardId,
+  title,
+  maxParticipants,
+  participants,
+}: ShareListItem) => {
   return (
     <>
-      <div className="flex bg-base-100 overflow-hidden shadow-lg rounded-lg transition ease-in-out hover:bg-beige hover:scale-105 duration-150">
+      <Link
+        to={shareBoardId.toString()}
+        className="flex bg-base-100 overflow-hidden shadow border border-1.5 border-[#C5C5C5] rounded-lg transition ease-in-out hover:bg-beige hover:shadow-lg hover:scale-105 duration-150"
+      >
         <figure className="size-32 shrink-0">
           <img
             className=""
@@ -23,7 +33,7 @@ const ShareCard = ({ title, maxParticipants, participants }: ShareItem) => {
             />
           </section>
         </article>
-      </div>
+      </Link>
     </>
   );
 };
