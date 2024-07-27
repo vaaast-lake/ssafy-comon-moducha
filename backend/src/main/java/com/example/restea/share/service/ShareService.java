@@ -1,6 +1,7 @@
 package com.example.restea.share.service;
 
 import com.example.restea.share.dto.ShareCreationRequest;
+import com.example.restea.share.dto.ShareCreationResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.repository.ShareBoardRepository;
 import com.example.restea.user.entity.User;
@@ -21,16 +22,22 @@ public class ShareService {
   private final UserRepository userRepository;
 
   @Transactional
-  public ShareBoard createShare(ShareCreationRequest request, Integer userId) {
+  public ShareCreationResponse createShare(ShareCreationRequest request, Integer userId) {
     checkCreateArgs(request);
 
     Optional<User> user = userRepository.findById(userId);
     if (user.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
     }
+    ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(user.get()));
 
-    ShareBoard shareBoard = request.toEntity().addUser(user.get());
-    return shareBoardRepository.save(request.toEntity());
+    return ShareCreationResponse.builder()
+        .shareBoardId(result.getId())
+        .title(result.getTitle())
+        .content(result.getContent())
+        .endDate(result.getEndDate())
+        .maxParticipants(result.getMaxParticipants())
+        .build();
   }
 
   // 입력된 값이 유효한지 확인하는 메소드
