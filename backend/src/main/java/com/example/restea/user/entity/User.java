@@ -61,7 +61,7 @@ public class User extends BaseTimeEntity {
     @ColumnDefault("true")
     private Boolean activated;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "refresh_token_id")
     private RefreshToken refreshToken;
 
