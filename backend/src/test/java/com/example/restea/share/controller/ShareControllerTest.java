@@ -84,7 +84,7 @@ class ShareControllerTest {
     final String title = "TestTitle";
     final String content = "TestContent";
     final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-        LocalDateTime.now().plusWeeks(1), 10);
+        LocalDateTime.now().plusWeeks(1L), 10);
     final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
 
     // when
@@ -101,34 +101,155 @@ class ShareControllerTest {
     assertThat(shareBoards.get(0).getContent()).isEqualTo(content);
   }
 
-//  @DisplayName("createShare : 요청 본문이 유효하지 않을 때 실패한다.")
-//  @Test
-//  public void createShare_InvalidRequestBody_Failure() throws Exception {
-//    // given
-//    // when
-//    // then
-//  }
-//  @DisplayName("createShare : 요청 본문이 유효하지 않을 때 실패한다.")
-//  @Test
-//  public void createShare_InvalidRequestBody_Failure() throws Exception {
-//    // given
-//    // when
-//    // then
-//  }
-//  @DisplayName("createShare : 요청 본문이 유효하지 않을 때 실패한다.")
-//  @Test
-//  public void createShare_InvalidRequestBody_Failure() throws Exception {
-//    // given
-//    // when
-//    // then
-//  }
-//
-//  @DisplayName("createShare : 인증되지 않은 사용자가 요청할 때 실패한다.")
-//  @Test
-//  public void createShare_UnauthenticatedUser_Failure() throws Exception {
-//    // given
-//    // when
-//    // then
-//  }
+  @DisplayName("createShare : 입력값이 null인 경우.")
+  @Test
+  public void createShare_NullContent_Failure() throws Exception {
+    // given
+    final String url = "/api/v1/shares";
+    final String title = "TestTitle";
+    final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, null,
+        LocalDateTime.now().plusWeeks(1L), 10);
+    final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
+    // when
+    ResultActions result = mockMvc.perform(post(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(requestBody));
+    // then
+    result.andExpect(status().isBadRequest());
+    List<ShareBoard> shareBoards = shareBoardRepository.findAll();
+    assertThat(shareBoards.size()).isEqualTo(0);
+  }
+
+  @DisplayName("createShare : 제목이 비었을 때 실패한다.")
+  @Test
+  public void createShare_EmptyTitle_Failure() throws Exception {
+    // given
+    final String url = "/api/v1/shares";
+    final String title = "";
+    final String content = "TestContent";
+    final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
+        LocalDateTime.now().plusWeeks(1L), 10);
+    final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
+
+    // when
+    ResultActions result = mockMvc.perform(post(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(requestBody));
+
+    // then
+    result.andExpect(status().isBadRequest());
+    List<ShareBoard> shareBoards = shareBoardRepository.findAll();
+    assertThat(shareBoards.size()).isEqualTo(0);
+  }
+
+  @DisplayName("createShare : 제목의 길이가 50을 초과할 때 실패한다.")
+  @Test
+  public void createShare_OverTitleLength_Failure() throws Exception {
+    // given
+    final String url = "/api/v1/shares";
+    final String title =
+        "TestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTestTitle"
+            + "TestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTestTitleTest"
+            + "TitleTestTitleTestTitle";
+    final String content = "TestContent";
+    final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
+        LocalDateTime.now().plusWeeks(1L), 10);
+    final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
+    // when
+    ResultActions result = mockMvc.perform(post(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(requestBody));
+    // then
+    result.andExpect(status().isBadRequest());
+    List<ShareBoard> shareBoards = shareBoardRepository.findAll();
+    assertThat(shareBoards.size()).isEqualTo(0);
+  }
+
+  @DisplayName("createShare : content가 비었을 때 실패한다.")
+  @Test
+  public void createShare_EmptyContent_Failure() throws Exception {
+    // given
+    final String url = "/api/v1/shares";
+    final String title = "TestTitle";
+    final String content = "";
+    final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
+        LocalDateTime.now().plusWeeks(1L), 10);
+    final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
+    // when
+    ResultActions result = mockMvc.perform(post(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(requestBody));
+    // then
+    result.andExpect(status().isBadRequest());
+    List<ShareBoard> shareBoards = shareBoardRepository.findAll();
+    assertThat(shareBoards.size()).isEqualTo(0);
+  }
+
+  @DisplayName("createShare : 참여자가 1명 미만일 때 실패한다. 0명")
+  @Test
+  public void createShare_ZeroMaxParticipants_Failure() throws Exception {
+    // given
+    final String url = "/api/v1/shares";
+    final String title = "TestTitle";
+    final String content = "TestContent";
+    final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
+        LocalDateTime.now().plusWeeks(1L), 0);
+    final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
+    // when
+    ResultActions result = mockMvc.perform(post(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(requestBody));
+    // then
+    result.andExpect(status().isBadRequest());
+    List<ShareBoard> shareBoards = shareBoardRepository.findAll();
+    assertThat(shareBoards.size()).isEqualTo(0);
+  }
+
+  @DisplayName("createShare : 참여자가 1명 미만일 때 실패한다. -1명")
+  @Test
+  public void createShare_MinusMaxParticipants_Failure() throws Exception {
+    // given
+    final String url = "/api/v1/shares";
+    final String title = "TestTitle";
+    final String content = "TestContent";
+    final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
+        LocalDateTime.now().plusWeeks(1L), -1);
+    final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
+    // when
+    ResultActions result = mockMvc.perform(post(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(requestBody));
+    // then
+    result.andExpect(status().isBadRequest());
+    List<ShareBoard> shareBoards = shareBoardRepository.findAll();
+    assertThat(shareBoards.size()).isEqualTo(0);
+  }
+
+  @DisplayName("createShare : 종료일이 현재 시간보다 이전일 때 실패한다.")
+  @Test
+  public void createShare_InvalidEndDate_Failure() throws Exception {
+    // given
+    final String url = "/api/v1/shares";
+    final String title = "TestTitle";
+    final String content = "TestContent";
+    final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
+        LocalDateTime.now().minusDays(1L), 10);
+    final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
+    // when
+    ResultActions result = mockMvc.perform(post(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(requestBody));
+    // then
+    result.andExpect(status().isBadRequest());
+    List<ShareBoard> shareBoards = shareBoardRepository.findAll();
+    assertThat(shareBoards.size()).isEqualTo(0);
+  }
 
 }

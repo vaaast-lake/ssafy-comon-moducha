@@ -11,18 +11,22 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ShareCreationRequest {
 
-    private String title;
-    private String content;
-    private LocalDateTime endDate;
-    private Integer maxParticipants;
+  private String title;
+  private String content;
+  private LocalDateTime endDate;
+  private Integer maxParticipants;
 
-    public ShareBoard toEntity() {
-      return ShareBoard.builder()
-          .title(title)
-          .content(content)
-          .endDate(endDate)
-          .maxParticipants(maxParticipants)
-          .build();
-    }
+  public ShareBoard toEntity() {
+    return ShareBoard.builder()
+        .title(title)
+        .content(content)
+        .endDate(endDate)
+        .maxParticipants(maxParticipants)
+        .build();
+  }
+
+  public boolean checkNull() {
+    return title == null || content == null || endDate == null || maxParticipants == null;
+  }
 
 }
