@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.GenericFilterBean;
 
 @RequiredArgsConstructor
@@ -91,24 +92,27 @@ public class CustomLogoutFilter extends GenericFilterBean {
         return !refreshTokenRepository.existsByValue(refreshToken);
     }
 
-    private void processLogout(HttpServletResponse response, String refreshToken) {
+    @Transactional
+    protected void processLogout(HttpServletResponse response, String refreshToken) {
         User user = findUserByRefreshToken(refreshToken);
         AuthToken authToken = user.getAuthToken();
 
         clearUserTokens(user); // User에서 토큰 삭제
-        deleteTokens(refreshToken, authToken); // 토큰을 DB에서 삭제
+        handleTokens(refreshToken, authToken); // authToken삭제, refresh Token revoke 처리
 
         // 쿠키 삭제
         clearRefreshTokenCookie(response);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private void deleteTokens(String refreshToken, AuthToken authToken) {
+    @Transactional
+    protected void handleTokens(String refreshToken, AuthToken authToken) {
         authTokenRepository.delete(authToken);
-        refreshTokenRepository.deleteByValue(refreshToken);
+        refreshTokenRepository.revokeByValue(refreshToken);
     }
 
-    private void clearUserTokens(User user) {
+    @Transactional
+    protected void clearUserTokens(User user) {
         user.deleteAuthToken();
         user.deleteRefreshToken();
         userRepository.save(user); // User 변경
