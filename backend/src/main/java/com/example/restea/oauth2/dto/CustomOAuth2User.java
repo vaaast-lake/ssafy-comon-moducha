@@ -9,7 +9,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User {
-    private final OAuth2JwtMemberDTO OAuth2JwtMemberDTO;
+    private final OAuth2JwtMemberDTO oAuth2JwtMemberDTO;
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -19,25 +19,25 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add((GrantedAuthority) OAuth2JwtMemberDTO::getRole);
+        authorities.add((GrantedAuthority) oAuth2JwtMemberDTO::getRole);
 
         return authorities;
     }
 
     @Override
     public String getName() {
-        return OAuth2JwtMemberDTO.getNickname();
+        return oAuth2JwtMemberDTO.getNickname();
     }
 
     public Integer getUserId() {
-        return OAuth2JwtMemberDTO.getUserId();
+        return oAuth2JwtMemberDTO.getUserId();
     }
 
     public String getNickname() {
-        return OAuth2JwtMemberDTO.getNickname();
+        return oAuth2JwtMemberDTO.getNickname();
     }
 
     public String getRole() {
-        return OAuth2JwtMemberDTO.getRole();
+        return oAuth2JwtMemberDTO.getRole();
     }
 }

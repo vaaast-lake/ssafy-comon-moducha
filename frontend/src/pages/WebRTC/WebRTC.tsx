@@ -1,14 +1,14 @@
 import {
-  DataPacket_Kind,
   LocalVideoTrack,
   RemoteParticipant,
   RemoteTrack,
   RemoteTrackPublication,
   Room,
   RoomEvent,
+  Track,
 } from 'livekit-client';
 import './WebRTC.css';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import VideoComponent from './components/VideoComponent';
 import AudioComponent from './components/AudioComponent';
 // import axios from 'axios';
@@ -60,15 +60,36 @@ export default function WebRTC() {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
 
+  // Screen shairing state
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [screenShareTrack, setScreenShareTrack] = useState(null);
+
   const sendMessage = () => {
     if (inputMessage.trim() && room) {
       const encoder = new TextEncoder();
       const data = encoder.encode(inputMessage);
       room.localParticipant.publishData(data, { reliable: true });
-      setMessages(prevMessages => [...prevMessages, { sender: 'Me', content: inputMessage }]);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: 'Me', content: inputMessage },
+      ]);
       setInputMessage('');
     }
   };
+
+  const toggleScreenShare = useCallback(async () => {
+    if (!room) return;
+
+    try {
+      if (isScreenSharing) {
+        await room.localParticipant.setScreenShareEnabled(false);
+      } else {
+        await room.localParticipant.setScreenShareEnabled(true);
+      }
+    } catch (error) {
+      console.error('화면 공유 토글 중 오류 발생:', error);
+    }
+  }, [room, isScreenSharing]);
 
   async function joinRoom() {
     // Initialize a new Room object
@@ -76,43 +97,77 @@ export default function WebRTC() {
     setRoom(room);
 
     // Specify the actions when events take place in the room
-    // On every new Track received...
-    room.on(
-      RoomEvent.TrackSubscribed,
-      (
-        _track: RemoteTrack,
-        publication: RemoteTrackPublication,
-        participant: RemoteParticipant
-      ) => {
-        setRemoteTracks((prev) => [
-          ...prev,
-          {
-            trackPublication: publication,
-            participantIdentity: participant.identity,
-          },
-        ]);
-      }
-    );
 
-    // On every Track destroyed...
-    room.on(
-      RoomEvent.TrackUnsubscribed,
-      (_track: RemoteTrack, publication: RemoteTrackPublication) => {
-        setRemoteTracks((prev) =>
-          prev.filter(
-            (track) => track.trackPublication.trackSid !== publication.trackSid
-          )
-        );
-      }
-    );
-
-    // message receiver
-    room.on(RoomEvent.DataReceived, (payload, participant) => {
-      const decoder = new TextDecoder();
-      const message = decoder.decode(payload);
-      setMessages(prevMessages => [...prevMessages, { sender: participant.identity, content: message }]);
-    });
-
+    room
+      .on(
+        // On every new Track received...
+        RoomEvent.TrackSubscribed,
+        (
+          _track: RemoteTrack,
+          publication: RemoteTrackPublication,
+          participant: RemoteParticipant
+        ) => {
+          setRemoteTracks((prev) => [
+            ...prev,
+            {
+              trackPublication: publication,
+              participantIdentity: participant.identity,
+            },
+          ]);
+          // track 정보를 ref에 등록하므로써 불필요한 랜더링을 제거하려는 거 같은데
+          // 아직 이해 못 한 코드이므로 주석 처리
+          // 관련 claud 주소 : https://claude.ai/chat/fee4f38d-d40a-45ef-9517-70321af27361
+          // VideoComponents.tsx 와 동일하게 처리하면 될 듯. 추후 refactoring 필요
+          // if (_track.source === Track.Source.ScreenShare) {
+          //   setScreenShareTrack(_track);
+          // }
+          console.log('subscribed_track', _track);
+        }
+      )
+      .on(
+        // On every Track destroyed...
+        RoomEvent.TrackUnsubscribed,
+        (_track: RemoteTrack, publication: RemoteTrackPublication) => {
+          setRemoteTracks((prev) =>
+            prev.filter(
+              (track) =>
+                track.trackPublication.trackSid !== publication.trackSid
+            )
+          );
+          // if (_track.source === Track.Source.ScreenShare) {
+          //   setScreenShareTrack(null);
+          // }
+        }
+      )
+      .on(
+        // Chat message receiver
+        RoomEvent.DataReceived,
+        (payload, participant) => {
+          const decoder = new TextDecoder();
+          const message = decoder.decode(payload);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { sender: participant.identity, content: message },
+          ]);
+        }
+      )
+      .on(
+        // secreen sharing
+        RoomEvent.LocalTrackPublished,
+        (publication) => {
+          if (publication.track?.source === Track.Source.ScreenShare) {
+            setIsScreenSharing(true);
+          
+            // console.log('published', publication);
+          }
+        }
+      )
+      .on(RoomEvent.LocalTrackUnpublished, (publication) => {
+        if (publication.track?.source === Track.Source.ScreenShare) {
+          setIsScreenSharing(false);
+        }
+        // console.log('unpublished', publication);
+      });
 
     try {
       console.log(APPLICATION_SERVER_URL);
@@ -129,6 +184,16 @@ export default function WebRTC() {
         room.localParticipant.videoTrackPublications.values().next().value
           .videoTrack
       );
+      // localParticipant 요소 확인
+      console.log('room.localParticipant', room.localParticipant);
+      console.log('room.localParticipant.videoTrackPublications', room.localParticipant.videoTrackPublications);
+      console.log('room.localParticipant.videoTrackPublications.values()', room.localParticipant.videoTrackPublications.values());
+      console.log('room.localParticipant.videoTrackPublications.values().next()', room.localParticipant.videoTrackPublications.values().next());
+      console.log('room.localParticipant.videoTrackPublications.values().next().value', room.localParticipant.videoTrackPublications.values().next().value);
+      // videoTrack과 track 둘 모두 작동하는데, 왜 그런 거지???
+      console.log('room.localParticipant.videoTrackPublications.values().next().value.videoTrack', room.localParticipant.videoTrackPublications.values().next().value.videoTrack);
+      console.log('room.localParticipant.videoTrackPublications.values().next().value.track', room.localParticipant.videoTrackPublications.values().next().value.track);
+      
     } catch (error) {
       console.log(
         'There was an error connecting to the room:',
@@ -286,15 +351,19 @@ export default function WebRTC() {
                 )
               )}
             </div>
+            {/* Chatting box 시작 */}
             <div id="chat-container" className="">
-              <div className="h-72 bg-white overflow-y-scroll">
+              <div
+                id="chat-message-box"
+                className="h-72 bg-white overflow-y-scroll"
+              >
                 {messages.map((msg, index) => (
                   <div key={index}>
                     <strong>{msg.sender}:</strong> {msg.content}
                   </div>
                 ))}
               </div>
-              <div className='flex'>
+              <div id="chat-footer" className="flex">
                 <input
                   type="text"
                   className="border border-gray-300 rounded px-2 py-1"
@@ -310,6 +379,45 @@ export default function WebRTC() {
                 </button>
               </div>
             </div>
+            {/* Chatting Box 끗 */}
+
+            {/* 공유화면 시작 */}
+            <div className="max-w-7xl mx-auto p-6">
+              {/* 비디오 및 화면 공유 표시 영역 */}
+              <div id='screen-sharing' className="mb-6">
+                {screenShareTrack && (
+                  <div className="w-full h-96 bg-gray-200 rounded-lg overflow-hidden">
+                    <video
+                      // ref={(el) => {
+                      //   if (el)
+                      //     el.srcObject = new MediaStream([screenShareTrack]);
+                      // }}
+                      autoPlay
+                      className="w-full h-full object-contain"
+                      />
+                  </div>
+                )}
+              </div>
+
+              {/* 화면 공유 버튼 */}
+              <div className="flex justify-center">
+                <button
+                  onClick={toggleScreenShare}
+                  className={`
+                    px-6 py-3 text-lg font-semibold rounded-md transition-colors duration-300
+                    focus:outline-none focus:ring-2 focus:ring-offset-2
+                    ${
+                      isScreenSharing
+                      ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500'
+                      : 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500'
+                    }
+                    `}
+                    >
+                  {isScreenSharing ? '화면 공유 중지' : '화면 공유 시작'}
+                </button>
+              </div>
+            </div>
+            {/* 공유화면 끗 */}
           </div>
         </div>
       )}

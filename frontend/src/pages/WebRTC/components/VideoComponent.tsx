@@ -17,6 +17,8 @@ function VideoComponent({
 
   useEffect(() => {
     if (videoElement.current) {
+      // attach 관련 설명. 현재 트랙을 html 요소와 연결하고자 할 때 사용.
+      // https://docs.livekit.io/realtime/client/receive/
       track.attach(videoElement.current);
     }
 

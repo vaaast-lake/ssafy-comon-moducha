@@ -3,9 +3,7 @@ package com.example.restea.share.dto;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 public class ShareCreationResponse {
 
@@ -26,7 +24,9 @@ public class ShareCreationResponse {
   private Integer maxParticipants;
 
   @Builder
-  public ShareCreationResponse(Integer shareBoardId, String title, String content, LocalDateTime createdDate, LocalDateTime endDate, LocalDateTime broadcastDate, Integer maxParticipants) {
+  public ShareCreationResponse(Integer shareBoardId, String title, String content,
+      LocalDateTime createdDate, LocalDateTime endDate, LocalDateTime broadcastDate,
+      Integer maxParticipants) {
     this.shareBoardId = shareBoardId;
     this.title = title;
     this.content = content;
