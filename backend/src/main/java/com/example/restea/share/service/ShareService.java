@@ -2,8 +2,10 @@ package com.example.restea.share.service;
 
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.dto.ShareCreationResponse;
+import com.example.restea.share.dto.ShareViewResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.repository.ShareBoardRepository;
+import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -21,6 +23,7 @@ public class ShareService {
 
   private final ShareBoardRepository shareBoardRepository;
   private final UserRepository userRepository;
+  private final ShareParticipantRepository shareParticipantRepository;
 
   @Transactional
   public ShareCreationResponse createShare(ShareCreationRequest request, Integer userId) {
@@ -41,6 +44,35 @@ public class ShareService {
         .build();
   }
 
+  @Transactional
+  public ShareViewResponse getShareBoard(Integer shareBoardId) {
+
+    // find ShareBoard
+    Optional<ShareBoard> shareBoardOptional = shareBoardRepository.findById(shareBoardId);
+    if (shareBoardOptional.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found");
+    }
+    ShareBoard shareBoard = shareBoardOptional.get();
+
+    // increase view count
+    shareBoard.addViewCount();
+
+    return ShareViewResponse.builder()
+        .shareBoardId(shareBoard.getId())
+        .title(shareBoard.getTitle())
+        .content(shareBoard.getContent())
+        .createdDate(shareBoard.getCreatedDate())
+        .lastUpdated(shareBoard.getLastUpdated())
+        .endDate(shareBoard.getEndDate())
+        .maxParticipants(shareBoard.getMaxParticipants())
+//        TODO: 주석처리한 부분과 그렇지 않은 부분 어떤 것이 더 좋을까?
+//        .participants(shareBoard.getShareParticipants().size())
+        .participants(shareParticipantRepository.countByShareBoard(shareBoard).intValue())
+        .viewCount(shareBoard.getViewCount())
+        .nickname(shareBoard.getUser().getExposedNickname())
+        .build();
+  }
+
   // 입력된 값이 유효한지 확인하는 메소드
   private void checkCreateArgs(ShareCreationRequest request) {
     if (Objects.isNull(request) || request.checkNull()) {
@@ -55,6 +87,4 @@ public class ShareService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid arguments");
     }
   }
-
-
 }
