@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -261,11 +260,8 @@ class ShareControllerTest {
   public void getShareBoard_Success() throws Exception {
     // given
     custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-    Optional<User> userOptional = userRepository.findByAuthId("authId2");
-    if (userOptional.isEmpty()) {
-      throw new RuntimeException("테스트를 위한 유저 생성 실패");
-    }
-    User user = userOptional.get();
+    User user = userRepository.findByAuthId("authId2")
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
     ShareBoard createdShareBoard = shareBoardRepository.save(ShareBoard.builder()
         .title("TestTitle")
@@ -298,11 +294,8 @@ class ShareControllerTest {
   public void getShareBoard_deactivatedUser() throws Exception {
     // given
     custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-    Optional<User> userOptional = userRepository.findByAuthId("authId2");
-    if (userOptional.isEmpty()) {
-      throw new RuntimeException("테스트를 위한 유저 생성 실패");
-    }
-    User user = userOptional.get();
+    User user = userRepository.findByAuthId("authId2")
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
     ShareBoard createdShareBoard = shareBoardRepository.save(ShareBoard.builder()
         .title("TestTitle")
@@ -346,4 +339,39 @@ class ShareControllerTest {
     // then
     result.andExpect(status().isNotFound());
   }
+
+  @DisplayName("getShareBoard : 비활성화된 나눔 게시판 조회로 인한 실패.")
+  @Test
+  public void getShareBoard_deactivated_fail() throws Exception {
+
+    // given
+    custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+    User user = userRepository.findByAuthId("authId2")
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+    ShareBoard createdShareBoard = shareBoardRepository.save(ShareBoard.builder()
+        .title("TestTitle")
+        .content("TestContent")
+        .maxParticipants(10)
+        .endDate(LocalDateTime.now().plusWeeks(1L))
+        .user(user)
+        .build());
+
+    // DB에서 default 값들이 설정되는 관계로 다시 조회
+    createdShareBoard = shareBoardRepository.findById(createdShareBoard.getId())
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 게시글 생성 실패"));
+
+    // 게시글 비활성화
+    createdShareBoard.deactivate();
+    shareBoardRepository.save(createdShareBoard);
+
+    final String url = "/api/v1/shares/" + createdShareBoard.getId();
+
+    // when
+    ResultActions result = mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON_VALUE));
+
+    // then
+    result.andExpect(status().isNotFound());
+  }
+
 }

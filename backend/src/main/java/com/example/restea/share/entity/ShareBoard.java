@@ -85,4 +85,12 @@ public class ShareBoard extends BaseTimeEntity {
     this.viewCount++;
   }
 
+  public void deactivate() {
+    this.activated = false;
+  }
+
+  public void activate() {
+    this.activated = true;
+  }
+
 }

@@ -9,7 +9,6 @@ import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,11 +25,9 @@ public class ShareService {
   @Transactional
   public ShareCreationResponse createShare(ShareCreationRequest request, Integer userId) {
 
-    Optional<User> user = userRepository.findById(userId);
-    if (user.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found");
-    }
-    ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(user.get()));
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+    ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(user));
 
     return ShareCreationResponse.builder()
         .shareBoardId(result.getId())
@@ -45,11 +42,12 @@ public class ShareService {
   public ShareViewResponse getShareBoard(Integer shareBoardId) {
 
     // find ShareBoard
-    Optional<ShareBoard> shareBoardOptional = shareBoardRepository.findById(shareBoardId);
-    if (shareBoardOptional.isEmpty()) {
+    ShareBoard shareBoard = shareBoardRepository.findById(shareBoardId)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found"));
+
+    if (!shareBoard.getActivated()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found");
     }
-    ShareBoard shareBoard = shareBoardOptional.get();
 
     // increase view count
     shareBoard.addViewCount();
