@@ -119,4 +119,10 @@ public class User extends BaseTimeEntity {
         this.authId = authId;
         this.authToken = authToken;
     }
+
+    @Builder
+    public User(String nickname, String authId) {
+        this.authId = authId;
+        this.nickname = nickname;
+    }
 }
