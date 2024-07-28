@@ -9,8 +9,6 @@ import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +25,6 @@ public class ShareService {
 
   @Transactional
   public ShareCreationResponse createShare(ShareCreationRequest request, Integer userId) {
-    checkCreateArgs(request);
 
     Optional<User> user = userRepository.findById(userId);
     if (user.isEmpty()) {
@@ -65,26 +62,9 @@ public class ShareService {
         .lastUpdated(shareBoard.getLastUpdated())
         .endDate(shareBoard.getEndDate())
         .maxParticipants(shareBoard.getMaxParticipants())
-//        TODO: 주석처리한 부분과 그렇지 않은 부분 어떤 것이 더 좋을까?
-//        .participants(shareBoard.getShareParticipants().size())
         .participants(shareParticipantRepository.countByShareBoard(shareBoard).intValue())
         .viewCount(shareBoard.getViewCount())
         .nickname(shareBoard.getUser().getExposedNickname())
         .build();
-  }
-
-  // 입력된 값이 유효한지 확인하는 메소드
-  private void checkCreateArgs(ShareCreationRequest request) {
-    if (Objects.isNull(request) || request.checkNull()) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "null arguments");
-    }
-    boolean emptyTitle = request.getTitle().isBlank();
-    boolean overTitleLength = request.getTitle().length() > 50;
-    boolean emptyContent = request.getContent().isBlank();
-    boolean invalidMaxParticipants = request.getMaxParticipants() < 1;
-    boolean invalidEndDate = request.getEndDate().isBefore(LocalDateTime.now());
-    if (emptyTitle || overTitleLength || emptyContent || invalidMaxParticipants || invalidEndDate) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid arguments");
-    }
   }
 }

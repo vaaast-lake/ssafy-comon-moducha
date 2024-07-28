@@ -4,6 +4,7 @@ import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.service.ShareService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class ShareController {
 //   TODO : @PreAuthorize 어노테이션을 사용하여 권한을 확인할 것
 //   @PreAuthorize("hasRole('USER', 'ADMIN')")
   public ResponseEntity<ResponseDTO<?>> createShare(
-      @RequestBody ShareCreationRequest request, @AuthenticationPrincipal CustomOAuth2User user) {
+      @Valid @RequestBody ShareCreationRequest request, @AuthenticationPrincipal CustomOAuth2User user) {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ResponseDTO.builder()
