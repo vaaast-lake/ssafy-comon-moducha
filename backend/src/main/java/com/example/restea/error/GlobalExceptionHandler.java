@@ -1,22 +1,15 @@
 package com.example.restea.error;
 
-import com.example.restea.error.exception.NoContent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
-import org.springframework.web.client.HttpClientErrorException.Conflict;
-import org.springframework.web.client.HttpClientErrorException.Forbidden;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
-import org.springframework.web.client.HttpClientErrorException.Unauthorized;
-import org.springframework.web.client.HttpServerErrorException.InternalServerError;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
- * created by Uigeun Kim on 2024-07-24
- * 전역 예외 처리 클래스
+ * created by Uigeun Kim on 2024-07-24 전역 예외 처리 클래스
  */
 @RestControllerAdvice
 @Slf4j
@@ -30,14 +23,7 @@ public class GlobalExceptionHandler {
   // 409 Conflict: (중복된 정보입니다)
   // 500 Internal Server Error: (서버 에러 입니다)
 
-  @ExceptionHandler({
-      NoContent.class,
-      BadRequest.class,
-      Unauthorized.class,
-      Forbidden.class,
-      NotFound.class,
-      Conflict.class,
-      InternalServerError.class})
+  @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<String> handleHttpStatusException(HttpStatusCodeException e) {
     log.error("HTTP Status Error : ", e);
     return ResponseEntity.status(e.getStatusCode()).build();
