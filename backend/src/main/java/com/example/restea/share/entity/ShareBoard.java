@@ -74,8 +74,6 @@ public class ShareBoard extends BaseTimeEntity {
     this.maxParticipants = maxParticipants;
     this.endDate = endDate;
     this.user = user;
-    this.viewCount = 0;
-    this.activated = true;
   }
 
   public ShareBoard addUser(User user) {

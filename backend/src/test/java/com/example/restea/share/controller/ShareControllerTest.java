@@ -294,7 +294,6 @@ class ShareControllerTest {
   }
 
   @DisplayName("getShareBoard : 나눔 게시판 조회 : 비활성화된 유저.")
-  @Transactional
   @Test
   public void getShareBoard_deactivatedUser() throws Exception {
     // given
@@ -315,6 +314,7 @@ class ShareControllerTest {
 
     // 유저 비활성화
     user.deactivate();
+    userRepository.save(user);
 
     final String url = "/api/v1/shares/" + createdShareBoard.getId();
 

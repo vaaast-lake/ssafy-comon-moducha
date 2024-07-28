@@ -41,7 +41,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
-@DynamicUpdate
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
