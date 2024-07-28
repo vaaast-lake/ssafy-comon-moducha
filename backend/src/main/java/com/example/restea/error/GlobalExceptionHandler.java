@@ -24,8 +24,8 @@ public class GlobalExceptionHandler {
   // 500 Internal Server Error: (서버 에러 입니다)
 
   @ExceptionHandler(ResponseStatusException.class)
-  public ResponseEntity<String> handleHttpStatusException(HttpStatusCodeException e) {
-    log.error("HTTP Status Error : ", e);
+  public ResponseEntity<String> handleResponseStatusException(ResponseStatusException e) {
+    log.error("Response Status Error : ", e);
     return ResponseEntity.status(e.getStatusCode()).build();
   }
 
