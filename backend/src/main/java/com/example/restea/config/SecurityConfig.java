@@ -82,7 +82,9 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)))
-                        .successHandler(customSuccessHandler));
+                        .successHandler(customSuccessHandler)
+                        .redirectionEndpoint(redirectionEndpointConfig ->
+                                redirectionEndpointConfig.baseUri("/api/v1/login/oauth2/code/*")));
 
         /*
           SpringSecurity의 LogoutFilter가 작동하기 전에 RefreshToken을 제거하는 필터를 추가하는 것
@@ -102,7 +104,8 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/api/v1/oauth2/**", "/login/**", "/api/v1/reissue")
+                        .requestMatchers("/", "/login/**", "/api/v1/reissue"
+                                , "/api/v1/login/oauth2/code/google")
                         .permitAll()
                         .anyRequest().authenticated());
 
