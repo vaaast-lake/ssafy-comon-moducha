@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShareParticipantRepository extends JpaRepository<ShareParticipant, Integer> {
 
-  public Long countByShareBoard(ShareBoard shareBoard);
+  Long countByShareBoard(ShareBoard shareBoard);
 
 }

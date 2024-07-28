@@ -7,16 +7,16 @@ import lombok.Getter;
 @Getter
 public class ShareViewResponse {
 
-  private Integer shareBoardId;
-  private String title;
-  private String content;
-  private LocalDateTime createdDate;
-  private LocalDateTime lastUpdated;
-  private LocalDateTime endDate;
-  private Integer maxParticipants;
-  private Integer participants;
-  private Integer viewCount;
-  private String nickname;
+  private final Integer shareBoardId;
+  private final String title;
+  private final String content;
+  private final LocalDateTime createdDate;
+  private final LocalDateTime lastUpdated;
+  private final LocalDateTime endDate;
+  private final Integer maxParticipants;
+  private final Integer participants;
+  private final Integer viewCount;
+  private final String nickname;
 
   @Builder
   public ShareViewResponse(Integer shareBoardId, String title, String content,

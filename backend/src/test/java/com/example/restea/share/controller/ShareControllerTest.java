@@ -38,10 +38,10 @@ class ShareControllerTest {
 
   protected MockMvc mockMvc;
   protected ObjectMapper objectMapper;
-  private WebApplicationContext context;
-  private ShareBoardRepository shareBoardRepository;
-  private UserRepository userRepository;
-  private CustomOAuth2UserService custumOAuth2UserService;
+  private final WebApplicationContext context;
+  private final ShareBoardRepository shareBoardRepository;
+  private final UserRepository userRepository;
+  private final CustomOAuth2UserService custumOAuth2UserService;
   private CustomOAuth2User customOAuth2User;
 
   @Autowired
@@ -260,7 +260,7 @@ class ShareControllerTest {
   @Test
   public void getShareBoard_Success() throws Exception {
     // given
-    CustomOAuth2User oAuth2User = custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+    custumOAuth2UserService.handleNewUser("authId2", "authToken2");
     Optional<User> userOptional = userRepository.findByAuthId("authId2");
     if (userOptional.isEmpty()) {
       throw new RuntimeException("테스트를 위한 유저 생성 실패");
@@ -298,7 +298,7 @@ class ShareControllerTest {
   @Test
   public void getShareBoard_deactivatedUser() throws Exception {
     // given
-    CustomOAuth2User oAuth2User = custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+    custumOAuth2UserService.handleNewUser("authId2", "authToken2");
     Optional<User> userOptional = userRepository.findByAuthId("authId2");
     if (userOptional.isEmpty()) {
       throw new RuntimeException("테스트를 위한 유저 생성 실패");
