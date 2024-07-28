@@ -31,92 +31,110 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
+@DynamicUpdate
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "users_id")
-    private Integer id;
+  @Id
+  @GeneratedValue
+  @Column(name = "users_id")
+  private Integer id;
 
-    @Column(nullable = false, unique = true, length = 20)
-    private String nickname;
+  @Column(nullable = false, unique = true, length = 20)
+  private String nickname;
 
-    @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
-    @ColumnDefault("'USER'")
-    private ROLE role;
+  @Enumerated(value = EnumType.STRING)
+  @Column(nullable = false)
+  @ColumnDefault("'USER'")
+  private ROLE role;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String authId;
+  @Column(nullable = false, columnDefinition = "TEXT")
+  private String authId;
 
-    @Column(nullable = false)
-    @ColumnDefault("true")
-    private Boolean activated;
+  @Column(nullable = false)
+  @ColumnDefault("true")
+  private Boolean activated;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "refresh_token_id")
-    private RefreshToken refreshToken;
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "refresh_token_id")
+  private RefreshToken refreshToken;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "auth_token_id")
-    private AuthToken authToken;
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  @JoinColumn(name = "auth_token_id")
+  private AuthToken authToken;
 
-    // 기록
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Record> records = new ArrayList<>();
-
-
-    // 나눔 게시판 관련
-    @OneToMany(mappedBy = "user") // 글은 유저 삭제 후에도 보존
-    private List<ShareBoard> shareBoards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<ShareComment> shareComments = new ArrayList<>(); // 댓글은 유저 삭제 후에도 보존
-
-    @OneToMany(mappedBy = "user")
-    private List<ShareReply> shareReplies = new ArrayList<>(); // 대댓글은 유저 삭제 후에도 보존
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ShareParticipant> shareParticipants = new ArrayList<>();
+  // 기록
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Record> records = new ArrayList<>();
 
 
-    // 티타임 게시판 관련
-    @OneToMany(mappedBy = "user") // 글은 유저 삭제 후에도 보존
-    private List<TeatimeBoard> teatimeBoards = new ArrayList<>();
+  // 나눔 게시판 관련
+  @OneToMany(mappedBy = "user") // 글은 유저 삭제 후에도 보존
+  private List<ShareBoard> shareBoards = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<TeatimeComment> teatimeComments = new ArrayList<>(); // 댓글은 유저 삭제 후에도 보존
+  @OneToMany(mappedBy = "user")
+  private List<ShareComment> shareComments = new ArrayList<>(); // 댓글은 유저 삭제 후에도 보존
 
-    @OneToMany(mappedBy = "user")
-    private List<TeatimeReply> teatimeReplies = new ArrayList<>(); // 대댓글은 유저 삭제 후에도 보존
+  @OneToMany(mappedBy = "user")
+  private List<ShareReply> shareReplies = new ArrayList<>(); // 대댓글은 유저 삭제 후에도 보존
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ShareParticipant> shareParticipants = new ArrayList<>();
 
-    public void addRefreshToken(RefreshToken refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 
-    public void deleteRefreshToken() {
-        this.refreshToken = null;
-    }
+  // 티타임 게시판 관련
+  @OneToMany(mappedBy = "user") // 글은 유저 삭제 후에도 보존
+  private List<TeatimeBoard> teatimeBoards = new ArrayList<>();
 
-    public void deleteAuthToken() {
-        this.authToken = null;
-    }
+  @OneToMany(mappedBy = "user")
+  private List<TeatimeComment> teatimeComments = new ArrayList<>(); // 댓글은 유저 삭제 후에도 보존
 
-    @Builder
-    public User(String nickname, String authId, AuthToken authToken) {
-        this.nickname = nickname;
-        this.authId = authId;
-        this.authToken = authToken;
-    }
+  @OneToMany(mappedBy = "user")
+  private List<TeatimeReply> teatimeReplies = new ArrayList<>(); // 대댓글은 유저 삭제 후에도 보존
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
+
+  public void addRefreshToken(RefreshToken refreshToken) {
+    this.refreshToken = refreshToken;
+  }
+
+  public void deleteRefreshToken() {
+    this.refreshToken = null;
+  }
+
+  public void deleteAuthToken() {
+    this.authToken = null;
+  }
+
+  @Builder
+  public User(String nickname, String authId, AuthToken authToken) {
+    this.nickname = nickname;
+    this.authId = authId;
+    this.authToken = authToken;
+  }
+
+  // 보여질 닉네임을 반환하는 메소드
+  public String getExposedNickname() {
+    return activated ? nickname : "탈퇴한 유저";
+  }
+
+  public void activate() {
+    this.activated = true;
+  }
+
+  public void deactivate() {
+    this.activated = false;
+  }
+
 }
