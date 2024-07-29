@@ -92,4 +92,11 @@ public class ShareBoard extends BaseTimeEntity {
     this.activated = true;
   }
 
+  public void update(String title, String content, Integer maxParticipants, LocalDateTime endDate) {
+    this.title = title;
+    this.content = content;
+    this.maxParticipants = maxParticipants;
+    this.endDate = endDate;
+  }
+
 }

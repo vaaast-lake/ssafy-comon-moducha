@@ -2,7 +2,9 @@ package com.example.restea.share.dto;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class ShareUpdateResponse {
 
   private final Integer shareBoardId;
