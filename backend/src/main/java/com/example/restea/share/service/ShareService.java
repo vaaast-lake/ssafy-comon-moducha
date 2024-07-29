@@ -2,6 +2,7 @@ package com.example.restea.share.service;
 
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.dto.ShareCreationResponse;
+import com.example.restea.share.dto.ShareDeleteResponse;
 import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.dto.ShareUpdateResponse;
 import com.example.restea.share.dto.ShareViewResponse;
@@ -48,7 +49,6 @@ public class ShareService {
 
     ShareBoard shareBoard = getActivatedBoard(shareBoardId);
 
-    // increase view count
     shareBoard.addViewCount();
 
     return ShareViewResponse.builder() // TODO : refactoring 필요
@@ -70,18 +70,8 @@ public class ShareService {
 
     ShareBoard shareBoard = getActivatedBoard(shareBoardId);
 
-    // 인가된 사용자인지 확인
-    boolean notAuthorized = !Objects.equals(shareBoard.getUser().getId(), userId);
-    if(notAuthorized) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "수정할 권한이 없는 사용자입니다.");
-    }
-
-    // 현재 신청자보다 적은 인원으로 수정할 경우
-    boolean isLessThanCurrentParticipants
-        = request.getMaxParticipants() < shareParticipantRepository.countByShareBoard(shareBoard);
-    if (isLessThanCurrentParticipants) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 신청자보다 적은 인원으로 수정할 수 없습니다.");
-    }
+    checkAuthorized(shareBoard, userId);
+    checkLessThanCurrentParticipants(request, shareBoard);
 
     // 업데이트
     shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(), request.getEndDate());
@@ -99,6 +89,20 @@ public class ShareService {
         .build();
   }
 
+  @Transactional
+  public ShareDeleteResponse deactivateShareBoard(Integer shareBoardId, Integer userId) {
+
+    ShareBoard shareBoard = getActivatedBoard(shareBoardId);
+
+    checkAuthorized(shareBoard, userId);
+
+    shareBoard.deactivate();
+
+    return ShareDeleteResponse.builder()
+        .boardId(shareBoardId)
+        .build();
+  }
+
   private @NotNull ShareBoard getActivatedBoard(Integer shareBoardId) {
     ShareBoard shareBoard = shareBoardRepository.findById(shareBoardId)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found"));
@@ -106,6 +110,19 @@ public class ShareService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard deactivated");
     }
     return shareBoard;
+  }
+
+  private void checkAuthorized(ShareBoard shareBoard, Integer userId) {
+    if (!Objects.equals(shareBoard.getUser().getId(), userId)) {
+      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized");
+    }
+  }
+
+  private void checkLessThanCurrentParticipants(ShareUpdateRequest request, ShareBoard shareBoard) {
+    boolean isLessThanCurrentParticipants = request.getMaxParticipants() < shareParticipantRepository.countByShareBoard(shareBoard);
+    if (isLessThanCurrentParticipants) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 신청자보다 적은 인원으로 수정할 수 없습니다.");
+    }
   }
 
 }

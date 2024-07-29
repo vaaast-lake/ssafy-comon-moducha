@@ -59,7 +59,16 @@ public class ShareController {
             .build());
   }
 
-  // TODO: 나눔 게시판 삭제
+  @PatchMapping("/deactivated-shares/{shareBoardId}")
+  public ResponseEntity<ResponseDTO<?>> deactivateShareBoard(
+      @PathVariable("shareBoardId") Integer shareBoardId,
+      @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ResponseDTO.builder()
+            .data(shareService.deactivateShareBoard(shareBoardId, customOAuth2User.getUserId()))
+            .build());
+  }
 
   // TODO: 나눔 게시판 목록 조회
 
