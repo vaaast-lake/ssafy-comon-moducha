@@ -54,10 +54,10 @@ class ShareControllerCRUDTest {
   private final ShareBoardRepository shareBoardRepository;
   private final UserRepository userRepository;
   private final CustomOAuth2UserService custumOAuth2UserService;
-  private CustomOAuth2User customOAuth2User;
-  private ShareParticipantRepository shareParticipantRepository;
+  private final ShareParticipantRepository shareParticipantRepository;
 
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
+  private CustomOAuth2User customOAuth2User;
 
   @Autowired
   public ShareControllerCRUDTest(MockMvc mockMvc, ObjectMapper objectMapper,
