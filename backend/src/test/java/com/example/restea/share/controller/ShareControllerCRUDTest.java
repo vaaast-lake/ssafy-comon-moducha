@@ -36,9 +36,16 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+/*
+  * ShareControllerTest1
+  * - createShare
+  * - getShareBoard
+  * - updateShareBoard
+ */
+
 @SpringBootTest
 @AutoConfigureMockMvc
-class ShareControllerTest {
+class ShareControllerCRUDTest {
 
   protected MockMvc mockMvc;
   protected ObjectMapper objectMapper;
@@ -52,7 +59,7 @@ class ShareControllerTest {
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
 
   @Autowired
-  public ShareControllerTest(MockMvc mockMvc, ObjectMapper objectMapper,
+  public ShareControllerCRUDTest(MockMvc mockMvc, ObjectMapper objectMapper,
       WebApplicationContext context,
       ShareBoardRepository shareBoardRepository, UserRepository userRepository
       , CustomOAuth2UserService custumOAuth2UserService, ShareParticipantRepository shareParticipantRepository) {
