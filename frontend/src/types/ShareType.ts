@@ -1,4 +1,4 @@
-import { Pagination } from './PaginationType';
+import { PaginationDTO } from './PaginationType';
 
 export interface ShareListItem {
   shareBoardId: number;
@@ -10,10 +10,10 @@ export interface ShareListItem {
   participants: number;
 }
 
-export interface ShareList {
+export interface ShareDTO {
   message: string;
   data: {
-    pagination: Pagination;
+    pagination: PaginationDTO;
     items: ShareListItem[];
   };
 }

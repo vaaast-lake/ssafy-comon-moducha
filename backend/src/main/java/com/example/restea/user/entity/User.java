@@ -31,9 +31,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -113,16 +115,24 @@ public class User extends BaseTimeEntity {
         this.authToken = null;
     }
 
-    @Builder
-    public User(String nickname, String authId, AuthToken authToken) {
-        this.nickname = nickname;
-        this.authId = authId;
-        this.authToken = authToken;
-    }
+  @Builder
+  public User(String nickname, String authId, AuthToken authToken) {
+    this.nickname = nickname;
+    this.authId = authId;
+    this.authToken = authToken;
+  }
 
-    @Builder
-    public User(String nickname, String authId) {
-        this.authId = authId;
-        this.nickname = nickname;
-    }
+  // 보여질 닉네임을 반환하는 메소드
+  public String getExposedNickname() {
+    return activated ? nickname : "탈퇴한 유저";
+  }
+
+  public void activate() {
+    this.activated = true;
+  }
+
+  public void deactivate() {
+    this.activated = false;
+  }
+
 }

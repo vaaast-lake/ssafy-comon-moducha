@@ -8,6 +8,8 @@ import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
 import WebRTC from './pages/WebRTC/WebRTC';
 import ShareDetail from './pages/Share/ShareDetail';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 // Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
 // 새로운 컴포넌트를 추가하려면 children에 등록해 주세요
@@ -30,11 +32,11 @@ const router = createBrowserRouter([
         element: <TeaTime />,
       },
       {
-        path: 'sharing',
+        path: 'shares',
         element: <Share />,
       },
       {
-        path: 'sharing/:shareId',
+        path: 'shares/:articleId',
         element: <ShareDetail />,
       },
 
@@ -56,7 +58,21 @@ const router = createBrowserRouter([
 
 // RouterProvider에 라우트 객체들이 렌더링
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <GoogleOAuthProvider
+      clientId={CLIENT_ID}
+      onScriptLoadError={() =>
+        console.log('GoogleOAuthProvider error: clientID를 확인하세요')
+      }
+      onScriptLoadSuccess={() =>
+        console.log(
+          'GoogleOAuthProviderLoadSucess: 현재 설정된 clientId=' + CLIENT_ID
+        )
+      }
+    >
+      <RouterProvider router={router} />
+    </GoogleOAuthProvider>
+  );
 };
 
 export default App;
