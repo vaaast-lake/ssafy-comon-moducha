@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class ShareViewResponse {
 
-  private final Integer shareBoardId;
+  private final Integer boardId;
   private final String title;
   private final String content;
   private final LocalDateTime createdDate;
@@ -19,10 +19,10 @@ public class ShareViewResponse {
   private final String nickname;
 
   @Builder
-  public ShareViewResponse(Integer shareBoardId, String title, String content,
+  public ShareViewResponse(Integer boardId, String title, String content,
       LocalDateTime createdDate, LocalDateTime lastUpdated, LocalDateTime endDate,
       Integer maxParticipants, Integer participants, Integer viewCount, String nickname) {
-    this.shareBoardId = shareBoardId;
+    this.boardId = boardId;
     this.title = title;
     this.content = content;
     this.createdDate = createdDate;

@@ -34,7 +34,7 @@ public class ShareService {
     ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(user));
 
     return ShareCreationResponse.builder() // TODO : refactoring 필요
-        .shareBoardId(result.getId())
+        .boardId(result.getId())
         .title(result.getTitle())
         .content(result.getContent())
         .endDate(result.getEndDate())
@@ -52,7 +52,7 @@ public class ShareService {
     shareBoard.addViewCount();
 
     return ShareViewResponse.builder() // TODO : refactoring 필요
-        .shareBoardId(shareBoard.getId())
+        .boardId(shareBoard.getId())
         .title(shareBoard.getTitle())
         .content(shareBoard.getContent())
         .createdDate(shareBoard.getCreatedDate())
@@ -87,7 +87,7 @@ public class ShareService {
     shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(), request.getEndDate());
 
     return ShareUpdateResponse.builder() // TODO : refactoring 필요
-        .shareBoardId(shareBoard.getId())
+        .boardId(shareBoard.getId())
         .title(shareBoard.getTitle())
         .content(shareBoard.getContent())
         .createdDate(shareBoard.getCreatedDate())

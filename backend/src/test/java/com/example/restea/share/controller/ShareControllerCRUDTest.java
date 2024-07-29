@@ -294,7 +294,7 @@ class ShareControllerCRUDTest {
 
     // then
     result.andExpect(status().isOk())
-        .andExpect(jsonPath("$.data.shareBoardId").value(createdShareBoard.getId()))
+        .andExpect(jsonPath("$.data.boardId").value(createdShareBoard.getId()))
         .andExpect(jsonPath("$.data.title").value(createdShareBoard.getTitle()))
         .andExpect(jsonPath("$.data.content").value(createdShareBoard.getContent()))
         .andExpect(jsonPath("$.data.maxParticipants").value(createdShareBoard.getMaxParticipants()))
@@ -332,7 +332,7 @@ class ShareControllerCRUDTest {
 
     // then
     result.andExpect(status().isOk())
-        .andExpect(jsonPath("$.data.shareBoardId").value(createdShareBoard.getId()))
+        .andExpect(jsonPath("$.data.boardId").value(createdShareBoard.getId()))
         .andExpect(jsonPath("$.data.title").value(createdShareBoard.getTitle()))
         .andExpect(jsonPath("$.data.content").value(createdShareBoard.getContent()))
         .andExpect(jsonPath("$.data.maxParticipants").value(createdShareBoard.getMaxParticipants()))
