@@ -1,96 +1,80 @@
-import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../stores/authStore'; 
-import { useEffect } from 'react';
-import GoogleLogin from './components/GoogleLogin';
-import GoogleLogout from './components/GoogleLogout';
-import { postLoginToken } from '../../api/postLoginToken';
-import Cookies from 'js-cookie';
-
 import './Login.css';
+import { GoogleLogin } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 
-const logAllCookies = () => {
-  console.log('All cookies:', Cookies.get()); 
-};
+const imgSrc =
+  'https://images.unsplash.com/photo-1514733670139-4d87a1941d55?q=80&w=2678&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
-logAllCookies();
 const Login = () => {
-  const login = useAuthStore((state) => state.login);
-  const logout = useAuthStore((state) => state.logout);
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const navigate = useNavigate();
+  const isLoggedIn = false; // 테스트용. 로직 구현 끝나면 zustand에서 초기화예정
 
-  // 쿠키를 확인하여 로그인 상태 초기화
-  useEffect(() => {
-    const authToken = Cookies.get('AUTH-TOKEN');
-    console.log('Initial AUTH-TOKEN from cookies:', authToken); // 디버깅 로그 추가
-    if (authToken) {
-      login(); // 쿠키가 있으면 로그인 상태로 설정
-    }
-  }, [login]);
+  // codeResponse의 code: '@#$@#$' 부분이 Authorization code이고 Spring으로 리다이렉트한다.
+  const login = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      console.log(
+        'Google 로그인 시도: Auth_code(codeResponse)=',
+        codeResponse,
+        '백엔드로 redirect하세요'
+      );
+      try {
+        const response = await fetch(
+          // 백엔드 redirect 주소. 지금 백엔드에서 구현 안되어있으므로 나중에 바꾸기.
+          'http://localhost:8080/api/v1/login/oauth2/code/google',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              code: codeResponse.code,
+            }),
+          }
+        );
 
-  const handleLogin = () => {
-    const authToken = Cookies.get('AUTH-TOKEN');
-    console.log('AUTH-TOKEN on handleLogin:', authToken); // 디버깅 로그 추가
-    //임시코드. 쿠키 여부 상관없이 구글 로그인 시도하면 로그인 시키기
-    // login();
-    // console.log('임시 코드에 따라 일단 Login state로 두었습니다. 디버깅용');
-    // navigate('/');
+        if (!response.ok) {
+          throw new Error('Spring으로 auth_code를 전송하지 못했습니다. ');
+        }
 
-
-    if (authToken) {
-      login(); // isLoggedIn = true;
-      navigate('/');
-    }
-    else {
-      console.log('로그인을 시도하였으나 쿠키에 AUTH-TOKEN이 존재하지 않습니다.');
-    }
-  }
-  const handleLogout = () => {
-    console.log('AUTH-TOKEN before removing:', Cookies.get('AUTH-TOKEN')); // 디버깅 로그 추가
-    Cookies.remove('AUTH-TOKEN'); // 쿠키삭제
-    logout();
-    console.log('로그아웃(at AuthStore) by GoogleLogout')
-    navigate('/');
-  }
-
-  const onGoogleSignIn = async (res) => {
-    // Google 로그인 응답에서 인증 정보를 추출
-    const { credential } = res;
-    // 인증 정보를 서버로 전송하고 로그인 결과를 받음
-    // postLoginToken 함수는 API 호출을 담당하며, 로그인 성공 여부를 반환
-    const result = await postLoginToken(credential);
-    console.log('result: ' + result);
-    handleLogin();
-    if (result) { // Google OAuth2 로그인 처리하기
-      handleLogin();
-      console.log('Google OAuth2 로그인 요청 성공');
-    } else {
-      console.log('Google OAuth2 로그인 요청 오류');
-    }
-    console.log('useAuthStore isLoggedIn: ',useAuthStore.getState().isLoggedIn);
-  };
-
-  const onGoogleSignOut = () => {
-    handleLogout();
-  };
+        const data = await response.json();
+        console.log('Success:', data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+    flow: 'auth-code',
+    redirect_uri: 'http://localhost:8080/api/v1/login/oauth2/code/google',
+  });
 
   return (
     <>
-    <div className="login-container">
-      <div className="image-container">
-        <img src="https://images.unsplash.com/photo-1514733670139-4d87a1941d55?q=80&w=2678&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
-        alt="Login Background" />
+      <div className="login-container">
+        <div className="image-container">
+          <img src={imgSrc} alt="Login Background" />
+        </div>
+        <div className="button-container">
+          <div className="google-button">
+            {isLoggedIn ? (
+              <div>
+                <p>[로그인 상태입니다]</p>
+              </div>
+            ) : (
+              <div>
+                <p>[로그아웃 상태입니다]</p>
+                <button onClick={() => login()}>Sign in with Google 🚀</button>
+                ;
+                <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    console.log(credentialResponse);
+                  }}
+                  onError={() => {
+                    console.log('Login Failed');
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-      <div className="button-container">
-        <div className="google-button">
-          {isLoggedIn ? (
-            <GoogleLogout onGoogleSignOut={onGoogleSignOut}/>
-          ) : (
-            <GoogleLogin onGoogleSignIn={onGoogleSignIn} text="로그인" />
-          )}
-        </div>    
-      </div>
-    </div>
     </>
   );
 };

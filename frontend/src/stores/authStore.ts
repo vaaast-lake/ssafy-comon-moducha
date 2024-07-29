@@ -1,12 +1,14 @@
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 interface AuthState {
   isLoggedIn: boolean;
-  login: () => void;
-  logout: () => void;
+  setLoggedIn: (status: boolean) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+const useAuthStore = create<AuthState>()(
+  devtools((set) => ({ // redux devtools 활용을 위해 devtools 사용
   isLoggedIn: false,
-  login: () => set({ isLoggedIn: true }),
-  logout: () => set({ isLoggedIn: false }),
-}));
+  setLoggedIn: (status) => set({ isLoggedIn: status }),
+})));
+
+export default useAuthStore;
