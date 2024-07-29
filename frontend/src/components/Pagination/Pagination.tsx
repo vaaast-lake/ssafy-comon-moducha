@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
-export interface Page {
+interface Page {
   currentPage: number;
   totalPage: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;

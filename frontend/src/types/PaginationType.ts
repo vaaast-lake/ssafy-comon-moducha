@@ -1,7 +1,5 @@
-export interface Pagination {
+export interface PaginationDTO {
   total: number;
   page: number;
   perPage: number;
 }
-
-

@@ -32,11 +32,11 @@ const router = createBrowserRouter([
         element: <TeaTime />,
       },
       {
-        path: 'sharing',
+        path: 'shares',
         element: <Share />,
       },
       {
-        path: 'sharing/:shareId',
+        path: 'shares/:articleId',
         element: <ShareDetail />,
       },
 

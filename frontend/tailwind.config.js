@@ -6,11 +6,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        tea: '#CCD5AE',
+        tea: '#26BB69',
         beige: '#E9EDC9',
         cornsilk: '#FEFAE0',
         papaya: '#FAEDCD',
         wood: '#D4A373',
+        teabg: '#E6F9E4',
+        disabled: '#626262',
       },
     },
   },
