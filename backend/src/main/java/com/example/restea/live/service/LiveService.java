@@ -78,6 +78,28 @@ public class LiveService {
         return createToken(live.getId(), user);
     }
 
+    public AccessToken liveJoin(Integer teatimeBoardId, Integer userId) {
+        User user = userRepository.getReferenceById(userId);
+
+        // 티타임 게시글 존재 여부 확인
+        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+
+        // 티타임 방송 참가자 여부 확인
+        checkParticipant(teatimeBoard, user);
+
+        // 방송 예정일인지 확인
+        checkBroadCastDate(teatimeBoard);
+
+        // 방송 존재 여부 확인
+        Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Live not found."));
+
+        // AccessToken 발급 및 참가자 토큰 반환
+        return createToken(live.getId(), user);
+    }
+
+
     // 티타임 게시글 작성자인지 확인하는 메소드
     private void checkWriter(TeatimeBoard teatimeBoard, User user) {
         if (!teatimeBoard.getUser().equals(user)) {
@@ -139,5 +161,5 @@ public class LiveService {
         return token;
     }
 
-
+    
 }

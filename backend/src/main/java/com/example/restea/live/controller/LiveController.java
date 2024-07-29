@@ -50,7 +50,6 @@ public class LiveController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     /**
      * 주어진 티타임 게시글 방송 생성
      *
@@ -75,6 +74,32 @@ public class LiveController {
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    /**
+     * 주어진 방 이름과 참가자에 대한 토큰을 생성
+     *
+     * @param teatimeBoardId   티타임게시판 ID. 티타임게시판ID을 외래키로 가지는 live테이블에 저장된 liveId를 사용. liveId는 사용자가 연결하려는 방의 이름
+     * @param customOAuth2User 현재 인증된 사용자. 이 사용자는 티타임 방송에 참가하려는 참가자의 정보로 쓰인다.
+     * @return teatimeId와 user 정보로 만든 JWT token을 포함하는 ResponseEntity 객체를 반환합니다. token 생성에 실패하면 에러 메시지를 담은
+     * ResponseEntity를 반환합니다.
+     */
+    @PostMapping("/token")
+    public ResponseEntity<ResponseDTO<LiveRoomResponseDTO>> liveJoin(
+            @PathVariable("teatimeBoardId") int teatimeBoardId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        AccessToken sessionInfo = liveService.liveJoin(teatimeBoardId, customOAuth2User.getUserId());
+
+        LiveRoomResponseDTO result = LiveRoomResponseDTO.builder()
+                .token(sessionInfo.toJwt())
+                .build();
+
+        ResponseDTO<LiveRoomResponseDTO> response = ResponseDTO.<LiveRoomResponseDTO>builder()
+                .data(result)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
