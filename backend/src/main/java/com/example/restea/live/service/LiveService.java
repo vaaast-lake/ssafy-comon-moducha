@@ -17,14 +17,22 @@ import com.example.restea.user.repository.UserRepository;
 import io.livekit.server.AccessToken;
 import io.livekit.server.RoomJoin;
 import io.livekit.server.RoomName;
+import io.livekit.server.RoomServiceClient;
+import io.livekit.server.WebhookReceiver;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
+import livekit.LivekitWebhook.WebhookEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import retrofit2.Call;
+import retrofit2.Response;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LiveService {
@@ -99,6 +107,52 @@ public class LiveService {
         return createToken(live.getId(), user);
     }
 
+    public void webHook(String authHeader, String body) {
+        WebhookReceiver webhookReceiver = new WebhookReceiver(LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
+        try {
+            WebhookEvent event = webhookReceiver.receive(body, authHeader);
+
+            if (event.getEvent().equals("participant_left")) {
+                String liveId = event.getRoom().getName();
+                Integer userId = Integer.parseInt(event.getParticipant().getIdentity());
+
+                // liveId을 통해 티타임 게시글 찾기
+                Optional<Live> liveOptional = liveRepository.findById(liveId);
+                if (liveOptional.isEmpty()) {
+                    return;
+                }
+                Live live = liveOptional.get();
+
+                Optional<TeatimeBoard> teatimeBoardOptional = teatimeBoardRepository.findByLive(live);
+                if (teatimeBoardOptional.isEmpty()) {
+                    return;
+                }
+                TeatimeBoard teatimeBoard = teatimeBoardOptional.get();
+
+                // 게시글의 작성자와 참가자가 같은지 확인
+                if (teatimeBoard.getUser().getId() != userId) {
+                    return;
+                }
+
+                // 방 지우기
+                RoomServiceClient client = RoomServiceClient.create(
+                        "http://localhost:7880/",
+                        LIVEKIT_API_KEY,
+                        LIVEKIT_API_SECRET);
+
+                Call<Void> deleteCall = client.deleteRoom(liveId);
+                Response<Void> deleteResponse = deleteCall.execute();
+
+                if (deleteResponse.isSuccessful()) {
+                    liveRepository.deleteById(liveId);
+                }
+            }
+
+        } catch (Exception e) {
+            log.error("Error validating webhook event: " + e.getMessage());
+        }
+    }
+
 
     // 티타임 게시글 작성자인지 확인하는 메소드
     private void checkWriter(TeatimeBoard teatimeBoard, User user) {
@@ -161,5 +215,4 @@ public class LiveService {
         return token;
     }
 
-    
 }
