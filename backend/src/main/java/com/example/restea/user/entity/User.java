@@ -126,10 +126,6 @@ public class User extends BaseTimeEntity {
     return activated ? nickname : "탈퇴한 유저";
   }
 
-  public void activate() {
-    this.activated = true;
-  }
-
   public void deactivate() {
     this.activated = false;
   }
