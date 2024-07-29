@@ -2,6 +2,7 @@ package com.example.restea.share.dto;
 
 import com.example.restea.share.entity.ShareBoard;
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,6 +32,7 @@ public class ShareCreationRequest {
 
   @NotNull(message = "empty maxParticipants.")
   @Min(value=1, message = "maxParticipants must be greater than 0.")
+  @Max(value=100, message = "maxParticipants must be less than 100.")
   private Integer maxParticipants;
 
   public ShareBoard toEntity() {
