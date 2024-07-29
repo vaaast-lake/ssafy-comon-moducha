@@ -3,9 +3,9 @@ package com.example.restea.error;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -24,14 +24,20 @@ public class GlobalExceptionHandler {
   // 500 Internal Server Error: (서버 에러 입니다)
 
   @ExceptionHandler(ResponseStatusException.class)
-  public ResponseEntity<String> handleHttpStatusException(HttpStatusCodeException e) {
-    log.error("HTTP Status Error : ", e);
+  public ResponseEntity<String> handleResponseStatusException(ResponseStatusException e) {
+    log.error("Response Status Error : " + e.getMessage());
     return ResponseEntity.status(e.getStatusCode()).build();
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    log.error("Method Argument Not Valid Error : " + e.getMessage());
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<String> handleException(Exception e) {
-    log.error("서버 에러 발생 : ", e);
+    log.error("서버 에러 발생 : " + e.getMessage());
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
   }
 }
