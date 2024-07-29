@@ -1,7 +1,6 @@
 package com.example.restea.teatime.entity;
 
 import com.example.restea.common.entity.BaseTimeEntity;
-import com.example.restea.live.entity.Live;
 import com.example.restea.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,12 +11,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -67,6 +66,13 @@ public class TeatimeBoard extends BaseTimeEntity {
     @OneToMany(mappedBy = "teatimeBoard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
 
-    @OneToOne(mappedBy = "teatimeBoard", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Live live;
+    @Builder
+    public TeatimeBoard(String title, String content, LocalDateTime broadcastDate, Integer maxParticipants, LocalDateTime endDate, User user) {
+        this.title = title;
+        this.content = content;
+        this.broadcastDate = broadcastDate;
+        this.maxParticipants = maxParticipants;
+        this.endDate = endDate;
+        this.user = user;
+    }
 }
