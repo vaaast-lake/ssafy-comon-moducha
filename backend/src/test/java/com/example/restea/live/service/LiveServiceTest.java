@@ -37,250 +37,256 @@ import org.springframework.web.server.ResponseStatusException;
 @ExtendWith(MockitoExtension.class)
 class LiveServiceTest {
 
-  // 테스트 주체의 외부 의존성들 -> Mock 객체로 생성하기
-  @Mock
-  private EntityManager entityManager;
-  @Mock
-  private UserRepository userRepository;
-  @Mock
-  private TeatimeBoardRepository teatimeBoardRepository;
-  @Mock
-  private TeatimeParticipantRepository teatimeParticipantRepository;
-  @Mock
-  private LiveRepository liveRepository;
+    // 테스트 주체의 외부 의존성들 -> Mock 객체로 생성하기
+    @Mock
+    private EntityManager entityManager;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private TeatimeBoardRepository teatimeBoardRepository;
+    @Mock
+    private TeatimeParticipantRepository teatimeParticipantRepository;
+    @Mock
+    private LiveRepository liveRepository;
 
-  // 단위 테스트의 주체 -> @InjectMocks로 가짜 의존성 주입받기
-  @InjectMocks
-  private LiveService liveService;
+    // 단위 테스트의 주체 -> @InjectMocks로 가짜 의존성 주입받기
+    @InjectMocks
+    private LiveService liveService;
 
-  private User testUser;
-  private User testUser2;
-  private TeatimeBoard testTeatimeBoard;
-  private TeatimeBoard testTeatimeBoard2;
-  private TeatimeParticipant testTeatimeParticipant;
-
-
-  @BeforeEach
-  void setUp() {
-    testUser = User.builder()
-        .nickname("testUser")
-        .authId("authid")
-        .build();
-
-    ReflectionTestUtils.setField(testUser, "id", 1);
-
-    testUser2 = User.builder()
-        .nickname("testUser2")
-        .authId("authid")
-        .build();
-
-    ReflectionTestUtils.setField(testUser2, "id", 2);
-
-    testTeatimeBoard = com.example.restea.teatime.entity.TeatimeBoard.builder()
-        .title("testTeatimeBoard")
-        .content("내용")
-        .broadcastDate(LocalDateTime.now())
-        .maxParticipants(5)
-        .endDate(LocalDateTime.now())
-        .user(testUser)
-        .build();
-
-    ReflectionTestUtils.setField(testTeatimeBoard, "id", 1);
-    ReflectionTestUtils.setField(testTeatimeBoard, "activated", true);
-
-    testTeatimeBoard2 = com.example.restea.teatime.entity.TeatimeBoard.builder()
-        .title("testTeatimeBoard2")
-        .content("내용")
-        .broadcastDate(LocalDateTime.now())
-        .maxParticipants(5)
-        .endDate(LocalDateTime.now())
-        .user(testUser)
-        .build();
-
-    ReflectionTestUtils.setField(testTeatimeBoard2, "id", 2);
-    ReflectionTestUtils.setField(testTeatimeBoard2, "activated", false);
+    private User testUser;
+    private User testUser2;
+    private TeatimeBoard testTeatimeBoard;
+    private TeatimeBoard testTeatimeBoard2;
+    private TeatimeParticipant testTeatimeParticipant;
 
 
-    testTeatimeParticipant = com.example.restea.teatime.entity.TeatimeParticipant.builder()
-        .name("test")
-        .phone("010xxxxxxxx")
-        .address("address")
-        .teatimeBoard(testTeatimeBoard)
-        .user(testUser2)
-        .build();
+    @BeforeEach
+    void setUp() {
+        testUser = User.builder()
+                .nickname("testUser")
+                .authId("authid")
+                .build();
 
-    ReflectionTestUtils.setField(liveService, "LIVEKIT_API_KEY", "aaa");
-    ReflectionTestUtils.setField(liveService, "LIVEKIT_API_SECRET", "bbb");
-  }
+        ReflectionTestUtils.setField(testUser, "id", 1);
+
+        testUser2 = User.builder()
+                .nickname("testUser2")
+                .authId("authid")
+                .build();
+
+        ReflectionTestUtils.setField(testUser2, "id", 2);
+
+        testTeatimeBoard = com.example.restea.teatime.entity.TeatimeBoard.builder()
+                .title("testTeatimeBoard")
+                .content("내용")
+                .broadcastDate(LocalDateTime.now())
+                .maxParticipants(5)
+                .endDate(LocalDateTime.now())
+                .user(testUser)
+                .build();
+
+        ReflectionTestUtils.setField(testTeatimeBoard, "id", 1);
+        ReflectionTestUtils.setField(testTeatimeBoard, "activated", true);
+
+        testTeatimeBoard2 = com.example.restea.teatime.entity.TeatimeBoard.builder()
+                .title("testTeatimeBoard2")
+                .content("내용")
+                .broadcastDate(LocalDateTime.now())
+                .maxParticipants(5)
+                .endDate(LocalDateTime.now())
+                .user(testUser)
+                .build();
+
+        ReflectionTestUtils.setField(testTeatimeBoard2, "id", 2);
+        ReflectionTestUtils.setField(testTeatimeBoard2, "activated", false);
+
+        testTeatimeParticipant = com.example.restea.teatime.entity.TeatimeParticipant.builder()
+                .name("test")
+                .phone("010xxxxxxxx")
+                .address("address")
+                .teatimeBoard(testTeatimeBoard)
+                .user(testUser2)
+                .build();
+
+        ReflectionTestUtils.setField(liveService, "LIVEKIT_API_KEY", "aaa");
+        ReflectionTestUtils.setField(liveService, "LIVEKIT_API_SECRET", "bbb");
+    }
 
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 성공 : 방 없는 경우")
-  void isLiveOpenSuccessFalse() throws Exception {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 성공 : 방 없는 경우")
+    void isLiveOpenSuccessFalse() throws Exception {
 
-    // Given
-    Mockito.when(teatimeBoardRepository.findById(1)).thenReturn(Optional.of(testTeatimeBoard));
+        // Given
+        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        when(teatimeBoardRepository.findById(1)).thenReturn(Optional.of(testTeatimeBoard));
 
-    // When
-    boolean isOpen = liveService.isLiveOpen(1, testUser);
+        // When
+        boolean isOpen = liveService.isLiveOpen(1, 1);
 
-    // Then
-    Assertions.assertThat(isOpen).isFalse();
-  }
+        // Then
+        Assertions.assertThat(isOpen).isFalse();
+    }
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 성공 : 방 있는 경우")
-  void isLiveOpenSuccessTrue() {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 성공 : 방 있는 경우")
+    void isLiveOpenSuccessTrue() {
 
-    // Given
-    Mockito.when(teatimeBoardRepository.findById(1)).thenReturn(Optional.of(testTeatimeBoard));
-    Mockito.when(liveRepository.existsByTeatimeBoard(testTeatimeBoard)).thenReturn(true);
+        // Given
+        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        when(teatimeBoardRepository.findById(1)).thenReturn(Optional.of(testTeatimeBoard));
+        when(liveRepository.existsByTeatimeBoard(testTeatimeBoard)).thenReturn(true);
 
-    // When
-    boolean isOpen = liveService.isLiveOpen(1, testUser);
+        // When
+        boolean isOpen = liveService.isLiveOpen(1, 1);
 
-    // Then
-    Assertions.assertThat(isOpen).isTrue();
-  }
+        // Then
+        Assertions.assertThat(isOpen).isTrue();
+    }
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 없는 경우")
-  void isLiveOpenFailTeatimeBoardNotFound() {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 없는 경우")
+    void isLiveOpenFailTeatimeBoardNotFound() {
 
-    // Given
-    when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.empty());
+        // Given
+        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-    // When & Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.isLiveOpen(10, testUser));
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.isLiveOpen(10, 1));
 
-    assertEquals("404 NOT_FOUND \"TeatimeBoard not found\"", exception.getMessage());
-  }
+        assertEquals("404 NOT_FOUND \"TeatimeBoard not found.\"", exception.getMessage());
+    }
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 삭제된 경우")
-  void isLiveOpenFailTeatimeBoardNotActivated() {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 삭제된 경우")
+    void isLiveOpenFailTeatimeBoardNotActivated() {
 
-    // Given
-    Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard2));
+        // Given
+        Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard2));
 
-    // When & Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.isLiveOpen(10, testUser));
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.isLiveOpen(10, 1));
 
-    assertEquals("404 NOT_FOUND \"TeatimeBoard not activated\"", exception.getMessage());
-  }
+        assertEquals("404 NOT_FOUND \"TeatimeBoard not activated.\"", exception.getMessage());
+    }
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 참가자가 아닌 경우")
-  void isLiveOpenFailNotTeatimeBoardParticipant() {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 참가자가 아닌 경우")
+    void isLiveOpenFailNotTeatimeBoardParticipant() {
 
-    // Given
-    Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
-    Mockito.when(teatimeParticipantRepository.existsByTeatimeBoardAndUser(testTeatimeBoard, testUser2)).thenReturn(false);
+        // Given
+        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser2);
+        Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        Mockito.when(teatimeParticipantRepository.existsByTeatimeBoardAndUser(testTeatimeBoard, testUser2))
+                .thenReturn(false);
 
-    // When & Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.isLiveOpen(10, testUser2));
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.isLiveOpen(10, 2));
 
-    assertEquals("403 FORBIDDEN \"Not a participant\"", exception.getMessage());
-  }
+        assertEquals("403 FORBIDDEN \"Not a participant.\"", exception.getMessage());
+    }
 
-  @Test
-  @DisplayName("방송 생성 테스트 - 성공")
-  void createLiveSuccess() {
+    @Test
+    @DisplayName("방송 생성 테스트 - 성공")
+    void createLiveSuccess() {
 
-    // Given
-    Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
-    when(liveRepository.save(any(Live.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        // Given
+        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(liveRepository.save(any(Live.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-    // When
-    AccessToken token = liveService.createLive(testTeatimeBoard.getId(), testUser);
+        // When
+        AccessToken token = liveService.createLive(testTeatimeBoard.getId(), 1);
 
-    // Then
-    assertNotNull(token);
-    assertEquals(testUser.getId().toString(), token.getName());
-    assertEquals(testUser.getNickname(), token.getIdentity());
-    verify(liveRepository, times(1)).save(any(Live.class));
-  }
+        // Then
+        assertNotNull(token);
+        assertEquals(testUser.getId().toString(), token.getIdentity());
+        assertEquals(testUser.getNickname(), token.getName());
+        verify(liveRepository, times(1)).save(any(Live.class));
+    }
 
-  @Test
-  @DisplayName("방송 생성 테스트 - 실패 : 티타임 게시글이 없는 경우")
-  void  createLiveFailTeatimeBoardNotFound() {
+    @Test
+    @DisplayName("방송 생성 테스트 - 실패 : 티타임 게시글이 없는 경우")
+    void createLiveFailTeatimeBoardNotFound() {
 
-    // Given
-    when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.empty());
+        // Given
+        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.empty());
 
-    // When & Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.createLive(10, testUser));
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.createLive(10, 1));
 
-    assertEquals("404 NOT_FOUND \"TeatimeBoard not found\"", exception.getMessage());
-  }
+        assertEquals("404 NOT_FOUND \"TeatimeBoard not found.\"", exception.getMessage());
+    }
 
-  @Test
-  @DisplayName("방송 생성 테스트 - 실패 : 티타임 게시글이 삭제된 경우")
-  void  createLiveFailTeatimeBoardNotActivated() {
+    @Test
+    @DisplayName("방송 생성 테스트 - 실패 : 티타임 게시글이 삭제된 경우")
+    void createLiveFailTeatimeBoardNotActivated() {
 
-    // Given
-    Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard2));
+        // Given
+        Mockito.when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard2));
 
-    // When & Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.createLive(10, testUser));
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.createLive(10, 1));
 
-    assertEquals("404 NOT_FOUND \"TeatimeBoard not activated\"", exception.getMessage());
-  }
+        assertEquals("404 NOT_FOUND \"TeatimeBoard not activated.\"", exception.getMessage());
+    }
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 작성자가 아닌 경우")
-  void createLiveFailNotTeatimeBoardWriter() {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 티타임 게시글이 작성자가 아닌 경우")
+    void createLiveFailNotTeatimeBoardWriter() {
 
-    // Given
-    when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        // Given
+        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
 
-    // When $ Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.createLive(1, testUser2));
+        // When $ Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.createLive(1, 2));
 
-    assertEquals("403 FORBIDDEN \"Not a writer\"", exception.getMessage());
-  }
+        assertEquals("403 FORBIDDEN \"Not a writer.\"", exception.getMessage());
+    }
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 방송 예정일보다 전인 경우")
-  void createLiveFailBeforeBroadcastDate() {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 방송 예정일보다 전인 경우")
+    void createLiveFailBeforeBroadcastDate() {
 
-    // Given
-    ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusMinutes(5));
-    when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        // Given
+        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusMinutes(5));
+        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
 
-    // When & Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.createLive(1, testUser));
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.createLive(1, 1));
 
-    assertEquals("403 FORBIDDEN \"Before the broadcast date\"", exception.getMessage());
-  }
+        assertEquals("403 FORBIDDEN \"Before the broadcast date.\"", exception.getMessage());
+    }
 
-  @Test
-  @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 방송 예정일과 다른 날인 경우")
-  void createLiveFailDifferentBroadcastDate() {
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 방송 예정일과 다른 날인 경우")
+    void createLiveFailDifferentBroadcastDate() {
 
-    // Given
-    ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusDays(5));
-    when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        // Given
+        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusDays(5));
+        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
 
-    // When & Then
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
-        liveService.createLive(1, testUser));
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.createLive(1, 1));
 
-    assertEquals("403 FORBIDDEN \"Different from the broadcast date\"", exception.getMessage());
-  }
+        assertEquals("403 FORBIDDEN \"Different from the broadcast date.\"", exception.getMessage());
+    }
 
-  @Test
-  void createToken() {
-  }
+    @Test
+    void createToken() {
+    }
 
-  @Test
-  void webHook() {
-  }
+    @Test
+    void webHook() {
+    }
 }
