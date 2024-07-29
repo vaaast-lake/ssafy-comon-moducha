@@ -41,6 +41,7 @@ import org.springframework.web.context.WebApplicationContext;
   * - createShare
   * - getShareBoard
   * - updateShareBoard
+  * - deactivateShareBoard
  */
 
 @SpringBootTest
@@ -336,7 +337,7 @@ class ShareControllerCRUDTest {
         .andExpect(jsonPath("$.data.title").value(createdShareBoard.getTitle()))
         .andExpect(jsonPath("$.data.content").value(createdShareBoard.getContent()))
         .andExpect(jsonPath("$.data.maxParticipants").value(createdShareBoard.getMaxParticipants()))
-//        TODO : 저장하면서 형식이 약간 수정해서 완벽하게 일치하기 어렵다.
+//        저장하면서 형식이 약간 수정해서 완벽하게 일치하기 어렵다.
 //        .andExpect(jsonPath("$.data.endDate").value(createdShareBoard.getEndDate().toString().substring(0, 26)))
         .andExpect(jsonPath("$.data.viewCount").value(1))
         .andExpect(jsonPath("$.data.participants").value(0))
@@ -629,6 +630,112 @@ class ShareControllerCRUDTest {
 
     // then
     result.andExpect(status().isBadRequest());
+  }
+
+  @DisplayName("deactivateShareBoard : 공유 게시글 비활성화에 성공한다.")
+  @Test
+  public void deactivateShare_Success() throws Exception {
+
+    // given
+    User user = userRepository.findByAuthId("authId")
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+    ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
+        .title("TestTitle")
+        .content("TestContent")
+        .maxParticipants(10)
+        .endDate(LocalDateTime.now().plusWeeks(1L))
+        .user(user)
+        .build());
+
+    final String url = "/api/v1/shares/deactivated-shares/" + shareBoard.getId();
+
+    // when
+    ResultActions result = mockMvc.perform(patch(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    // then
+    result.andExpect(status().isOk());
+    ShareBoard deactivatedShareBoard = shareBoardRepository.findById(shareBoard.getId())
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 게시글 생성 실패"));
+    assertThat(deactivatedShareBoard.getActivated()).isFalse();
+  }
+
+  @DisplayName("deactivateShareBoard 실패 - 존재하지 않는 게시글")
+  @Test
+  public void deactivateShareBoard_NotFound_Fail() throws Exception {
+
+    // given
+    final String url = "/api/v1/shares/deactivated-shares/999";
+
+    // when
+    ResultActions result = mockMvc.perform(patch(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    // then
+    result.andExpect(status().isNotFound());
+  }
+
+  @DisplayName("deactivateShareBoard 실패 - 비활성화된 게시글")
+  @Test
+  public void deactivateShareBoard_Deactivated_Fail() throws Exception {
+
+    // given
+    User user = userRepository.findByAuthId("authId")
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+    ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
+        .title("TestTitle")
+        .content("TestContent")
+        .maxParticipants(10)
+        .endDate(LocalDateTime.now().plusWeeks(1L))
+        .user(user)
+        .build());
+
+    ShareBoard deactivatedShareBoard = shareBoardRepository.findById(shareBoard.getId())
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 게시글 생성 실패"));
+    deactivatedShareBoard.deactivate();
+    shareBoardRepository.save(deactivatedShareBoard);
+
+    final String url = "/api/v1/shares/deactivated-shares/" + shareBoard.getId();
+
+    // when
+    ResultActions result = mockMvc.perform(patch(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    // then
+    result.andExpect(status().isNotFound());
+  }
+
+  @DisplayName("deactivateShareBoard 실패 - 권한이 없는 사용자")
+  @Test
+  public void deactivateShareBoard_Unauthorized_Fail() throws Exception {
+
+    // given
+    custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+    User user = userRepository.findByAuthId("authId2")
+        .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+    ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
+        .title("TestTitle")
+        .content("TestContent")
+        .maxParticipants(10)
+        .endDate(LocalDateTime.now().plusWeeks(1L))
+        .user(user)
+        .build());
+
+    final String url = "/api/v1/shares/deactivated-shares/" + shareBoard.getId();
+
+    // when
+    ResultActions result = mockMvc.perform(patch(url)
+        .accept(MediaType.APPLICATION_JSON_VALUE)
+        .contentType(MediaType.APPLICATION_JSON_VALUE));
+
+    // then
+    result.andExpect(status().isForbidden());
   }
 
 }
