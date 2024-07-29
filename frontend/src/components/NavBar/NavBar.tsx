@@ -19,7 +19,7 @@ const NavBar = () => {
   return (
     <div className="flex justify-center border-b-2 border-[#eee]">
       {/* border-bottom: 2px solid #EEE; */}
-      <nav className="flex justify-between w-full lg:w-2/3 h-20 items-center">
+      <nav className="flex justify-between w-full lg:w-2/3 h-16 items-center">
         <Link to="/" className="btn btn-ghost">
           <img src={navModucha} alt="" />
         </Link>
@@ -36,7 +36,7 @@ const NavBar = () => {
               </li>
               <li>
                 <Link
-                  to="/sharing"
+                  to="/shares"
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
                   나눔
@@ -80,7 +80,7 @@ const NavBar = () => {
               </li>
               <li>
                 <Link
-                  to="/sharing"
+                  to="/shares"
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
                   나눔

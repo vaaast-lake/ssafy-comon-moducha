@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 
 const ShareHeaderSearch = ({ className }: { className: string }) => {
@@ -8,7 +7,10 @@ const ShareHeaderSearch = ({ className }: { className: string }) => {
   // };
   return (
     <div className={className}>
-      <input className="input input-bordered w-full join-item" placeholder="검색" />
+      <input
+        className="input input-bordered w-full join-item"
+        placeholder="검색"
+      />
       <select className="select select-bordered join-item">
         <option value="title">제목</option>
         <option value="content">내용</option>

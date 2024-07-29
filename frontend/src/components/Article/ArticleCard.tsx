@@ -10,7 +10,7 @@ const ArticleCard = ({
   maxParticipants,
 }: ShareDetailItem) => {
   return (
-    <div className="flex flex-col p-2 overflow-clip border shadow gap-4">
+    <div className="md:sticky md:top-2 flex flex-col p-2 overflow-clip rounded-lg shadow gap-4">
       <figure
         className="bg-contain bg-center bg-no-repeat h-48"
         style={{ backgroundImage: `url(/logo.png)` }}
