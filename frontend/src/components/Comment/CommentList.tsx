@@ -15,7 +15,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
     boardType,
     boardId,
     page: 1,
-    limit: 12,
+    perPage: 10,
   };
 
   const [commentList, setCommentList] = useState<Comment[]>(

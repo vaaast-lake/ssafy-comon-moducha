@@ -9,11 +9,11 @@ import { Dispatch, SetStateAction } from 'react';
 import TabToggleButton from '../../../components/Button/TabToggleButton';
 
 interface Prop {
-  sortOption: string;
-  setSortOption: Dispatch<SetStateAction<string>>;
+  sort: string;
+  setSort: Dispatch<SetStateAction<string>>;
 }
 
-const ShareHeader = ({ sortOption, setSortOption }: Prop) => {
+const ShareHeader = ({ sort, setSort }: Prop) => {
   return (
     <>
       <Disclosure as="div" className="justify-between w-full">
@@ -35,16 +35,16 @@ const ShareHeader = ({ sortOption, setSortOption }: Prop) => {
           </div>
           <div className="flex gap-2 items-center">
             <TabToggleButton
-              value={sortOption}
+              value={sort}
               toggleOption="latest"
-              onClick={() => setSortOption('latest')}
+              onClick={() => setSort('latest')}
             >
               최신 순
             </TabToggleButton>
             <TabToggleButton
-              value={sortOption}
+              value={sort}
               toggleOption="urgent"
-              onClick={() => setSortOption('urgent')}
+              onClick={() => setSort('urgent')}
             >
               마감일 순
             </TabToggleButton>

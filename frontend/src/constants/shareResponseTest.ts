@@ -18,14 +18,12 @@ const genShareListItems = () => {
 
 export const shareResponse = {
   message: '200 OK',
-  data: {
-    pagination: {
-      total: 25,
-      page: 1,
-      perPage: 10,
-    },
-    items: genShareListItems(),
+  pagination: {
+    total: 25,
+    page: 1,
+    perPage: 10,
   },
+  data: genShareListItems(),
 };
 
 export const ShareDetailResponse = {

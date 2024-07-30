@@ -21,7 +21,7 @@ const CommentReply = (prop: {
     boardId,
     commentId,
     page: 1,
-    limit: 12,
+    perPage: 10,
   };
 
   const [fetchParams, setFetchParams] = useState(defaultParams);
