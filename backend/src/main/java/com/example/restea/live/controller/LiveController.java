@@ -127,7 +127,7 @@ public class LiveController {
      */
     @PostMapping("/kick")
     public ResponseEntity<ResponseDTO<LiveKickResponseDTO>> liveKick(
-            @PathVariable("teatimeBoardId") int teatimeBoardId, @Valid @NotNull @RequestBody Integer kickUserId,
+            @PathVariable("teatimeBoardId") int teatimeBoardId, @NotNull @RequestBody Integer kickUserId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         liveService.liveKick(teatimeBoardId, kickUserId, customOAuth2User.getUserId());

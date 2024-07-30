@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class LiveMuteRequestDTO {
-    @NotNull(message = "empty endDate.")
+    @NotNull(message = "empty userId.")
     private Integer userId;
 
-    @NotBlank(message = "empty title.")
+    @NotBlank(message = "empty trackSid.")
     private String trackSid;
 }
