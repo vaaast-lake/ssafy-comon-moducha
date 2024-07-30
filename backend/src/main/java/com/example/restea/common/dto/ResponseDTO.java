@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class ResponseDTO<T> {
-  private T data;
-  private PaginationDTO pagination;
+    private T data;
+    private PaginationDTO pagination;
 
-  @Builder
-  public ResponseDTO(T data, PaginationDTO pagination) {
-    this.data = data;
-    this.pagination = pagination;
-  }
+    @Builder
+    public ResponseDTO(T data, PaginationDTO pagination) {
+        this.data = data;
+        this.pagination = pagination;
+    }
 
 }

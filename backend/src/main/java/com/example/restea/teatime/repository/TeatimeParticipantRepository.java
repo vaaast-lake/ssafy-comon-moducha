@@ -6,6 +6,6 @@ import com.example.restea.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeatimeParticipantRepository extends JpaRepository<TeatimeParticipant, Integer> {
-  boolean existsByTeatimeBoardAndUser(TeatimeBoard teatimeBoard, User user);
+    boolean existsByTeatimeBoardAndUser(TeatimeBoard teatimeBoard, User user);
 
 }
