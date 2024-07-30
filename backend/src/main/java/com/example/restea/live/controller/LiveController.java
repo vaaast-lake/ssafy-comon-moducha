@@ -9,7 +9,6 @@ import com.example.restea.live.service.LiveService;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import io.livekit.server.AccessToken;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -125,9 +125,9 @@ public class LiveController {
      * @param customOAuth2User 현재 인증된 사용자.
      * @return 내용이 빈 ResponseEntity 객체를 반환합니다. 강퇴에 실패하면 에러 메시지를 담은 ResponseEntity를 반환합니다.
      */
-    @PostMapping("/kick")
+    @GetMapping("/kick")
     public ResponseEntity<ResponseDTO<LiveKickResponseDTO>> liveKick(
-            @PathVariable("teatimeBoardId") int teatimeBoardId, @NotNull @RequestBody Integer kickUserId,
+            @PathVariable("teatimeBoardId") int teatimeBoardId, @RequestParam("userId") Integer kickUserId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         liveService.liveKick(teatimeBoardId, kickUserId, customOAuth2User.getUserId());
@@ -146,12 +146,9 @@ public class LiveController {
     /**
      * 주어진 참가자에 trackSid에 해당하는 track 방송에서 음소거
      *
-     * @param teatimeBoardId   티타임게시판 ID. 티타임게시판ID을 외래키로 가지는 live테이블에 저장된 liveId를 사용. liveId는 사용자가 참여하고 있는 방의 이름
-     * @param request
-     * @param customOAuth2User 현재 인증된 사용자.
+     * @param teatimeBoardId 티타임게시판 ID. 티타임게시판ID을 외래키로 가지는 live테이블에 저장된 liveId를 사용. liveId는 사용자가 참여하고 있는 방의 이름
+     * @param request        muteUserId       음소거될 사용자. trackSid         음소거될 trackSid.
      * @return 내용이 빈 ResponseEntity 객체를 반환합니다. 음소거에 실패하면 에러 메시지를 담은 ResponseEntity를 반환합니다.
-     * @DTOparam muteUserId       음소거될 사용자.
-     * @DTOparam trackSid         음소거될 trackSid.
      */
     @PostMapping("/mute")
     public ResponseEntity<ResponseDTO<LiveMuteRequestDTO>> liveMute(
