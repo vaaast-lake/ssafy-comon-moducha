@@ -1,7 +1,6 @@
-import React from 'react';
 import { LocalVideoTrack } from 'livekit-client';
-import VideoComponent from './VideoComponent';
-import AudioComponent from './AudioComponent';
+import RoomVideo from './RoomVideo';
+import RoomAudio from './RoomAudio';
 import { TrackInfo } from '../../../types/WebRTCType';
 
 interface RoomVideoAudioProps {
@@ -10,36 +9,60 @@ interface RoomVideoAudioProps {
   remoteTracks: TrackInfo[];
 }
 
-const RoomVideoAudioTracks: React.FC<RoomVideoAudioProps> = ({
+const RoomVideoAudioTracks = ({
   localTrack,
   participantName,
   remoteTracks,
-}) => {
+}: RoomVideoAudioProps) => {
   return (
     <>
       <div id="layout-container" className="flex">
         <div id="video-container" className="">
-          {localTrack && (
-            <VideoComponent
-              track={localTrack}
-              participantIdentity={participantName}
-              local={true}
-            />
-          )}
-          {remoteTracks.map((remoteTrack) =>
-            remoteTrack.trackPublication.kind === 'video' ? (
-              <VideoComponent
+          {/* screen_share video start */}
+          {remoteTracks.map((remoteTrack) => {
+              if (remoteTrack.trackPublication.source !== 'screen_share') return null
+              return remoteTrack.trackPublication.kind === 'video' ? (
+                <RoomVideo
                 key={remoteTrack.trackPublication.trackSid}
                 track={remoteTrack.trackPublication.videoTrack!}
                 participantIdentity={remoteTrack.participantIdentity}
-              />
-            ) : (
-              <AudioComponent
+                />
+              ) : (
+                <RoomAudio
                 key={remoteTrack.trackPublication.trackSid}
                 track={remoteTrack.trackPublication.audioTrack!}
+                />
+              )
+            }
+          )}
+          {/* screen_share video end */}
+          {/* local video start */}
+          {localTrack && (
+            <RoomVideo
+            track={localTrack}
+            participantIdentity={participantName}
+            local={true}
+            />
+          )}
+          {/* local video end */}
+          {/* remote video start */}
+          {remoteTracks.map((remoteTrack) => {
+            if (remoteTrack.trackPublication.source === 'screen_share') return null
+            return remoteTrack.trackPublication.kind === 'video' ? (
+              <RoomVideo
+              key={remoteTrack.trackPublication.trackSid}
+              track={remoteTrack.trackPublication.videoTrack!}
+              participantIdentity={remoteTrack.participantIdentity}
+              />
+            ) : (
+              <RoomAudio
+              key={remoteTrack.trackPublication.trackSid}
+              track={remoteTrack.trackPublication.audioTrack!}
               />
             )
+          }
           )}
+          {/* local video end */}
         </div>
       </div>
     </>

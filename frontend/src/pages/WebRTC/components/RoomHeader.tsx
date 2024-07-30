@@ -1,11 +1,9 @@
-import React from 'react';
-
 interface RoomHeaderProps {
   roomName: string;
   leaveRoom: () => void;
 }
 
-const RoomHeader: React.FC<RoomHeaderProps> = ({ roomName, leaveRoom }) => {
+const RoomHeader = ({ roomName, leaveRoom }: RoomHeaderProps) => {
   return (
     <>
       <div id="room-header">
