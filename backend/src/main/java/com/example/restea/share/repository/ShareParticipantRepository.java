@@ -5,7 +5,7 @@ import com.example.restea.share.entity.ShareParticipant;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShareParticipantRepository extends JpaRepository<ShareParticipant, Integer> {
-
-  Long countByShareBoard(ShareBoard shareBoard);
+    
+    Long countByShareBoard(ShareBoard shareBoard);
 
 }

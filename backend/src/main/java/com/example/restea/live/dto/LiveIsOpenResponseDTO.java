@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class LiveIsOpenResponseDTO {
-  private boolean isOpen;
+    private boolean isOpen;
 
-  @Builder
-  public LiveIsOpenResponseDTO(boolean isOpen) {
-    this.isOpen = isOpen;
-  }
+    @Builder
+    public LiveIsOpenResponseDTO(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
 }

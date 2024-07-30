@@ -18,29 +18,29 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ShareUpdateRequest {
 
-  @NotBlank(message = "empty title.")
-  @Size(max=50, message = "title is too long.")
-  private String title;
+    @NotBlank(message = "empty title.")
+    @Size(max = 50, message = "title is too long.")
+    private String title;
 
-  @NotBlank(message = "empty content.")
-  private String content;
+    @NotBlank(message = "empty content.")
+    private String content;
 
-  @NotNull(message = "empty endDate.")
-  @Future(message = "endDate must be future.")
-  private LocalDateTime endDate;
+    @NotNull(message = "empty endDate.")
+    @Future(message = "endDate must be future.")
+    private LocalDateTime endDate;
 
-  @NotNull(message = "empty maxParticipants.")
-  @Min(value=1, message = "maxParticipants must be greater than 0.")
-  @Max(value=100, message = "maxParticipants must be less than 100.")
-  private Integer maxParticipants;
+    @NotNull(message = "empty maxParticipants.")
+    @Min(value = 1, message = "maxParticipants must be greater than 0.")
+    @Max(value = 100, message = "maxParticipants must be less than 100.")
+    private Integer maxParticipants;
 
-  public ShareBoard toEntity() {
-    return ShareBoard.builder()
-        .title(title)
-        .content(content)
-        .endDate(endDate)
-        .maxParticipants(maxParticipants)
-        .build();
-  }
+    public ShareBoard toEntity() {
+        return ShareBoard.builder()
+                .title(title)
+                .content(content)
+                .endDate(endDate)
+                .maxParticipants(maxParticipants)
+                .build();
+    }
 
 }
