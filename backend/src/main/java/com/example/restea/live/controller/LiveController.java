@@ -3,6 +3,7 @@ package com.example.restea.live.controller;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.live.dto.LiveIsOpenResponseDTO;
 import com.example.restea.live.dto.LiveKickResponseDTO;
+import com.example.restea.live.dto.LiveMuteResponseDTO;
 import com.example.restea.live.dto.LiveRoomResponseDTO;
 import com.example.restea.live.service.LiveService;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
@@ -140,5 +141,32 @@ public class LiveController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    
+    /**
+     * 주어진 참가자에 trackSid에 해당하는 track 방송에서 음소거
+     *
+     * @param teatimeBoardId   티타임게시판 ID. 티타임게시판ID을 외래키로 가지는 live테이블에 저장된 liveId를 사용. liveId는 사용자가 참여하고 있는 방의 이름
+     * @param muteUserId       음소거될 사용자.
+     * @param trackSid         음소거될 trackSid.
+     * @param customOAuth2User 현재 인증된 사용자.
+     * @return 내용이 빈 ResponseEntity 객체를 반환합니다. 음소거에 실패하면 에러 메시지를 담은 ResponseEntity를 반환합니다.
+     */
+    @PostMapping("/mute")
+    public ResponseEntity<ResponseDTO<LiveMuteResponseDTO>> liveMute(
+            @PathVariable("teatimeBoardId") int teatimeBoardId, @RequestBody Integer muteUserId,
+            @RequestBody String trackSid,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        liveService.liveMute(teatimeBoardId, muteUserId, trackSid, customOAuth2User.getUserId());
+
+        LiveMuteResponseDTO result = LiveMuteResponseDTO.builder()
+                .userId(muteUserId)
+                .trackSid(trackSid)
+                .build();
+
+        ResponseDTO<LiveMuteResponseDTO> response = ResponseDTO.<LiveMuteResponseDTO>builder()
+                .data(result)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

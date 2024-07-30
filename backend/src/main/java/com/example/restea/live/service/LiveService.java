@@ -24,6 +24,7 @@ import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import livekit.LivekitModels;
 import livekit.LivekitWebhook.WebhookEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -184,6 +185,33 @@ public class LiveService {
         }
     }
 
+    public void liveMute(Integer teatimeBoardId, Integer muteUserId, String trackSid, Integer userId) {
+        User user = userRepository.getReferenceById(userId);
+
+        // 티타임 게시글 존재 여부 확인
+        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+
+        // 티타임 게시글 작성자인지 확인
+        checkWriter(teatimeBoard, user);
+
+        // 방송 예정일인지 확인
+        checkBroadCastDate(teatimeBoard);
+
+        // 방송 존재 여부 확인
+        Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Live not found."));
+
+        // trackSid에 해당하는 track 음소거
+        try {
+            Call<LivekitModels.TrackInfo> muteCall = client.mutePublishedTrack(live.getId(), muteUserId.toString(),
+                    trackSid,
+                    true);
+            Response<LivekitModels.TrackInfo> muteResponse = muteCall.execute();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST);
+        }
+    }
 
     // 티타임 게시글 작성자인지 확인하는 메소드
     private void checkWriter(TeatimeBoard teatimeBoard, User user) {
