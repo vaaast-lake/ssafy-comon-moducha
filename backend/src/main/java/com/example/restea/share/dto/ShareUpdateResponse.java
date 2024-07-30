@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class ShareViewResponse {
+public class ShareUpdateResponse {
 
   private final Integer boardId;
   private final String title;
@@ -16,12 +16,11 @@ public class ShareViewResponse {
   private final Integer maxParticipants;
   private final Integer participants;
   private final Integer viewCount;
-  private final String nickname;
 
   @Builder
-  public ShareViewResponse(Integer boardId, String title, String content,
+  public ShareUpdateResponse(Integer boardId, String title, String content,
       LocalDateTime createdDate, LocalDateTime lastUpdated, LocalDateTime endDate,
-      Integer maxParticipants, Integer participants, Integer viewCount, String nickname) {
+      Integer maxParticipants, Integer participants, Integer viewCount) {
     this.boardId = boardId;
     this.title = title;
     this.content = content;
@@ -31,7 +30,5 @@ public class ShareViewResponse {
     this.maxParticipants = maxParticipants;
     this.participants = participants;
     this.viewCount = viewCount;
-    this.nickname = nickname;
   }
-
 }

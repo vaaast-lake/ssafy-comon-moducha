@@ -3,6 +3,7 @@ package com.example.restea.share.controller;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.share.dto.ShareCreationRequest;
+import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.service.ShareService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,12 +28,12 @@ public class ShareController {
   @PostMapping
 //   TODO : @PreAuthorize 어노테이션을 사용하여 권한을 확인할 것
 //   @PreAuthorize("hasRole('USER', 'ADMIN')")
-  public ResponseEntity<ResponseDTO<?>> createShare(
-      @Valid @RequestBody ShareCreationRequest request, @AuthenticationPrincipal CustomOAuth2User user) {
+  public ResponseEntity<ResponseDTO<?>> createShareBoard(
+      @Valid @RequestBody ShareCreationRequest request, @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ResponseDTO.builder()
-            .data(shareService.createShare(request, user.getUserId()))
+            .data(shareService.createShareBoard(request, customOAuth2User.getUserId()))
             .build());
   }
 
@@ -45,9 +47,28 @@ public class ShareController {
             .build());
   }
 
-  // TODO: 나눔 게시판 수정
+  @PatchMapping("/{shareBoardId}")
+  public ResponseEntity<ResponseDTO<?>> updateShareBoard(
+      @PathVariable("shareBoardId") Integer shareBoardId,
+      @Valid @RequestBody ShareUpdateRequest request,
+      @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-  // TODO: 나눔 게시판 삭제
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ResponseDTO.builder()
+            .data(shareService.updateShareBoard(shareBoardId, request, customOAuth2User.getUserId()))
+            .build());
+  }
+
+  @PatchMapping("/deactivated-shares/{shareBoardId}")
+  public ResponseEntity<ResponseDTO<?>> deactivateShareBoard(
+      @PathVariable("shareBoardId") Integer shareBoardId,
+      @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(ResponseDTO.builder()
+            .data(shareService.deactivateShareBoard(shareBoardId, customOAuth2User.getUserId()))
+            .build());
+  }
 
   // TODO: 나눔 게시판 목록 조회
 

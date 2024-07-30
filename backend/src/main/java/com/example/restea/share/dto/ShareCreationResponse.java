@@ -15,19 +15,19 @@ public class ShareCreationResponse {
 //  "broadcastDate": "2023-07-20T15:00:00Z",
 //  "maxParticipants": 10,
 
-  private Integer shareBoardId;
-  private String title;
-  private String content;
-  private LocalDateTime createdDate;
-  private LocalDateTime endDate;
-  private LocalDateTime broadcastDate;
-  private Integer maxParticipants;
+  private final Integer boardId;
+  private final String title;
+  private final String content;
+  private final LocalDateTime createdDate;
+  private final LocalDateTime endDate;
+  private final LocalDateTime broadcastDate;
+  private final Integer maxParticipants;
 
   @Builder
-  public ShareCreationResponse(Integer shareBoardId, String title, String content,
+  public ShareCreationResponse(Integer boardId, String title, String content,
       LocalDateTime createdDate, LocalDateTime endDate, LocalDateTime broadcastDate,
       Integer maxParticipants) {
-    this.shareBoardId = shareBoardId;
+    this.boardId = boardId;
     this.title = title;
     this.content = content;
     this.createdDate = createdDate;
