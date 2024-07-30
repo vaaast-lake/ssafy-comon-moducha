@@ -1,21 +1,21 @@
 import { Dispatch, SetStateAction } from 'react';
 
 interface Page {
-  currentPage: number;
+  page: number;
   totalPage: number;
-  setCurrentPage: Dispatch<SetStateAction<number>>;
+  setPage: Dispatch<SetStateAction<number>>;
 }
 
-const Pagination = ({ currentPage, totalPage, setCurrentPage }: Page) => {
+const Pagination = ({ page, totalPage, setPage }: Page) => {
   const pageButtonArray = [];
-  for (let page = 1; page <= totalPage; page++) {
+  for (let i = 1; i <= totalPage; i++) {
     pageButtonArray.push(
       <button
-        key={page}
-        className={`join-item btn ${page === currentPage ? 'btn-active' : ''}`}
-        onClick={() => setCurrentPage(page)}
+        key={i}
+        className={`join-item btn ${i === page ? 'btn-active' : ''}`}
+        onClick={() => setPage(i)}
       >
-        {page}
+        {i}
       </button>
     );
   }

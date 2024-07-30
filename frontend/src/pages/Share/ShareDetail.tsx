@@ -9,12 +9,12 @@ import CommentList from '../../components/Comment/CommentList';
 
 const ShareDetail = () => {
   const { articleId } = useParams();
+  // 가드절 -> 라우터 파라미터가 누락된 경우 빈 페이지 리턴
+  if (!articleId) return null;
   const [shareDetail, setsShareDetail] = useState<ShareDetailItem>(
     ShareDetailResponse.data
   );
-  // 가드절 -> 라우터 파라미터가 누락된 경우 빈 페이지 리턴
 
-  if (articleId === undefined) return null;
   useEffect(() => {
     fetchShareDetail(articleId)
       .then((res) => setsShareDetail(res.data.data))
@@ -29,7 +29,7 @@ const ShareDetail = () => {
         </section>
         <article className="md:col-span-8 p-2">
           <ArticleContent {...shareDetail}>
-            <CommentList boardType="shares" articleId={articleId} />
+            <CommentList boardType="shares" boardId={parseInt(articleId)} />
           </ArticleContent>
         </article>
       </main>
