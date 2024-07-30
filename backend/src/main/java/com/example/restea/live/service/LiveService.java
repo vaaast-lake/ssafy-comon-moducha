@@ -53,11 +53,14 @@ public class LiveService {
     @Value("${livekit.api.secret}")
     private String LIVEKIT_API_SECRET;
 
+    @Value("${host.url}")
+    private String HOST_URL;
+
     private RoomServiceClient client;
 
     @PostConstruct
     public void init() {
-        this.client = RoomServiceClient.create("http://localhost:7880/", LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
+        this.client = RoomServiceClient.create(HOST_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
     }
 
     public boolean isLiveOpen(Integer teatimeBoardId, Integer userId) {
