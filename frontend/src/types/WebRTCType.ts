@@ -6,6 +6,6 @@ export type TrackInfo = {
 };
 
 export type Message = {
-  sender: string;
+  sender: string | undefined;
   content: string;
 };

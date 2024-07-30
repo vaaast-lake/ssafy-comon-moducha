@@ -4,22 +4,20 @@ import { Message } from '../../../types/WebRTCType';
 
 interface RoomChattingProps {
   room: Room;
-  messages: {
-    sender: string;
-    content: string;
-  }[];
+  messages: Message[];
   inputMessage: string;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   setInputMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const RoomChatting: React.FC<RoomChattingProps> = ({
+const RoomChatting = ({
   room,
   messages,
   inputMessage,
   setMessages,
   setInputMessage,
-}) => {
+}: RoomChattingProps) => {
+
   const sendMessage = () => {
     if (inputMessage.trim() && room) {
       const encoder = new TextEncoder();
