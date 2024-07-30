@@ -1,13 +1,14 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home/Home';
-import Login from './pages/Login/Login';
+import Login from './pages/Login/LoginPage';
 import Profile from './pages/Profile/Profile';
 import TeaTime from './pages/TeaTime/TeaTime';
 import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
 import WebRTC from './pages/WebRTC/WebRTC';
 import ShareDetail from './pages/Share/ShareDetail';
+import Access from './pages/Login/Access';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -32,11 +33,11 @@ const router = createBrowserRouter([
         element: <TeaTime />,
       },
       {
-        path: 'shares',
+        path: 'sharing',
         element: <Share />,
       },
       {
-        path: 'shares/:articleId',
+        path: 'sharing/:shareId',
         element: <ShareDetail />,
       },
 
@@ -54,6 +55,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+  { path: 'access', element: <Access /> }, // access token 처리용 더미 페이지
 ]);
 
 // RouterProvider에 라우트 객체들이 렌더링
