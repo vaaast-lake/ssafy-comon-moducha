@@ -9,15 +9,8 @@ const CommentListItem = (prop: {
   boardType: BoardType;
   commentItem: Comment;
 }) => {
-  const {
-    replyId,
-    nickname,
-    content,
-    createdDate,
-    boardId,
-    commentId,
-    replyCount,
-  } = prop.commentItem;
+  const { nickname, content, createdDate, boardId, commentId, replyCount } =
+    prop.commentItem;
   return (
     <li>
       <div id="cmt-item" className="flex py-4">

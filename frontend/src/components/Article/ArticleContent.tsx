@@ -2,17 +2,10 @@ import ArticleCarousel from '../../components/Article/ArticleCarousel';
 import { ShareDetailItem } from '../../types/ShareType';
 import { useEffect } from 'react';
 
-const ArticleContent = ({
-  title,
-  content,
-  nickname,
-  createdDate,
-  endDate,
-  viewCount,
-  participants,
-  maxParticipants,
-  children,
-}: ShareDetailItem) => {
+interface ArticleProp extends ShareDetailItem {
+  children: React.ReactNode;
+}
+const ArticleContent = ({ title, content, children }: ArticleProp) => {
   useEffect(() => {});
 
   return (
