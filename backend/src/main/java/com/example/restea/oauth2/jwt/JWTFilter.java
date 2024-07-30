@@ -37,8 +37,7 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         String accessToken = request.getHeader(ACCESS.getType());
-        if (accessToken == null) { // Access Token 존재 확인
-            filterChain.doFilter(request, response);
+        if (isTokenNull(accessToken, response)) { // Access Token 존재 확인
             return;
         }
 
@@ -61,13 +60,21 @@ public class JWTFilter extends OncePerRequestFilter {
         return false;
     }
 
-    private boolean isTokenInvalid(String token, HttpServletResponse response) throws IOException {
-        return isTokenExpired(token, response) || isNotAccessToken(token, response);
+    private boolean isTokenNull(String accessToken, HttpServletResponse response) throws IOException {
+        if (accessToken == null) {
+            setResponse(response, NO_ACCESS_TOKEN.toJson());
+            return true;
+        }
+        return false;
     }
 
-    private boolean isTokenExpired(String token, HttpServletResponse response) throws IOException {
+    private boolean isTokenInvalid(String accessToken, HttpServletResponse response) throws IOException {
+        return isTokenExpired(accessToken, response) || isNotAccessToken(accessToken, response);
+    }
+
+    private boolean isTokenExpired(String accessToken, HttpServletResponse response) throws IOException {
         try {
-            jwtUtil.isExpired(token);
+            jwtUtil.isExpired(accessToken);
             // 정상적이라면 Exception이 발생하지 않음
             return false;
         } catch (ExpiredJwtException e) {
@@ -77,8 +84,8 @@ public class JWTFilter extends OncePerRequestFilter {
         }
     }
 
-    private boolean isNotAccessToken(String token, HttpServletResponse response) throws IOException {
-        if (jwtUtil.getCategory(token).equals(ACCESS.getType())) {
+    private boolean isNotAccessToken(String accessToken, HttpServletResponse response) throws IOException {
+        if (jwtUtil.getCategory(accessToken).equals(ACCESS.getType())) {
             return false;
         }
         // AccessToken이 아닐 경우
@@ -100,10 +107,10 @@ public class JWTFilter extends OncePerRequestFilter {
         writer.flush();
     }
 
-    private void setUpAuthentication(String token) {
-        String nickname = jwtUtil.getNickname(token);
-        Integer userId = jwtUtil.getUserId(token);
-        String role = jwtUtil.getRole(token);
+    private void setUpAuthentication(String accessToken) {
+        String nickname = jwtUtil.getNickname(accessToken);
+        Integer userId = jwtUtil.getUserId(accessToken);
+        String role = jwtUtil.getRole(accessToken);
 
         OAuth2JwtMemberDTO oAuth2JwtMemberDTO = OAuth2JwtMemberDTO.builder()
                 .nickname(nickname)
