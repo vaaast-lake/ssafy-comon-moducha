@@ -134,11 +134,7 @@ public class LiveService {
                 }
                 Live live = liveOptional.get();
 
-                Optional<TeatimeBoard> teatimeBoardOptional = teatimeBoardRepository.findByLive(live);
-                if (teatimeBoardOptional.isEmpty()) {
-                    return;
-                }
-                TeatimeBoard teatimeBoard = teatimeBoardOptional.get();
+                TeatimeBoard teatimeBoard = live.getTeatimeBoard();
 
                 // 게시글의 작성자와 참가자가 같은지 확인
                 if (teatimeBoard.getUser().getId() != userId) {
