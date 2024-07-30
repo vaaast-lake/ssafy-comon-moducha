@@ -23,53 +23,53 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/shares")
 public class ShareController {
 
-  private final ShareService shareService;
+    private final ShareService shareService;
 
-  @PostMapping
+    @PostMapping
 //   TODO : @PreAuthorize 어노테이션을 사용하여 권한을 확인할 것
 //   @PreAuthorize("hasRole('USER', 'ADMIN')")
-  public ResponseEntity<ResponseDTO<?>> createShareBoard(
-      @Valid @RequestBody ShareCreationRequest request, @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+    public ResponseEntity<ResponseDTO<?>> createShareBoard(
+            @Valid @RequestBody ShareCreationRequest request,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResponseDTO.builder()
+                        .data(shareService.createShareBoard(request, customOAuth2User.getUserId()))
+                        .build());
+    }
 
-    return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ResponseDTO.builder()
-            .data(shareService.createShareBoard(request, customOAuth2User.getUserId()))
-            .build());
-  }
+    @GetMapping("/{shareBoardId}")
+    public ResponseEntity<ResponseDTO<?>> getShareBoard(
+            @PathVariable("shareBoardId") Integer shareBoardId) {
 
-  @GetMapping("/{shareBoardId}")
-  public ResponseEntity<ResponseDTO<?>> getShareBoard(
-      @PathVariable("shareBoardId") Integer shareBoardId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.builder()
+                        .data(shareService.getShareBoard(shareBoardId))
+                        .build());
+    }
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(ResponseDTO.builder()
-            .data(shareService.getShareBoard(shareBoardId))
-            .build());
-  }
+    @PatchMapping("/{shareBoardId}")
+    public ResponseEntity<ResponseDTO<?>> updateShareBoard(
+            @PathVariable("shareBoardId") Integer shareBoardId,
+            @Valid @RequestBody ShareUpdateRequest request,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-  @PatchMapping("/{shareBoardId}")
-  public ResponseEntity<ResponseDTO<?>> updateShareBoard(
-      @PathVariable("shareBoardId") Integer shareBoardId,
-      @Valid @RequestBody ShareUpdateRequest request,
-      @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.builder()
+                        .data(shareService.updateShareBoard(shareBoardId, request, customOAuth2User.getUserId()))
+                        .build());
+    }
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(ResponseDTO.builder()
-            .data(shareService.updateShareBoard(shareBoardId, request, customOAuth2User.getUserId()))
-            .build());
-  }
+    @PatchMapping("/deactivated-shares/{shareBoardId}")
+    public ResponseEntity<ResponseDTO<?>> deactivateShareBoard(
+            @PathVariable("shareBoardId") Integer shareBoardId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-  @PatchMapping("/deactivated-shares/{shareBoardId}")
-  public ResponseEntity<ResponseDTO<?>> deactivateShareBoard(
-      @PathVariable("shareBoardId") Integer shareBoardId,
-      @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.builder()
+                        .data(shareService.deactivateShareBoard(shareBoardId, customOAuth2User.getUserId()))
+                        .build());
+    }
 
-    return ResponseEntity.status(HttpStatus.OK)
-        .body(ResponseDTO.builder()
-            .data(shareService.deactivateShareBoard(shareBoardId, customOAuth2User.getUserId()))
-            .build());
-  }
-
-  // TODO: 나눔 게시판 목록 조회
+    // TODO: 나눔 게시판 목록 조회
 
 }
