@@ -236,15 +236,14 @@ public class LiveService {
         LocalDateTime broadcastDate = teatimeBoard.getBroadcastDate();
         LocalDateTime now = LocalDateTime.now();
 
-        if (broadcastDate.toLocalDate().isEqual(now.toLocalDate())) {
-            // 방송 예정일보다 현재 시간이 전인 경우
-            if (now.isBefore(broadcastDate)) {
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                        TEATIMEBOARD_BEFORE_BROADCAST_DATE.getMessage());
-            }
-        } else {
-            // 방송 예정일이랑 다른 날인 경우
+        // 방송 예정일이랑 다른 날인 경우
+        if (!broadcastDate.toLocalDate().isEqual(now.toLocalDate())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_NOT_BROADCAST_DATE.getMessage());
+        }
+
+        // 방송 예정일보다 현재 시간이 전인 경우
+        if (now.isBefore(broadcastDate)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_BEFORE_BROADCAST_DATE.getMessage());
         }
     }
 
