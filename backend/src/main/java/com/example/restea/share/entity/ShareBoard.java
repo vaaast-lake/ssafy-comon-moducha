@@ -19,11 +19,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
-@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -89,8 +87,11 @@ public class ShareBoard extends BaseTimeEntity {
     this.activated = false;
   }
 
-  public void activate() {
-    this.activated = true;
+  public void update(String title, String content, Integer maxParticipants, LocalDateTime endDate) {
+    this.title = title;
+    this.content = content;
+    this.maxParticipants = maxParticipants;
+    this.endDate = endDate;
   }
 
 }
