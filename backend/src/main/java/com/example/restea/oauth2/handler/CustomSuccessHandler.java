@@ -2,6 +2,7 @@ package com.example.restea.oauth2.handler;
 
 
 import static com.example.restea.oauth2.enums.TokenType.ACCESS;
+import static com.example.restea.oauth2.enums.TokenType.BEARER;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 
 import com.example.restea.oauth2.dto.CustomOAuth2User;
@@ -54,7 +55,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private String createAccessToken(Integer userId, String nickname, String role) {
-        return jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role, ACCESS.getExpiration() * MS_TO_S);
+        return BEARER + jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role, ACCESS.getExpiration() * MS_TO_S);
     }
 
     private String createRefreshToken(Integer userId, String nickname, String role) {

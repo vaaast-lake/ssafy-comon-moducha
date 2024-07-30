@@ -1,8 +1,10 @@
 package com.example.restea.oauth2.jwt;
 
 import static com.example.restea.oauth2.enums.JWTFilterMessage.EXPIRED_ACCESS_TOKEN;
+import static com.example.restea.oauth2.enums.JWTFilterMessage.INVALID_PREFIX;
 import static com.example.restea.oauth2.enums.JWTFilterMessage.NO_ACCESS_TOKEN;
 import static com.example.restea.oauth2.enums.TokenType.ACCESS;
+import static com.example.restea.oauth2.enums.TokenType.BEARER;
 
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.oauth2.dto.OAuth2JwtMemberDTO;
@@ -36,17 +38,44 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = request.getHeader(ACCESS.getType());
-        if (isTokenNull(accessToken, response)) { // Access Token 존재 확인
+        String header = request.getHeader(ACCESS.getType());
+        if (isTokenNull(header, response)) { // Access Token 존재 확인
             return;
         }
 
+        if (invalidPrefix(response, header)) { // 접두사 확인
+            return;
+        }
+
+        String accessToken = extractToken(header);
         if (isTokenInvalid(accessToken, response)) { // 만료되었는지 && 올바른 토큰인지 확인
             return;
         }
 
         setUpAuthentication(accessToken);
         filterChain.doFilter(request, response);
+    }
+
+    // 접두사가 "BEARER "와 일치하는지 확인
+    private boolean invalidPrefix(HttpServletResponse response, String header) throws IOException {
+        String prefix = extractPrefix(header);
+
+        if (prefix.equals(BEARER.getType())) { // 접두사가 일치한다면 false 반환
+            return false;
+        }
+        // 접두사가 일치하지 않는다면 예외 발생        
+        setResponse(response, INVALID_PREFIX.toJson());
+        return true;
+    }
+
+    // 접두사 추출
+    private String extractPrefix(String header) {
+        return header.substring(0, BEARER.getType().length());
+    }
+
+    // 토큰 추출
+    private String extractToken(String header) {
+        return header.substring(BEARER.getType().length());
     }
 
     private boolean isExemptedUri(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -60,8 +89,8 @@ public class JWTFilter extends OncePerRequestFilter {
         return false;
     }
 
-    private boolean isTokenNull(String accessToken, HttpServletResponse response) throws IOException {
-        if (accessToken == null) {
+    private boolean isTokenNull(String header, HttpServletResponse response) throws IOException {
+        if (header == null) {
             setResponse(response, NO_ACCESS_TOKEN.toJson());
             return true;
         }
