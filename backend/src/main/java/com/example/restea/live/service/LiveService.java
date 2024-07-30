@@ -19,9 +19,12 @@ import io.livekit.server.RoomJoin;
 import io.livekit.server.RoomName;
 import io.livekit.server.RoomServiceClient;
 import io.livekit.server.WebhookReceiver;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import livekit.LivekitModels;
 import livekit.LivekitWebhook.WebhookEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,12 +45,20 @@ public class LiveService {
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
 
+    private static final String LIVEKIT_BAD_REQUEST = "Livekit error.";
+
     @Value("${livekit.api.key}")
     private String LIVEKIT_API_KEY;
 
     @Value("${livekit.api.secret}")
     private String LIVEKIT_API_SECRET;
 
+    private RoomServiceClient client;
+
+    @PostConstruct
+    public void init() {
+        this.client = RoomServiceClient.create("http://localhost:7880/", LIVEKIT_API_KEY, LIVEKIT_API_SECRET);
+    }
 
     public boolean isLiveOpen(Integer teatimeBoardId, Integer userId) {
         User user = userRepository.getReferenceById(userId);
@@ -131,11 +142,6 @@ public class LiveService {
                 }
 
                 // 방 지우기
-                RoomServiceClient client = RoomServiceClient.create(
-                        "http://localhost:7880/",
-                        LIVEKIT_API_KEY,
-                        LIVEKIT_API_SECRET);
-
                 Call<Void> deleteCall = client.deleteRoom(liveId);
                 Response<Void> deleteResponse = deleteCall.execute();
 
@@ -149,6 +155,59 @@ public class LiveService {
         }
     }
 
+    public void liveKick(Integer teatimeBoardId, Integer kickUserId, Integer userId) {
+        User user = userRepository.getReferenceById(userId);
+
+        // 티타임 게시글 존재 여부 확인
+        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+
+        // 티타임 게시글 작성자인지 확인
+        checkWriter(teatimeBoard, user);
+
+        // 방송 예정일인지 확인
+        checkBroadCastDate(teatimeBoard);
+
+        // 방송 존재 여부 확인
+        Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Live not found."));
+
+        // 방송에서 강퇴
+        try {
+            Call<Void> deleteCall = client.removeParticipant(live.getId(), kickUserId.toString());
+            Response<Void> deleteResponse = deleteCall.execute();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST);
+        }
+    }
+
+    public void liveMute(Integer teatimeBoardId, Integer muteUserId, String trackSid, Integer userId) {
+        User user = userRepository.getReferenceById(userId);
+
+        // 티타임 게시글 존재 여부 확인
+        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+
+        // 티타임 게시글 작성자인지 확인
+        checkWriter(teatimeBoard, user);
+
+        // 방송 예정일인지 확인
+        checkBroadCastDate(teatimeBoard);
+
+        // 방송 존재 여부 확인
+        Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Live not found."));
+
+        // trackSid에 해당하는 track 음소거
+        try {
+            Call<LivekitModels.TrackInfo> muteCall = client.mutePublishedTrack(live.getId(), muteUserId.toString(),
+                    trackSid,
+                    true);
+            Response<LivekitModels.TrackInfo> muteResponse = muteCall.execute();
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST);
+        }
+    }
 
     // 티타임 게시글 작성자인지 확인하는 메소드
     private void checkWriter(TeatimeBoard teatimeBoard, User user) {
