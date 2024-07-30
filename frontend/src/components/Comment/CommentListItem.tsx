@@ -1,15 +1,23 @@
 import { Comment } from '../../types/CommentType';
+import { BoardType } from '../../types/BoardType';
 import avatarUrl from '../../assets/avatar/test_avatar.png';
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import dateParser from '../../utils/dateParser';
+import CommentReply from './CommentReply';
 
-const CommentListItem = ({
-  commentId,
-  content,
-  createdDate,
-  nickname,
-  replyCount,
-}: Comment) => {
+const CommentListItem = (prop: {
+  boardType: BoardType;
+  commentItem: Comment;
+}) => {
+  const {
+    replyId,
+    nickname,
+    content,
+    createdDate,
+    boardId,
+    commentId,
+    replyCount,
+  } = prop.commentItem;
   return (
     <li>
       <div id="cmt-item" className="flex py-4">
@@ -21,12 +29,12 @@ const CommentListItem = ({
           className="w-11/12 px-2 flex flex-col justify-between"
         >
           <header className="flex justify-between">
-            <span className="font-bold text-lg">{nickname}</span>
+            <span className="font-bold">{nickname}</span>
             <div className="dropdown dropdown-end">
               <button
                 tabIndex={0}
                 role="button"
-                className="size-6 text-gray-500 rounded-full hover:bg-gray-100"
+                className="size-6 text-gray-500 rounded-full hover:bg-gray-100 focus:bg-gray-100"
               >
                 <EllipsisVerticalIcon />
               </button>
@@ -34,9 +42,6 @@ const CommentListItem = ({
                 tabIndex={0}
                 className="dropdown-content menu bg-base-100 rounded-box z-[1] w-20 drop-shadow"
               >
-                <li>
-                  <a>수정</a>
-                </li>
                 <li>
                   <a>삭제</a>
                 </li>
@@ -48,12 +53,17 @@ const CommentListItem = ({
           </article>
           <footer className="mt-2 text-sm text-gray-500 font-light">
             <span>{dateParser(createdDate)}</span>
-            <button className="ml-2 font-medium text-gray-600">답글</button>
+            {boardId && (
+              <button className="ml-2 font-medium text-gray-600">답글</button>
+            )}
           </footer>
         </main>
       </div>
-      <ul id="reply-list"></ul>
-      <hr />
+      <CommentReply
+        boardType={prop.boardType}
+        commentInfo={{ boardId, commentId, replyCount }}
+      />
+      {!!boardId && <hr />}
     </li>
   );
 };
