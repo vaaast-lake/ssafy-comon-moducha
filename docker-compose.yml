@@ -4,11 +4,7 @@
 # 1. 기존의 docker image 삭제 (frontend, backend)
 # 2. react build - npm run clean && npm run build
 # 3. spring build - ./gradlew clean build -x test
-
-# wsl, shell
-# 4. profile 설정 후  compose
-### 4-1. PROFILE=dev docker compose up
-### 4-2. PROFILE=prod docker compose up
+# 4. profile 설정 후  compose - $env:PROFILE = "docker"; docker compose up -d
 
 services:
 
@@ -41,15 +37,16 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     image: backend
+    env_file: '.env'
     restart: 'always'
     environment:
-      MYSQL_HOST: db
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      MYSQL_HOST: ${MYSQL_HOST}
       MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DB: ${MYSQL_DB}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      SPRING_PROFILES_ACTIVE: ${PROFILE}
-      JWT_SECRET: ${JWT_SECRET}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       DDL_AUTO_OPTION: ${DDL_AUTO_OPTION}
       GOOGLE_CLIENT_NAME: ${GOOGLE_CLIENT_NAME}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
