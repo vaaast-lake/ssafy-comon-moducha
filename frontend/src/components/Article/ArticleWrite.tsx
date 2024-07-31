@@ -1,25 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TextEditor from '../../utils/TextEditor/TextEditor';
 import testImageList from '../../constants/uploadImageTest';
 import ArticleImageUpload from './ArticleImageUpload';
 import { ImageList } from '../../types/ArticleType';
 import axiosInstance from '../../api/axiosInstance';
-import { ArticlePost } from '../../types/ArticleType';
 import dayjs from 'dayjs';
 
+const dayJsNow = (time?: string) => dayjs(time).format('YYYY-MM-DDTHH:mm');
+
 const ArticleWrite = () => {
-  const [currentDate, setCurrentDate] = useState(
-    dayjs().format('YYYY-MM-DDTHH:mm:ss')
-  );
+  const [pickedDate, setPickedDate] = useState('');
   const [imageList, setImageList] = useState<ImageList>(testImageList());
   const [content, setContent] = useState('');
-
+  
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
     event.preventDefault();
     const inputData = {
       title: formData.get('articleTitle'),
-      endDate: formData.get('endDate'),
+      endDate: formData.get('endDate') + 'Z',
       content,
     };
     axiosInstance.post('/shares', inputData);
@@ -41,9 +40,11 @@ const ArticleWrite = () => {
           type="datetime-local"
           className="input input-bordered"
           name="endDate"
-          value={currentDate}
-          onChange={() => setCurrentDate(dayjs().format('YYYY-MM-DDTHH:mm:ss'))}
-          min={currentDate}
+          value={pickedDate}
+          onChange={(e) => setPickedDate(dayJsNow(e.target.value))}
+          min={dayJsNow()}
+          step={1}
+          required
         />
         <input
           className="btn text-wood bg-papaya hover:bg-wood hover:text-white"
