@@ -1,5 +1,5 @@
 import { ShareListItem } from '../../../types/ShareType';
-import { UserIcon } from '@heroicons/react/24/outline';
+import { UserIcon, EyeIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 
 const ShareCard = ({
@@ -7,12 +7,13 @@ const ShareCard = ({
   title,
   maxParticipants,
   participants,
+  viewCount
 }: ShareListItem) => {
   return (
     <>
       <Link
         to={`${boardId}`}
-        className="flex bg-base-100 overflow-hidden shadow rounded-lg transition ease-in-out hover:bg-[#E6F9E4] hover:shadow-lg duration-150"
+        className="flex bg-base-100 overflow-hidden shadow rounded-lg transition ease-in-out hover:bg-beige hover:text-wood hover:shadow-lg duration-150"
       >
         <figure className="size-32 shrink-0">
           <img
@@ -23,14 +24,17 @@ const ShareCard = ({
         </figure>
         <article className="flex flex-col w-full p-2 h-32 overflow-hidden">
           <h2 className="font-bold truncate">{title}</h2>
-          <section className="flex items-center pe-2 gap-1">
-            <UserIcon className="inline size-6" />
-            {/* progress바 -> value / max의 비율만큼 표시 */}
-            <progress
-              className="progress progress-success w-full"
-              value={participants}
-              max={maxParticipants}
-            />
+          <section className="flex items-center gap-3">
+            <div>
+              <UserIcon className="inline size-4" />
+              <span className="text-sm">
+                {participants} / {maxParticipants}
+              </span>
+            </div>
+            <div>
+              <EyeIcon className="inline size-4" />
+              <span className="text-sm ms-1">{viewCount}</span>
+            </div>
           </section>
         </article>
       </Link>
