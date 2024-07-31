@@ -14,24 +14,21 @@ const CommentReply = (prop: {
   boardType: BoardType;
   commentInfo: CommentInfo;
 }) => {
-  const { boardId, commentId, replyCount } = prop.commentInfo;
-  if (!replyCount) return null;
+  const { boardId, commentId } = prop.commentInfo;
   const defaultParams = {
     boardType: prop.boardType,
     boardId,
     commentId,
     page: 1,
-    limit: 12,
+    perPage: 10,
   };
 
   const [fetchParams, setFetchParams] = useState(defaultParams);
   const [replyList, setReplyList] = useState(mockReply.data);
   useEffect(() => {
-    if (!fetchParams.boardId) {
-      fetchReplyList(fetchParams).then((res) => setReplyList(res.data));
-    }
+    // 재귀호출된 경우 fetch 방지
+    fetchReplyList(fetchParams).then((res) => setReplyList(res.data));
   });
-
   return (
     <div id="reply-list">
       <div>

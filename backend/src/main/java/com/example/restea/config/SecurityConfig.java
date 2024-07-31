@@ -4,7 +4,6 @@ import com.example.restea.oauth2.handler.CustomSuccessHandler;
 import com.example.restea.oauth2.jwt.CustomLogoutFilter;
 import com.example.restea.oauth2.jwt.JWTFilter;
 import com.example.restea.oauth2.jwt.JWTUtil;
-import com.example.restea.oauth2.repository.AuthTokenRepository;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.oauth2.service.CustomOAuth2UserService;
 import com.example.restea.user.repository.UserRepository;
@@ -30,7 +29,6 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
-    private final AuthTokenRepository authTokenRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -78,8 +76,6 @@ public class SecurityConfig {
 
         http
                 .oauth2Login((oauth2) -> oauth2
-                        // 커스텀 로그인 페이지 추가
-                        .loginPage("/login")
                         .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)))
                         .successHandler(customSuccessHandler)
@@ -90,8 +86,7 @@ public class SecurityConfig {
           SpringSecurity의 LogoutFilter가 작동하기 전에 RefreshToken을 제거하는 필터를 추가하는 것
          */
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository, userRepository,
-                                authTokenRepository),
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository, userRepository),
                         LogoutFilter.class);
 
         // 로그아웃 설정

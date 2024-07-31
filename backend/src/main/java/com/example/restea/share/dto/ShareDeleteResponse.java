@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 public class ShareDeleteResponse {
-  private final Integer boardId;
+        private final Integer boardId;
 
-  @Builder
-  public ShareDeleteResponse(Integer boardId) {
-    this.boardId = boardId;
-  }
+        @Builder
+        public ShareDeleteResponse(Integer boardId) {
+                this.boardId = boardId;
+        }
 
 }

@@ -1,21 +1,51 @@
 import { Link, useNavigate } from 'react-router-dom';
-import navModucha from '/logo/nav-moducha.svg'
+import navModucha from '/logo/nav-moducha.svg';
 import useAuthStore from '../../stores/authStore';
 
 const NavBar = () => {
-  const { isLoggedIn, setLoggedIn } = useAuthStore();
+  const { isLoggedIn, setLoggedIn, setCurrentUsername } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
     navigate('/login');
   };
 
-  const handleLogoutClick = () => {
-    setLoggedIn(false);
-    console.log('로그아웃(at AuthStore)-추후 API /logout으로 구현 추가하세요');
-    navigate('/');
-  };
+  const handleLogoutClick = async () => {
+    try {
+      const accessToken = localStorage.getItem('authorization');
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
 
+      const response = await fetch(
+        import.meta.env.VITE_API_URL + '/api/v1/logout',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Logout failed');
+      }
+      // 성공적으로 로그아웃 처리
+      setLoggedIn(false);
+      setCurrentUsername('');
+      localStorage.removeItem('authorization');
+      console.log(
+        '로그아웃(at AuthStore)-추후 API /logout으로 구현 추가하세요'
+      );
+
+      // 홈으로 리디렉션
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // 사용자에게 에러 메시지 표시하거나 추가 처리
+    }
+  };
   return (
     <div className="flex justify-center border-b-2 border-[#eee]">
       {/* border-bottom: 2px solid #EEE; */}

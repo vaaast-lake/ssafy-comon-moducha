@@ -9,15 +9,8 @@ const CommentListItem = (prop: {
   boardType: BoardType;
   commentItem: Comment;
 }) => {
-  const {
-    replyId,
-    nickname,
-    content,
-    createdDate,
-    boardId,
-    commentId,
-    replyCount,
-  } = prop.commentItem;
+  const { nickName, content, createdDate, boardId, commentId, replyCount } =
+    prop.commentItem;
   return (
     <li>
       <div id="cmt-item" className="flex py-4">
@@ -29,7 +22,7 @@ const CommentListItem = (prop: {
           className="w-11/12 px-2 flex flex-col justify-between"
         >
           <header className="flex justify-between">
-            <span className="font-bold">{nickname}</span>
+            <span className="font-bold">{nickName}</span>
             <div className="dropdown dropdown-end">
               <button
                 tabIndex={0}
@@ -59,10 +52,12 @@ const CommentListItem = (prop: {
           </footer>
         </main>
       </div>
-      <CommentReply
-        boardType={prop.boardType}
-        commentInfo={{ boardId, commentId, replyCount }}
-      />
+      {!!replyCount && (
+        <CommentReply
+          boardType={prop.boardType}
+          commentInfo={{ boardId, commentId, replyCount }}
+        />
+      )}
       {!!boardId && <hr />}
     </li>
   );

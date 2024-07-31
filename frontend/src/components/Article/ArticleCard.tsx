@@ -1,8 +1,7 @@
 import { ShareDetailItem } from '../../types/ShareType';
+import dateParser from '../../utils/dateParser';
 const ArticleCard = ({
-  title,
-  content,
-  nickname,
+  nickName,
   createdDate,
   endDate,
   viewCount,
@@ -18,13 +17,13 @@ const ArticleCard = ({
       <div id="card-body">
         <header>
           <div className="flex gap-1">
-            <span>{nickname}</span>|<span>조회 {viewCount}</span>
+            <span>{nickName}</span>|<span>조회 {viewCount}</span>
           </div>
         </header>
         <div className="pl-0 flex flex-col">
-          <span>작성 : {createdDate}</span>
+          <span>작성 : {dateParser(createdDate)}</span>
           <span>신청 : {participants + ' / ' + maxParticipants}</span>
-          <span id="share-end_date">기간 : {endDate}</span>
+          <span id="share-end_date">기한 : {dateParser(endDate)}</span>
         </div>
       </div>
       <button className="btn bg-success hover:bg-rose-500 text-white">

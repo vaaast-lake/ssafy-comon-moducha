@@ -1,3 +1,1 @@
-export interface BoardType {
-  boardType: 'shares' | 'teatimes';
-}
+export type BoardType = 'shares' | 'teatimes';

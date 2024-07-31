@@ -3,13 +3,15 @@ const genShareListItems = () => {
   const shareItems = [];
   for (let i = 1; i < 13; i++) {
     const shareItem = {
-      shareBoardId: i,
+      boardId: i,
       title: 'Post Title ' + i,
       createdDate: '2023-07-01T12:00:00Z',
       lastUpdated: '2023-07-10T15:00:00Z',
       endDate: '2023-07-10T15:00:00Z',
       maxParticipants: 2 + i,
       participants: 1 + i,
+      nickName: '엄준식',
+      viewCount: i + 10,
     };
     shareItems.push(shareItem);
   }
@@ -18,19 +20,17 @@ const genShareListItems = () => {
 
 export const shareResponse = {
   message: '200 OK',
-  data: {
-    pagination: {
-      total: 25,
-      page: 1,
-      perPage: 10,
-    },
-    items: genShareListItems(),
+  pagination: {
+    total: 25,
+    page: 1,
+    perPage: 10,
   },
+  data: genShareListItems(),
 };
 
 export const ShareDetailResponse = {
   data: {
-    shareBoardId: 1,
+    boardId: 1,
     title: '보성녹차 나눔합니다~~',
     content:
       '되벤어사 구븜소잣눌은 라리가하 러락호의 셔구로 마암지 디다거믄가솹으묘, 옥쇤요사는 앗뮬너어 저말티. 여몽옴아 리서를, 챌배를 가낭쇱으면서, 챡녀던 뫼놈소온 사얍걸딘줜신에 돌옹아울은. 언셔스에에 빨지구아게 으강갠어 으히아이 아혀힣잉과, 마오구라. 사지조뚱어서 나홀안번으며 깄세넘의, 힉소한려적을 커를 믄흐 섹리데다. 제른이어 버알으똘라 므바호며 오멪보벼가 번삼딴 재헤는 그므. 시호징갠을 여멈 비추상기 토멘시다 졍셔히, 젬잠묑부바 갤는사는 거댐이 단놜당창야.',
@@ -40,6 +40,6 @@ export const ShareDetailResponse = {
     endDate: '2023-07-19T23:59:59Z',
     viewCount: 100,
     participants: 30, // 현재 참가자
-    nickname: '홍길동',
+    nickName: '홍길동',
   },
 };

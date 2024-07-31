@@ -22,17 +22,17 @@ import org.hibernate.annotations.DynamicInsert;
 @DynamicInsert
 @Table(name = "live")
 public class Live extends BaseTimeEntity {
-  @Id
-  @Column(name = "live_id", updatable = false, nullable = false)
-  private String id;
+    @Id
+    @Column(name = "live_id", updatable = false, nullable = false)
+    private String id;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "teatime_board_id", nullable = false, insertable = false, updatable = false)
-  private TeatimeBoard teatimeBoard;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teatime_board_id", nullable = false, updatable = false)
+    private TeatimeBoard teatimeBoard;
 
-  @Builder
-  public Live(TeatimeBoard teatimeBoard) {
-    this.id = UUID.randomUUID().toString();
-    this.teatimeBoard = teatimeBoard;
-  }
+    @Builder
+    public Live(TeatimeBoard teatimeBoard) {
+        this.id = UUID.randomUUID().toString();
+        this.teatimeBoard = teatimeBoard;
+    }
 }

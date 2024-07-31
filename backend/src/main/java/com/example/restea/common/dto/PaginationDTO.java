@@ -11,15 +11,15 @@ import lombok.ToString;
 @Getter
 @ToString
 public class PaginationDTO {
-  private int total;
-  private int page;
-  private int perPage;
+    private int total;
+    private int page;
+    private int perPage;
 
-  @Builder
-  public PaginationDTO(int total, int page, int perPage) {
-    this.total = total;
-    this.page = page;
-    this.perPage = perPage;
-  }
+    @Builder
+    public PaginationDTO(int total, int page, int perPage) {
+        this.total = total;
+        this.page = page;
+        this.perPage = perPage;
+    }
 
 }

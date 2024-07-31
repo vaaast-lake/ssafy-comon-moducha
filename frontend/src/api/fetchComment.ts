@@ -5,7 +5,7 @@ interface CommentRequestOption {
   boardType: BoardType;
   boardId?: number;
   page: number;
-  limit: number;
+  perPage: number;
 }
 
 interface ReplyRequestOption extends CommentRequestOption {
@@ -16,10 +16,10 @@ export const fetchCommentList = ({
   boardType,
   boardId,
   page,
-  limit,
+  perPage,
 }: CommentRequestOption) => {
   return axiosInstance.get(`/${boardType}/${boardId}/comments`, {
-    params: { page, limit },
+    params: { page, perPage },
   });
 };
 
@@ -28,12 +28,12 @@ export const fetchReplyList = ({
   boardId,
   commentId,
   page,
-  limit,
+  perPage,
 }: ReplyRequestOption) => {
   return axiosInstance.get(
     `/${boardType}/${boardId}/comments/${commentId}/replies`,
     {
-      params: { page, limit },
+      params: { page, perPage },
     }
   );
 };
