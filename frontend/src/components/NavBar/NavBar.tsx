@@ -17,20 +17,20 @@ const NavBar = () => {
         throw new Error('No access token found');
       }
 
-      const response = await fetch(
-        import.meta.env.VITE_API_URL + '/api/v1/logout',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+      // const response = await fetch(
+      //   import.meta.env.VITE_API_URL + '/api/v1/logout',
+      //   {
+      //     method: 'POST',
+      //     headers: {
+      //       Authorization: `Bearer ${accessToken}`,
+      //       'Content-Type': 'application/json',
+      //     },
+      //   }
+      // );
 
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
+      // if (!response.ok) {
+      //   throw new Error('Logout failed');
+      // }
       // 성공적으로 로그아웃 처리
       setLoggedIn(false);
       setCurrentUsername('');
