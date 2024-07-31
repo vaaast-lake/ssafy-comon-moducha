@@ -38,11 +38,11 @@ public class TeatimeParticipant extends BaseTimeEntity {
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teatime_board_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "teatime_board_id", updatable = false, nullable = false)
     private TeatimeBoard teatimeBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @Builder

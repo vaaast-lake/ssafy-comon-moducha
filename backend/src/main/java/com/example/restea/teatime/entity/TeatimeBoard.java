@@ -57,7 +57,7 @@ public class TeatimeBoard extends BaseTimeEntity {
     private Boolean activated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "teatimeBoard") // 글 비활성화 시  댓글 비활성화
@@ -67,7 +67,8 @@ public class TeatimeBoard extends BaseTimeEntity {
     private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
 
     @Builder
-    public TeatimeBoard(String title, String content, LocalDateTime broadcastDate, Integer maxParticipants, LocalDateTime endDate, User user) {
+    public TeatimeBoard(String title, String content, LocalDateTime broadcastDate, Integer maxParticipants,
+                        LocalDateTime endDate, User user) {
         this.title = title;
         this.content = content;
         this.broadcastDate = broadcastDate;
