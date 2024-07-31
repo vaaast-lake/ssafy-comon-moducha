@@ -21,7 +21,6 @@ const editorConfig = {
       'selectAll',
       '|',
       'fontSize',
-      'fontFamily',
       'fontColor',
       'fontBackgroundColor',
       '|',
@@ -53,7 +52,7 @@ const editorConfig = {
   },
   initialData: '',
   language: 'ko',
-  placeholder: '',
+  placeholder: '본문을 입력하세요',
   translations: [translations],
 };
 export default editorConfig;
