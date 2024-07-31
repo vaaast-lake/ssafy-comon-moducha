@@ -109,24 +109,20 @@ public class User extends BaseTimeEntity {
         this.refreshToken = null;
     }
 
-    public void deleteAuthToken() {
-        this.authToken = null;
+    @Builder
+    public User(String nickname, String authId, AuthToken authToken) {
+        this.nickname = nickname;
+        this.authId = authId;
+        this.authToken = authToken;
     }
 
-  @Builder
-  public User(String nickname, String authId, AuthToken authToken) {
-    this.nickname = nickname;
-    this.authId = authId;
-    this.authToken = authToken;
-  }
+    // 보여질 닉네임을 반환하는 메소드
+    public String getExposedNickname() {
+        return activated ? nickname : "탈퇴한 유저";
+    }
 
-  // 보여질 닉네임을 반환하는 메소드
-  public String getExposedNickname() {
-    return activated ? nickname : "탈퇴한 유저";
-  }
-
-  public void deactivate() {
-    this.activated = false;
-  }
+    public void deactivate() {
+        this.activated = false;
+    }
 
 }

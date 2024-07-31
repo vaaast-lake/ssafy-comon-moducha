@@ -2,8 +2,6 @@ package com.example.restea.oauth2.jwt;
 
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 
-import com.example.restea.oauth2.entity.AuthToken;
-import com.example.restea.oauth2.repository.AuthTokenRepository;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
@@ -31,7 +29,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
     private final JWTUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
-    private final AuthTokenRepository authTokenRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -95,10 +92,9 @@ public class CustomLogoutFilter extends GenericFilterBean {
     @Transactional
     protected void processLogout(HttpServletResponse response, String refreshToken) {
         User user = findUserByRefreshToken(refreshToken);
-        AuthToken authToken = user.getAuthToken();
 
-        clearUserTokens(user); // User에서 토큰 삭제
-        handleTokens(refreshToken, authToken); // authToken삭제, refresh Token revoke 처리
+        clearUserRefreshToken(user); // User에서 리프레시 토큰 삭제
+        refreshTokenRepository.revokeByValue(refreshToken); // refresh Token revoke 처리
 
         // 쿠키 삭제
         clearRefreshTokenCookie(response);
@@ -106,14 +102,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
     }
 
     @Transactional
-    protected void handleTokens(String refreshToken, AuthToken authToken) {
-        authTokenRepository.delete(authToken);
-        refreshTokenRepository.revokeByValue(refreshToken);
-    }
-
-    @Transactional
-    protected void clearUserTokens(User user) {
-        user.deleteAuthToken();
+    protected void clearUserRefreshToken(User user) {
         user.deleteRefreshToken();
         userRepository.save(user); // User 변경
     }
