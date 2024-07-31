@@ -12,13 +12,14 @@ const ArticleWrite = () => {
   const [pickedDate, setPickedDate] = useState('');
   const [imageList, setImageList] = useState<ImageList>(testImageList());
   const [content, setContent] = useState('');
-  
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const formData = new FormData(event.currentTarget);
     event.preventDefault();
     const inputData = {
-      title: formData.get('articleTitle'),
+      title: formData.get('title'),
       endDate: formData.get('endDate') + 'Z',
+      maxParticipants: formData.get('maxParticipants'),
       content,
     };
     axiosInstance.post('/shares', inputData);
@@ -27,31 +28,47 @@ const ArticleWrite = () => {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <ArticleImageUpload imageList={imageList} />
       <header className="flex items-center justify-between gap-2">
-        <input
-          className="input input-bordered w-full md:w-1/2"
-          type="text"
-          placeholder="제목을 입력하세요"
-          name="articleTitle"
-          required
-        />
-        <input
-          type="datetime-local"
-          className="input input-bordered"
-          name="endDate"
-          value={pickedDate}
-          onChange={(e) => setPickedDate(dayJsNow(e.target.value))}
-          min={dayJsNow()}
-          step={1}
-          required
-        />
+        <label className="input input-bordered w-full md:w-1/2 items-center flex gap-2">
+          <span className="pr-2 border-r-2">제목</span>
+          <input
+            className="grow w-4"
+            type="text"
+            placeholder="제목을 입력하세요"
+            name="title"
+            required
+          />
+        </label>
         <input
           className="btn text-wood bg-papaya hover:bg-wood hover:text-white"
           type="submit"
           value="작성하기"
         />
       </header>
+      <ArticleImageUpload imageList={imageList} />
+      <label className="input input-bordered w-full md:w-1/2 flex items-center gap-2">
+        <span className="pr-2 border-r-2">마감</span>
+        <input
+          className="grow w-4"
+          type="datetime-local"
+          name="endDate"
+          value={pickedDate}
+          onChange={(e) => setPickedDate(e.target.value)}
+          min={dayJsNow()}
+          step={1}
+          required
+        />
+      </label>
+      <label className="input input-bordered w-full md:w-1/2 flex items-center gap-2">
+        <span className="pr-2 border-r-2">인원</span>
+        <input
+          className="grow w-4"
+          type="number"
+          name="maxParticipants"
+          min={1}
+          required
+        />
+      </label>
       <TextEditor setInput={setContent} />
     </form>
   );
