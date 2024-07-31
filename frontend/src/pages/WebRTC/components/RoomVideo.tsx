@@ -1,6 +1,8 @@
 import { LocalVideoTrack, RemoteVideoTrack } from 'livekit-client';
 import './VideoComponent.css';
 import { useEffect, useRef } from 'react';
+import axios from 'axios';
+import useConfigureUrls from '../../../hooks/useConfigureUrls';
 
 interface VideoComponentProps {
   track: LocalVideoTrack | RemoteVideoTrack;
@@ -14,6 +16,24 @@ export default function RoomVideo({
   local = false,
 }: VideoComponentProps) {
   const videoElement = useRef<HTMLVideoElement | null>(null);
+  const { APPLICATION_SERVER_URL } = useConfigureUrls();
+
+  const handleKickUser = () => {
+    axios({
+      method: 'post',
+      url: `${APPLICATION_SERVER_URL}/teatimes/6/lives/kick/1`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: `${participantIdentity}`,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     if (videoElement.current) {
@@ -33,6 +53,12 @@ export default function RoomVideo({
         <p>{participantIdentity + (local ? ' (You)' : '')}</p>
       </div>
       <video ref={videoElement} id={track.sid}></video>
+      <button
+        className="bg-gray-500 text-white px-4 py-1 rounded ml-2 hover:bg-gray-600"
+        onClick={handleKickUser}
+      >
+        KICK
+      </button>
     </div>
   );
 }
