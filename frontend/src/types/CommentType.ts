@@ -6,7 +6,7 @@ export interface Comment {
   boardId?: number;
   content: string;
   createdDate: string;
-  nickname: string;
+  nickName: string;
   replyCount?: number;
 }
 
@@ -20,5 +20,5 @@ export interface ReplyDTO {
   replyId: number;
   content: string;
   createdDate: string;
-  nickname: string;
+  nickName: string;
 }

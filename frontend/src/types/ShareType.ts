@@ -8,6 +8,8 @@ export interface ShareListItem {
   endDate: string;
   maxParticipants: number;
   participants: number;
+  nickName: string;
+  viewCount: number;
 }
 
 export interface ShareDTO {
@@ -19,8 +21,6 @@ export interface ShareDTO {
 // 상속
 export interface ShareDetailItem extends ShareListItem {
   content: string;
-  viewCount: number;
-  nickname: string;
 }
 
 export interface ShareDetail {

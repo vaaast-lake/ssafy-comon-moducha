@@ -1,5 +1,5 @@
+import ArticleWrite from '../../components/Article/ArticleWrite';
 import TitleCard from '../../components/Title/TitleCard';
-import TextEditor from '../../utils/TextEditor/TextEditor';
 
 const ShareWrite = () => {
   return (
@@ -11,7 +11,7 @@ const ShareWrite = () => {
             <span className="text-disabled">나눔 글쓰기</span>
           </TitleCard>
           <hr />
-          <TextEditor />
+          <ArticleWrite />
         </main>
         <aside className="hidden md:flex col-span-2"></aside>
       </div>
