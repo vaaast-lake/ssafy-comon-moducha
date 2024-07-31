@@ -4,6 +4,8 @@ import { devtools } from 'zustand/middleware';
 interface AuthState {
   isLoggedIn: boolean;
   setLoggedIn: (status: boolean) => void;
+  currentUsername: string;
+  setCurrentUsername: (username: string) => void;
 }
 
 const useAuthStore = create<AuthState>()(
