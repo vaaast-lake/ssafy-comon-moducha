@@ -1,5 +1,6 @@
 import './LoginPage.css';
 import LoginModal from './LoginModal';
+import LoginImg from '/LoginImg.png';
 
 const isLoggedIn = false; // 테스트용. 로직 구현 끝나면 zustand에서 초기화예정
 const imgSrc =
@@ -9,9 +10,11 @@ const LoginPage = () => {
     <>
       <div className="login-container">
         <div className="image-container">
-          <img src={imgSrc} alt="Login Background" />
+          {/* <img src={imgSrc} alt="Login Background" /> */}
+          <img src={LoginImg} alt="Login Background" />
         </div>
         <div className="button-container">
+          <div className="login-title">Login</div>
           <div className="google-button">
             {isLoggedIn ? (
               <div>
