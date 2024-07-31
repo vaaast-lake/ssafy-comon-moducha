@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum JWTFilterMessage {
     EXPIRED_ACCESS_TOKEN("Access Token이 만료되었습니다.", "expired"),
-    NO_ACCESS_TOKEN("Access Token이 아닙니다.", "invalid");
+    NO_ACCESS_TOKEN("Access Token이 아닙니다.", "invalid"),
+    INVALID_PREFIX("올바른 접두사가 아닙니다.", "invalidPrefix");
 
 
     private final String message;

@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import navModucha from '/logo/nav-moducha.svg'
+import navModucha from '/logo/nav-moducha.svg';
 import useAuthStore from '../../stores/authStore';
 
 const NavBar = () => {
@@ -12,6 +12,7 @@ const NavBar = () => {
 
   const handleLogoutClick = () => {
     setLoggedIn(false);
+    localStorage.removeItem('authorization');
     console.log('로그아웃(at AuthStore)-추후 API /logout으로 구현 추가하세요');
     navigate('/');
   };

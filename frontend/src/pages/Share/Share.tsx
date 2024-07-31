@@ -7,6 +7,7 @@ import { shareResponse } from '../../constants/shareResponseTest';
 import { ShareListItem } from '../../types/ShareType';
 import { fetchShareList } from '../../api/fetchShare';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Share = () => {
   const [shareList, setShareList] = useState(shareResponse.data);
@@ -25,7 +26,7 @@ const Share = () => {
   });
 
   return (
-    <div className="grid grid-cols-12 h-screen">
+    <div className="grid grid-cols-12">
       {/* 좌측 사이드바 영역 */}
       <aside className="hidden lg:flex col-span-2"></aside>
       <main
@@ -33,7 +34,14 @@ const Share = () => {
         className="col-span-12 m-5 lg:col-span-8 flex flex-col gap-4"
       >
         <header>
-          <TitleCard>나눔</TitleCard>
+          <TitleCard>
+            <div className="flex justify-between items-center">
+              <span className="text-disabled">나눔</span>
+              <Link to={'write'} className="btn btn-sm text-wood bg-papaya">
+                글쓰기
+              </Link>
+            </div>
+          </TitleCard>
           <div className="divider"></div>
           <div className="flex justify-between">
             <ShareHeader {...{ sort, setSort }} />

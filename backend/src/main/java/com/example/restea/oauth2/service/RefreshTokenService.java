@@ -1,5 +1,7 @@
 package com.example.restea.oauth2.service;
 
+import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
+
 import com.example.restea.oauth2.entity.RefreshToken;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.user.entity.User;
@@ -20,13 +22,12 @@ public class RefreshTokenService {
     private final UserRepository userRepository;
 
     private static final String SEOUL = "Asia/Seoul";
-    private static final String USER_NOT_FOUND = "유저 정보가 없습니다.";
 
     @Transactional
     public void addRefreshToken(Integer userId, String value, Long expiredMs) {
         RefreshToken refreshToken = getRefreshToken(value, expiredMs);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND));
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
 
         // 연관관계 매핑을 위해 User에 RefreshToken 추가
         user.addRefreshToken(refreshToken);
