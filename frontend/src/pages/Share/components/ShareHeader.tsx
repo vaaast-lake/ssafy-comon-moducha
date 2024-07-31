@@ -6,13 +6,14 @@ import {
 } from '@headlessui/react';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Dispatch, SetStateAction } from 'react';
+import TabToggleButton from '../../../components/Button/TabToggleButton';
 
 interface Prop {
-  sortOption: string;
-  setSortOption: Dispatch<SetStateAction<string>>;
+  sort: string;
+  setSort: Dispatch<SetStateAction<string>>;
 }
 
-const ShareHeader = ({ sortOption, setSortOption }: Prop) => {
+const ShareHeader = ({ sort, setSort }: Prop) => {
   return (
     <>
       <Disclosure as="div" className="justify-between w-full">
@@ -32,25 +33,21 @@ const ShareHeader = ({ sortOption, setSortOption }: Prop) => {
           <div className="hidden md:block">
             <ShareHeaderSearch className="join" />
           </div>
-          <div className="flex justify-around">
-            <button
-              className={
-                'hover:bg-tea rounded-full px-2 ' +
-                (sortOption === 'latest' ? 'bg-tea' : '')
-              }
-              onClick={() => setSortOption('latest')}
+          <div className="flex gap-2 items-center">
+            <TabToggleButton
+              value={sort}
+              toggleOption="latest"
+              onClick={() => setSort('latest')}
             >
               최신 순
-            </button>
-            <button
-              className={
-                'hover:bg-tea rounded-full px-2 ' +
-                (sortOption === 'deadline' ? 'bg-tea' : '')
-              }
-              onClick={() => setSortOption('deadline')}
+            </TabToggleButton>
+            <TabToggleButton
+              value={sort}
+              toggleOption="urgent"
+              onClick={() => setSort('urgent')}
             >
               마감일 순
-            </button>
+            </TabToggleButton>
           </div>
         </div>
 

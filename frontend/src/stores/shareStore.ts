@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import { ShareListItem, ShareList } from '../types/ShareType';
+import { ShareListItem, ShareDTO } from '../types/ShareType';
 
 interface ShareState {
   shareList: ShareListItem[];
-  setShareList: (fetchedShareList: ShareList) => void;
+  setShareList: (fetchedShareList: ShareDTO) => void;
 }
 
 export const useShareStore = create<ShareState>((set) => ({

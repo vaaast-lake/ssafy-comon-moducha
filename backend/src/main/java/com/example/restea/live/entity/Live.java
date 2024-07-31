@@ -8,8 +8,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -18,12 +20,19 @@ import org.hibernate.annotations.DynamicInsert;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
+@Table(name = "live")
 public class Live extends BaseTimeEntity {
-  @Id
-  @Column(name = "live_id")
-  private String id = UUID.randomUUID().toString();
+    @Id
+    @Column(name = "live_id", updatable = false, nullable = false)
+    private String id;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "teatime_board_id", nullable = false, insertable = false, updatable = false)
+    private TeatimeBoard teatimeBoard;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "teatime_board_id")
-  private TeatimeBoard teatimeBoard;
+    @Builder
+    public Live(TeatimeBoard teatimeBoard) {
+        this.id = UUID.randomUUID().toString();
+        this.teatimeBoard = teatimeBoard;
+    }
 }

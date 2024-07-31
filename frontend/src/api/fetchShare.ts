@@ -1,11 +1,11 @@
 import axiosInstance from './axios';
 
-export const fetchShareList = (sort: string, page: number, limit: number) => {
+export const fetchShareList = (sort: string, page: number, perPage: number) => {
   return axiosInstance.get('/shares', {
-    params: { sort, page, limit },
+    params: { sort, page, perPage },
   });
 };
 
-export const fetchShareDetail = (shareId: string | undefined) => {
+export const fetchShareDetail = (shareId: string) => {
   return axiosInstance.get(`/shares/${shareId}`);
 };

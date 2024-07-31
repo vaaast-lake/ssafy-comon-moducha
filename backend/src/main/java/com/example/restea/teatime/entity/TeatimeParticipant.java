@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -37,10 +38,19 @@ public class TeatimeParticipant extends BaseTimeEntity {
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teatime_board_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "teatime_board_id", updatable = false, nullable = false)
     private TeatimeBoard teatimeBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
+
+    @Builder
+    public TeatimeParticipant(String name, String phone, String address, TeatimeBoard teatimeBoard, User user) {
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.teatimeBoard = teatimeBoard;
+        this.user = user;
+    }
 }

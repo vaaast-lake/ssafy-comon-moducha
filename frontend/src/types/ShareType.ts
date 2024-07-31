@@ -1,4 +1,4 @@
-import { Pagination } from './PaginationType';
+import { PaginationDTO } from './PaginationType';
 
 export interface ShareListItem {
   shareBoardId: number;
@@ -8,21 +8,19 @@ export interface ShareListItem {
   endDate: string;
   maxParticipants: number;
   participants: number;
+  nickName: string;
+  viewCount: number;
 }
 
-export interface ShareList {
+export interface ShareDTO {
   message: string;
-  data: {
-    pagination: Pagination;
-    items: ShareListItem[];
-  };
+  pagination: PaginationDTO;
+  data: ShareListItem[];
 }
 
 // 상속
 export interface ShareDetailItem extends ShareListItem {
   content: string;
-  viewCount: number;
-  nickname: string;
 }
 
 export interface ShareDetail {

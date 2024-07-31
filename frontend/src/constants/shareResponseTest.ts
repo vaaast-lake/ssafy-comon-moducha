@@ -10,6 +10,8 @@ const genShareListItems = () => {
       endDate: '2023-07-10T15:00:00Z',
       maxParticipants: 2 + i,
       participants: 1 + i,
+      nickName: '엄준식',
+      viewCount: i + 10,
     };
     shareItems.push(shareItem);
   }
@@ -18,14 +20,12 @@ const genShareListItems = () => {
 
 export const shareResponse = {
   message: '200 OK',
-  data: {
-    pagination: {
-      total: 25,
-      page: 1,
-      perPage: 10,
-    },
-    items: genShareListItems(),
+  pagination: {
+    total: 25,
+    page: 1,
+    perPage: 10,
   },
+  data: genShareListItems(),
 };
 
 export const ShareDetailResponse = {
@@ -40,6 +40,6 @@ export const ShareDetailResponse = {
     endDate: '2023-07-19T23:59:59Z',
     viewCount: 100,
     participants: 30, // 현재 참가자
-    nickname: '홍길동',
+    nickName: '홍길동',
   },
 };

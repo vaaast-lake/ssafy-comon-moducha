@@ -19,11 +19,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
-@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -58,8 +56,6 @@ public class ShareBoard extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)
-// TODO : why insertable = false, updatable = false?
-//    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "shareBoard") // 글 비활성화 시  댓글 비활성화
@@ -70,18 +66,32 @@ public class ShareBoard extends BaseTimeEntity {
 
     @Builder
     public ShareBoard
-        (String title, String content, Integer maxParticipants, LocalDateTime endDate, User user) {
+            (String title, String content, Integer maxParticipants, LocalDateTime endDate, User user) {
         this.title = title;
         this.content = content;
         this.maxParticipants = maxParticipants;
         this.endDate = endDate;
         this.user = user;
-        this.viewCount = 0;
-        this.activated = true;
     }
 
     public ShareBoard addUser(User user) {
         this.user = user;
         return this;
     }
+
+    public void addViewCount() {
+        this.viewCount++;
+    }
+
+    public void deactivate() {
+        this.activated = false;
+    }
+
+    public void update(String title, String content, Integer maxParticipants, LocalDateTime endDate) {
+        this.title = title;
+        this.content = content;
+        this.maxParticipants = maxParticipants;
+        this.endDate = endDate;
+    }
+
 }

@@ -2,8 +2,6 @@ package com.example.restea.oauth2.jwt;
 
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 
-import com.example.restea.oauth2.entity.AuthToken;
-import com.example.restea.oauth2.repository.AuthTokenRepository;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
@@ -19,6 +17,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.filter.GenericFilterBean;
 
 @RequiredArgsConstructor
@@ -30,7 +29,6 @@ public class CustomLogoutFilter extends GenericFilterBean {
     private final JWTUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
-    private final AuthTokenRepository authTokenRepository;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -91,25 +89,20 @@ public class CustomLogoutFilter extends GenericFilterBean {
         return !refreshTokenRepository.existsByValue(refreshToken);
     }
 
-    private void processLogout(HttpServletResponse response, String refreshToken) {
+    @Transactional
+    protected void processLogout(HttpServletResponse response, String refreshToken) {
         User user = findUserByRefreshToken(refreshToken);
-        AuthToken authToken = user.getAuthToken();
 
-        clearUserTokens(user); // User에서 토큰 삭제
-        deleteTokens(refreshToken, authToken); // 토큰을 DB에서 삭제
+        clearUserRefreshToken(user); // User에서 리프레시 토큰 삭제
+        refreshTokenRepository.revokeByValue(refreshToken); // refresh Token revoke 처리
 
         // 쿠키 삭제
         clearRefreshTokenCookie(response);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
-    private void deleteTokens(String refreshToken, AuthToken authToken) {
-        authTokenRepository.delete(authToken);
-        refreshTokenRepository.deleteByValue(refreshToken);
-    }
-
-    private void clearUserTokens(User user) {
-        user.deleteAuthToken();
+    @Transactional
+    protected void clearUserRefreshToken(User user) {
         user.deleteRefreshToken();
         userRepository.save(user); // User 변경
     }

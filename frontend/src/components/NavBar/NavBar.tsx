@@ -1,9 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../../stores/authStore';
 import navModucha from '/logo/nav-moducha.svg';
+import useAuthStore from '../../stores/authStore';
 
 const NavBar = () => {
-  const { isLoggedIn, logout } = useAuthStore();
+  const { isLoggedIn, setLoggedIn } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
@@ -11,15 +11,16 @@ const NavBar = () => {
   };
 
   const handleLogoutClick = () => {
-    logout();
-    console.log('로그아웃(at AuthStore)');
+    setLoggedIn(false);
+    localStorage.removeItem('authorization');
+    console.log('로그아웃(at AuthStore)-추후 API /logout으로 구현 추가하세요');
     navigate('/');
   };
 
   return (
     <div className="flex justify-center border-b-2 border-[#eee]">
       {/* border-bottom: 2px solid #EEE; */}
-      <nav className="flex justify-between w-full lg:w-2/3 h-20 items-center">
+      <nav className="flex justify-between w-full lg:w-2/3 h-16 items-center">
         <Link to="/" className="btn btn-ghost">
           <img src={navModucha} alt="" />
         </Link>
@@ -36,7 +37,7 @@ const NavBar = () => {
               </li>
               <li>
                 <Link
-                  to="/sharing"
+                  to="/shares"
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
                   나눔
@@ -80,7 +81,7 @@ const NavBar = () => {
               </li>
               <li>
                 <Link
-                  to="/sharing"
+                  to="/shares"
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
                   나눔
@@ -95,9 +96,12 @@ const NavBar = () => {
                 </Link>
               </li>
               <li>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
-                  마이페이지(구현안되어있음)
-                </button>
+                <Link
+                  to="/mypage"
+                  className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
+                >
+                  마이페이지
+                </Link>
               </li>
               <li>
                 <button

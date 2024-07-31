@@ -1,0 +1,23 @@
+{
+  "data": [
+    {
+      "commentId": 1,
+      "replyId": 2423,
+      "content": "Great event! I enjoyed it very much.",
+      "createdDate": "2023-07-15T14:30:00Z",
+      "nickName": "홍길동"
+    },
+    {
+      "commentId": 1,
+      "replyId": 2429,
+      "content": "When is the next event?",
+      "createdDate": "2023-07-16T10:00:00Z",
+      "nickName": "엄준식"
+    }
+  ],
+  "pagination": {
+    "total": 25,
+    "page": 1,
+    "perPage": 10
+  }
+}
