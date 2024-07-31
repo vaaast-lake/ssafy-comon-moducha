@@ -8,6 +8,7 @@ import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
 import WebRTC from './pages/WebRTC/WebRTC';
 import ShareDetail from './pages/Share/ShareDetail';
+import ShareWrite from './pages/Share/ShareWrite';
 import Access from './pages/Login/Access';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -33,14 +34,17 @@ const router = createBrowserRouter([
         element: <TeaTime />,
       },
       {
-        path: 'sharing',
+        path: 'shares',
         element: <Share />,
       },
       {
-        path: 'sharing/:shareId',
+        path: 'shares/:boardId',
         element: <ShareDetail />,
       },
-
+      {
+        path: 'shares/write',
+        element: <ShareWrite />,
+      },
       {
         path: 'mypage',
         element: <Profile />,
