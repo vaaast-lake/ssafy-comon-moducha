@@ -3,7 +3,7 @@ import { UserIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom';
 
 const ShareCard = ({
-  shareBoardId,
+  boardId,
   title,
   maxParticipants,
   participants,
@@ -11,7 +11,7 @@ const ShareCard = ({
   return (
     <>
       <Link
-        to={shareBoardId.toString()}
+        to={`${boardId}`}
         className="flex bg-base-100 overflow-hidden shadow rounded-lg transition ease-in-out hover:bg-[#E6F9E4] hover:shadow-lg duration-150"
       >
         <figure className="size-32 shrink-0">

@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   LocalVideoTrack,
+  ParticipantEvent,
   RemoteParticipant,
   RemoteTrack,
   RemoteTrackPublication,
@@ -42,6 +43,7 @@ const JoinRoom = ({
   setLocalTrack,
   leaveRoom,
 }: JoinRoomProps) => {
+  
   const handleJoinRoom = async () => {
     const room = new Room();
     setRoom(room);
@@ -93,6 +95,11 @@ const JoinRoom = ({
           if (publication.track?.source === Track.Source.ScreenShare) {
             setIsScreenSharing(true);
           }
+          // console.log('-----------------------');
+          // console.log('-----------------------');
+          // console.log(publication);
+          // console.log('-----------------------');
+          // console.log('-----------------------');
         }
       )
       .on(RoomEvent.LocalTrackUnpublished, (publication) => {
@@ -100,6 +107,9 @@ const JoinRoom = ({
           setIsScreenSharing(false);
         }
       });
+      // .on(ParticipantEvent, () => {
+
+      // });
 
     try {
       // console.log(APPLICATION_SERVER_URL);
@@ -111,8 +121,12 @@ const JoinRoom = ({
         participantName
       );
 
+      console.log('getToken', token);
+      
       // Connect to the room with the LiveKit URL and the token
       await room.connect(LIVEKIT_URL, token);
+
+      console.log('access completed', LIVEKIT_URL);
 
       // Publish your camera and microphone
       await room.localParticipant.enableCameraAndMicrophone();
@@ -120,6 +134,12 @@ const JoinRoom = ({
         room.localParticipant.videoTrackPublications.values().next().value
           .videoTrack
       );
+
+      // console.log('-----------------');
+      // console.log('-----------------');
+      // console.log(room.localParticipant);
+      // console.log('-----------------');
+      // console.log('-----------------');
     } catch (error) {
       console.log(
         'There was an error connecting to the room:',
