@@ -24,7 +24,8 @@ public class ReissueController {
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(@CookieValue(value = "refresh", required = false) String refreshToken
             , @AuthenticationPrincipal CustomOAuth2User customOAuth2User, HttpServletResponse response) {
-        reissueService.reissueToken(refreshToken);
+        // 올바른 토큰인지 검증
+        reissueService.validateToken(refreshToken);
 
         // DB에 RefreshToken이 존재하는지 확인 -> LoginFilter에서 이미 저장을 했을 것이기 때문이다.
         reissueService.checkRefresh(customOAuth2User.getUserId());

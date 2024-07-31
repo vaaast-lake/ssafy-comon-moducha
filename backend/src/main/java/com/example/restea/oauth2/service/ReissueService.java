@@ -26,7 +26,7 @@ public class ReissueService {
 
     private static final Long MS_TO_S = 1000L;
 
-    public void reissueToken(String refreshToken) {
+    public void validateToken(String refreshToken) {
         // 토큰 존재 여부 확인
         if (isTokenNull(refreshToken)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, REFRESH_NULL.getMessage());
