@@ -1,8 +1,10 @@
 package com.example.restea.share.service;
 
+import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.dto.ShareCreationResponse;
 import com.example.restea.share.dto.ShareDeleteResponse;
+import com.example.restea.share.dto.ShareListResponse;
 import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.dto.ShareUpdateResponse;
 import com.example.restea.share.dto.ShareViewResponse;
@@ -12,9 +14,16 @@ import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,6 +35,24 @@ public class ShareService {
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final ShareParticipantRepository shareParticipantRepository;
+
+    @Transactional
+    public Map<String, Object> getShareBoardList(String sort, Integer page, Integer perPage) {
+
+        // data
+        Page<ShareBoard> shareBoards = getShareBoards(sort, page, perPage); // 아직 기간이 지나지 않고 활성화된 게시글
+        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards.getContent());
+        Long count = calculateCount(sort); // latest, urgent 처리방식에 따라 달라질 수 있음
+
+        // pagination info
+        PaginationDTO pagination = PaginationDTO.builder()
+                .total((count.intValue() - 1) / perPage + 1)
+                .page(page)
+                .perPage(perPage)
+                .build();
+
+        return Map.of("data", data, "pagination", pagination);
+    }
 
     @Transactional
     public ShareCreationResponse createShareBoard(ShareCreationRequest request, Integer userId) {
@@ -74,7 +101,8 @@ public class ShareService {
         checkLessThanCurrentParticipants(request, shareBoard);
 
         // 업데이트
-        shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(), request.getEndDate());
+        shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
+                request.getEndDate());
 
         return ShareUpdateResponse.builder() // TODO : refactoring 필요
                 .boardId(shareBoard.getId())
@@ -101,6 +129,47 @@ public class ShareService {
         return ShareDeleteResponse.builder()
                 .boardId(shareBoardId)
                 .build();
+    }
+
+    private Long calculateCount(String sort) {
+        return switch (sort) {
+            case "latest" -> shareBoardRepository.countByActivated(true);
+            case "urgent" -> shareBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
+        };
+    }
+
+    private @NotNull Page<ShareBoard> getShareBoards(String sort, Integer page, Integer perPage) {
+
+        Page<ShareBoard> shareBoards = switch (sort) {
+            case "latest" -> shareBoardRepository.findAllByActivated(true,
+                    PageRequest.of(page - 1, perPage, Sort.by("createdDate").descending()));
+            case "urgent" -> shareBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
+                    PageRequest.of(page - 1, perPage, Sort.by("endDate").ascending()));
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
+        };
+        if (shareBoards.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found");
+        }
+        return shareBoards;
+    }
+
+    private List<ShareListResponse> createResponseFormShareBoards(List<ShareBoard> shareBoards) {
+        List<ShareListResponse> data = new ArrayList<>();
+        for (ShareBoard shareBoard : shareBoards) {
+            data.add(ShareListResponse.builder()
+                    .boardId(shareBoard.getId())
+                    .title(shareBoard.getTitle())
+                    .createdDate(shareBoard.getCreatedDate())
+                    .lastUpdated(shareBoard.getLastUpdated())
+                    .endDate(shareBoard.getEndDate())
+                    .maxParticipants(shareBoard.getMaxParticipants())
+                    .participants(shareParticipantRepository.countByShareBoard(shareBoard).intValue())
+                    .nickname(shareBoard.getUser().getExposedNickname())
+                    .viewCount(shareBoard.getViewCount())
+                    .build());
+        }
+        return data;
     }
 
     private @NotNull ShareBoard getActivatedBoard(Integer shareBoardId) {
