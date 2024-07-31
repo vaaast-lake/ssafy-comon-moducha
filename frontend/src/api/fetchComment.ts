@@ -1,21 +1,39 @@
+import { BoardType } from '../types/BoardType';
 import axiosInstance from './axios';
 
 interface CommentRequestOption {
-  boardType: 'shares' | 'teatimes';
-  articleId: string;
+  boardType: BoardType;
+  boardId?: number;
   page: number;
-  limit: number;
+  perPage: number;
+}
+
+interface ReplyRequestOption extends CommentRequestOption {
+  commentId: number;
 }
 
 export const fetchCommentList = ({
   boardType,
-  articleId,
+  boardId,
   page,
-  limit,
+  perPage,
 }: CommentRequestOption) => {
-  return axiosInstance.get(`/${boardType}/${articleId}/comments`, {
-    params: { page, limit },
+  return axiosInstance.get(`/${boardType}/${boardId}/comments`, {
+    params: { page, perPage },
   });
 };
 
-export const fetchReplyList = () => {};
+export const fetchReplyList = ({
+  boardType,
+  boardId,
+  commentId,
+  page,
+  perPage,
+}: ReplyRequestOption) => {
+  return axiosInstance.get(
+    `/${boardType}/${boardId}/comments/${commentId}/replies`,
+    {
+      params: { page, perPage },
+    }
+  );
+};

@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -36,11 +37,26 @@ public class ShareParticipant extends BaseTimeEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String address;
 
+    @Column(name="share_board_id", nullable = false)
+    private Integer shareBoardId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "share_board_id", insertable = false, updatable = false, nullable = false)
     private ShareBoard shareBoard;
 
+    @Column(name="users_id", nullable = false)
+    private Integer userId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
     private User user;
+
+    @Builder
+    public ShareParticipant(String name, String phone, String address, Integer shareBoardId, Integer userId) {
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+        this.shareBoardId = shareBoardId;
+        this.userId = userId;
+    }
 }

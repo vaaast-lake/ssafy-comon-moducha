@@ -8,18 +8,20 @@ import ArticleContent from '../../components/Article/ArticleContent';
 import CommentList from '../../components/Comment/CommentList';
 
 const ShareDetail = () => {
-  const { articleId } = useParams();
+  const { boardId } = useParams();
   const [shareDetail, setsShareDetail] = useState<ShareDetailItem>(
     ShareDetailResponse.data
   );
-  // 가드절 -> 라우터 파라미터가 누락된 경우 빈 페이지 리턴
 
-  if (articleId === undefined) return null;
   useEffect(() => {
-    fetchShareDetail(articleId)
-      .then((res) => setsShareDetail(res.data.data))
-      .catch((err) => console.log(err));
-  }, [articleId]);
+    if (boardId) {
+      fetchShareDetail(boardId)
+        .then((res) => setsShareDetail(res.data.data))
+        .catch((err) => console.log(err));
+    }
+  }, [boardId]);
+  // router 파라미터가 누락된 경우
+  if (!boardId) return null;
   return (
     <div className="grid grid-cols-12">
       <aside className="hidden lg:flex col-span-2"></aside>
@@ -29,7 +31,7 @@ const ShareDetail = () => {
         </section>
         <article className="md:col-span-8 p-2">
           <ArticleContent {...shareDetail}>
-            <CommentList boardType="shares" articleId={articleId} />
+            <CommentList boardType="shares" boardId={parseInt(boardId)} />
           </ArticleContent>
         </article>
       </main>

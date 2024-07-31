@@ -3,24 +3,25 @@ import { Comment } from '../../types/CommentType';
 import CommentListItem from './CommentListItem';
 import { fetchCommentList } from '../../api/fetchComment';
 import mockCommentList from '../../constants/shareCommentResponseTest.json';
+import { BoardType } from '../../types/BoardType';
 
 interface Board {
-  boardType: 'shares' | 'teatimes';
-  articleId: string;
+  boardType: BoardType;
+  boardId: number;
 }
 
-const CommentList = ({ boardType, articleId }: Board) => {
-  const FETCH_PARAMS = {
+const CommentList = ({ boardType, boardId }: Board) => {
+  const defaultParams = {
     boardType,
-    articleId,
+    boardId,
     page: 1,
-    limit: 12,
+    perPage: 10,
   };
 
   const [commentList, setCommentList] = useState<Comment[]>(
     mockCommentList.data
   );
-  const [fetchParams, setFetchParams] = useState(FETCH_PARAMS);
+  const [fetchParams, setFetchParams] = useState(defaultParams);
   const sentinel = useRef(null);
 
   useEffect(() => {
@@ -36,7 +37,11 @@ const CommentList = ({ boardType, articleId }: Board) => {
       <main>
         <ul>
           {commentList.map((el: Comment) => (
-            <CommentListItem key={el.commentId} {...el} />
+            <CommentListItem
+              key={el.commentId}
+              boardType={boardType}
+              commentItem={el}
+            />
           ))}
         </ul>
       </main>

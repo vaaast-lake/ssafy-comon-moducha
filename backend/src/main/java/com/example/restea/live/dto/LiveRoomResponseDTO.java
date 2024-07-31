@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class LiveRoomResponseDTO {
-  private String token;
+    private String token;
 
-  @Builder
-  public LiveRoomResponseDTO(String token) {
-    this.token = token;
-  }
+    @Builder
+    public LiveRoomResponseDTO(String token) {
+        this.token = token;
+    }
 }

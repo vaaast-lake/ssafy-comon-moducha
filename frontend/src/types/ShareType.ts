@@ -12,10 +12,8 @@ export interface ShareListItem {
 
 export interface ShareDTO {
   message: string;
-  data: {
-    pagination: PaginationDTO;
-    items: ShareListItem[];
-  };
+  pagination: PaginationDTO;
+  data: ShareListItem[];
 }
 
 // 상속
