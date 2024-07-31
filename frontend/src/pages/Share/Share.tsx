@@ -19,11 +19,12 @@ const Share = () => {
   useEffect(() => {
     fetchShareList(sort, page, perPage)
       .then((res) => {
-        setShareList(res.data);
+        setShareList(res.data.data);
         setTotalPage(res.data.pagination.total);
+        setPage(res.data.pagination.page);
       })
       .catch((err) => console.log(err));
-  });
+  }, [sort, page]);
 
   return (
     <div className="grid grid-cols-12">
@@ -69,6 +70,6 @@ export default Share;
 
 const ShareCardList = ({ shareItems }: { shareItems: ShareListItem[] }) => {
   return shareItems.map((shareItem) => (
-    <ShareCard key={shareItem.shareBoardId} {...shareItem} />
+    <ShareCard key={shareItem.boardId} {...shareItem} />
   ));
 };

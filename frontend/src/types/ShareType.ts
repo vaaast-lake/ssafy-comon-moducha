@@ -1,7 +1,7 @@
 import { PaginationDTO } from './PaginationType';
 
 export interface ShareListItem {
-  shareBoardId: number;
+  boardId: number;
   title: string;
   createdDate: string;
   lastUpdated: string;
