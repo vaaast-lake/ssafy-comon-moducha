@@ -5,6 +5,7 @@
 # 2. react build - npm run clean && npm run build
 # 3. spring build - ./gradlew clean build -x test
 # 4. profile 설정 후  compose - $env:PROFILE = "docker"; docker compose up -d
+# 5. 이 모든 과정이 귀찮다면 ./init.sh 실행
 
 services:
 
