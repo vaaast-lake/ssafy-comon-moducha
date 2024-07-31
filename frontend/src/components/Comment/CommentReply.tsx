@@ -15,7 +15,6 @@ const CommentReply = (prop: {
   commentInfo: CommentInfo;
 }) => {
   const { boardId, commentId, replyCount } = prop.commentInfo;
-  if (!replyCount) return null;
   const defaultParams = {
     boardType: prop.boardType,
     boardId,
@@ -27,11 +26,13 @@ const CommentReply = (prop: {
   const [fetchParams, setFetchParams] = useState(defaultParams);
   const [replyList, setReplyList] = useState(mockReply.data);
   useEffect(() => {
-    if (!fetchParams.boardId) {
+    // 재귀호출된 경우 fetch 방지
+    if (boardId) {
       fetchReplyList(fetchParams).then((res) => setReplyList(res.data));
     }
   });
 
+  if (!replyCount) return null;
   return (
     <div id="reply-list">
       <div>
