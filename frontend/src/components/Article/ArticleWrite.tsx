@@ -22,7 +22,10 @@ const ArticleWrite = () => {
       maxParticipants: formData.get('maxParticipants'),
       content,
     };
-    axiosInstance.post('/shares', inputData);
+    axiosInstance
+      .post('/shares', inputData)
+      .then((res) => {})
+      .catch();
     console.log(inputData);
   };
 
