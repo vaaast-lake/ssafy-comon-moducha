@@ -1,7 +1,4 @@
-import {
-  LocalVideoTrack,
-  Room,
-} from 'livekit-client';
+import { LocalVideoTrack, Room } from 'livekit-client';
 import './WebRTC.css';
 import { useState } from 'react';
 import JoinRoom from './components/JoinRoom';
@@ -16,13 +13,14 @@ export default function WebRTC() {
   const [room, setRoom] = useState<Room | undefined>(undefined);
   const [roomName, setRoomName] = useState('Test Room');
   const [participantName, setParticipantName] = useState(
-    'Participant' + Math.floor(Math.random() * 100)
+    // 'Participant' + Math.floor(Math.random() * 100)
+    Math.ceil(Math.random() * 7).toString()
   );
   const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
     undefined
   );
   const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
-  
+
   // Chat state
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState<string>('');
@@ -61,16 +59,14 @@ export default function WebRTC() {
         />
       ) : (
         <div id="room">
-          <RoomHeader 
-            roomName={roomName}
-            leaveRoom={leaveRoom}
-          />
+          <RoomHeader roomName={roomName} leaveRoom={leaveRoom} />
           <RoomVideoAudioTracks
+            room={room}
             localTrack={localTrack}
             remoteTracks={remoteTracks}
             participantName={participantName}
           />
-          <RoomChatting 
+          <RoomChatting
             room={room}
             messages={messages}
             setMessages={setMessages}
@@ -78,10 +74,7 @@ export default function WebRTC() {
             setInputMessage={setInputMessage}
           />
           {/* 화면 공유 버튼 */}
-          <RoomSharingButton 
-            room={room}
-            isScreenSharing={isScreenSharing}
-            />
+          <RoomSharingButton room={room} isScreenSharing={isScreenSharing} />
           {/* 화면 공유 버튼 끗 */}
         </div>
       )}
@@ -92,8 +85,18 @@ export default function WebRTC() {
 // For local development, leave these variables empty
 // For production, configure them with correct URLs depending on your deployment
 function configureUrls() {
-  let APPLICATION_SERVER_URL = '';
-  let LIVEKIT_URL = '';
+  // SSAFY TEST URL
+  let APPLICATION_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
+  let LIVEKIT_URL = import.meta.env.VITE_LIVETKIT_URL;
+
+  // TUTORIAL TEST URL
+  // let APPLICATION_SERVER_URL = import.meta.env.VITE_TEST_APP_SERVER_URL;
+  // let LIVEKIT_URL = import.meta.env.VITE_LIVETKIT_URL;
+
+  // LOCAL TEST URL
+  // let APPLICATION_SERVER_URL = '';
+  // let LIVEKIT_URL = '';
+
   // If APPLICATION_SERVER_URL is not configured, use default value from local development
   if (!APPLICATION_SERVER_URL) {
     if (window.location.hostname === 'localhost') {
