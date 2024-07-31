@@ -27,7 +27,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
 
-    private static final Pattern LOGIN = Pattern.compile("^\\/login(?:\\/.*)?$");
+    private static final Pattern LOGIN = Pattern.compile("^\\/api/v1/login(?:\\/.*)?$");
     private static final Pattern OAUTH2 = Pattern.compile("^\\/oauth2(?:\\/.*)?$");
 
     @Override
@@ -39,7 +39,8 @@ public class JWTFilter extends OncePerRequestFilter {
         }
 
         String header = request.getHeader(ACCESS.getType());
-        if (isTokenNull(header, response)) { // Access Token 존재 확인
+        if (header == null) { // Access Token 존재 확인
+            doFilter(request, response, filterChain);
             return;
         }
 
@@ -63,7 +64,7 @@ public class JWTFilter extends OncePerRequestFilter {
         if (prefix.equals(BEARER.getType())) { // 접두사가 일치한다면 false 반환
             return false;
         }
-        // 접두사가 일치하지 않는다면 예외 발생        
+        // 접두사가 일치하지 않는다면 예외 발생
         setResponse(response, INVALID_PREFIX.toJson());
         return true;
     }
@@ -84,14 +85,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         if (LOGIN.matcher(requestUri).matches() || OAUTH2.matcher(requestUri).matches()) {
             filterChain.doFilter(request, response);
-            return true;
-        }
-        return false;
-    }
-
-    private boolean isTokenNull(String header, HttpServletResponse response) throws IOException {
-        if (header == null) {
-            setResponse(response, NO_ACCESS_TOKEN.toJson());
             return true;
         }
         return false;
