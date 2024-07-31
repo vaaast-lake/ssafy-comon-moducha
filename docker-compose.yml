@@ -49,6 +49,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       SPRING_PROFILES_ACTIVE: ${PROFILE}
+      JWT_SECRET: ${JWT_SECRET}
       DDL_AUTO_OPTION: ${DDL_AUTO_OPTION}
       GOOGLE_CLIENT_NAME: ${GOOGLE_CLIENT_NAME}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
@@ -56,8 +57,9 @@ services:
       GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
       GOOGLE_AUTHORIZATION_GRANT_TYPE: ${GOOGLE_AUTHORIZATION_GRANT_TYPE}
       GOOGLE_SCOPE: ${GOOGLE_SCOPE}
-      livekit_api_key: ${livekit_api_key}
-      livekit_api_secret: ${livekit_api_secret}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      REDIRECT_URI: ${REDIRECT_URI}
     expose:
       - "8080"
     networks:
