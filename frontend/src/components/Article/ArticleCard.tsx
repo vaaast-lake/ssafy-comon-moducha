@@ -1,7 +1,7 @@
 import { ShareDetailItem } from '../../types/ShareType';
 import dateParser from '../../utils/dateParser';
 const ArticleCard = ({
-  nickname,
+  nickName,
   createdDate,
   endDate,
   viewCount,
@@ -17,7 +17,7 @@ const ArticleCard = ({
       <div id="card-body">
         <header>
           <div className="flex gap-1">
-            <span>{nickname}</span>|<span>조회 {viewCount}</span>
+            <span>{nickName}</span>|<span>조회 {viewCount}</span>
           </div>
         </header>
         <div className="pl-0 flex flex-col">
