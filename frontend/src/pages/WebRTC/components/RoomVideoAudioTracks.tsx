@@ -65,11 +65,11 @@ const RoomVideoAudioTracks = ({
                 <button
                   onClick={muteLocalAudio}
                   className="bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600"
-                  >
+                >
                   mute
                 </button>
               ) : (
-                <button 
+                <button
                   onClick={unmuteLocalAudio}
                   className="bg-red-500 text-white px-4 py-1 rounded ml-2 hover:bg-red-600"
                 >
@@ -84,11 +84,13 @@ const RoomVideoAudioTracks = ({
             if (remoteTrack.trackPublication.source === 'screen_share')
               return null;
             return remoteTrack.trackPublication.kind === 'video' ? (
-              <RoomVideo
-                key={remoteTrack.trackPublication.trackSid}
-                track={remoteTrack.trackPublication.videoTrack!}
-                participantIdentity={remoteTrack.participantIdentity}
-              />
+              <>
+                <RoomVideo
+                  key={remoteTrack.trackPublication.trackSid}
+                  track={remoteTrack.trackPublication.videoTrack!}
+                  participantIdentity={remoteTrack.participantIdentity}
+                />
+              </>
             ) : (
               <RoomAudio
                 key={remoteTrack.trackPublication.trackSid}
