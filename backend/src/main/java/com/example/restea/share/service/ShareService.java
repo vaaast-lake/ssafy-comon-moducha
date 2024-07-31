@@ -14,6 +14,7 @@ import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +40,9 @@ public class ShareService {
     public Map<String, Object> getShareBoardList(String sort, Integer page, Integer perPage) {
 
         // data
-        Page<ShareBoard> shareBoards = getShareBoards(sort, page, perPage); // 아직 끝나지 않았고 활성화된 게시글
+        Page<ShareBoard> shareBoards = getShareBoards(sort, page, perPage); // 아직 기간이 지나지 않고 활성화된 게시글
         List<ShareListResponse> data = createResponseFormShareBoards(shareBoards.getContent());
-        Long count = shareBoardRepository.countByActivated(true);
+        Long count = calculateCount(sort); // latest, urgent 처리방식에 따라 달라질 수 있음
 
         // pagination info
         PaginationDTO pagination = PaginationDTO.builder()
@@ -100,7 +101,8 @@ public class ShareService {
         checkLessThanCurrentParticipants(request, shareBoard);
 
         // 업데이트
-        shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(), request.getEndDate());
+        shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
+                request.getEndDate());
 
         return ShareUpdateResponse.builder() // TODO : refactoring 필요
                 .boardId(shareBoard.getId())
@@ -129,15 +131,23 @@ public class ShareService {
                 .build();
     }
 
-    private @NotNull Page<ShareBoard> getShareBoards(String sort, Integer page, Integer perPage) {
-
-        PageRequest pageRequest = switch (sort) {
-            case "latest" -> PageRequest.of(page, perPage, Sort.by("createdDate").descending());
-            case "urgent" -> PageRequest.of(page, perPage, Sort.by("endDate").ascending());
+    private Long calculateCount(String sort) {
+        return switch (sort) {
+            case "latest" -> shareBoardRepository.countByActivated(true);
+            case "urgent" -> shareBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
             default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
         };
+    }
 
-        Page<ShareBoard> shareBoards = shareBoardRepository.findAllActivatedEndFuture(pageRequest);
+    private @NotNull Page<ShareBoard> getShareBoards(String sort, Integer page, Integer perPage) {
+
+        Page<ShareBoard> shareBoards = switch (sort) {
+            case "latest" -> shareBoardRepository.findAllByActivated(true,
+                    PageRequest.of(page - 1, perPage, Sort.by("createdDate").descending()));
+            case "urgent" -> shareBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
+                    PageRequest.of(page - 1, perPage, Sort.by("endDate").ascending()));
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
+        };
         if (shareBoards.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found");
         }

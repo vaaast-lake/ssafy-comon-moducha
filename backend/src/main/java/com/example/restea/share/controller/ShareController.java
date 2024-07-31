@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Positive;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -32,11 +32,11 @@ public class ShareController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getShareBoardList(
-            @NotBlank @Param("sort") String sort,
-            @NotNull @Positive @Param("perPage") Integer perPage,
-            @NotNull @Positive @Param("page") Integer page) {
+            @NotBlank @RequestParam("sort") String sort,
+            @NotNull @Positive @RequestParam("perPage") Integer perPage,
+            @NotNull @Positive @RequestParam("page") Integer page) {
 
-        Map<String, Object> result = shareService.getShareBoardList(sort, perPage, page);
+        Map<String, Object> result = shareService.getShareBoardList(sort, page, perPage);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.builder()
