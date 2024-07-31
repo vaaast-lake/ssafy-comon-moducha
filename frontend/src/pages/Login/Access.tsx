@@ -30,9 +30,9 @@ const Access = () => {
 
   return (
     <>
-      <button onClick={() => (window.location.href = '/')}>
+      {/* <button onClick={() => (window.location.href = '/')}>
         [Dev용: 홈으로 redirect]
-      </button>
+      </button> */}
     </>
   );
 };
