@@ -1,4 +1,4 @@
-import axiosInstance from './axios';
+import axiosInstance from './axiosInstance';
 
 export const fetchShareList = (sort: string, page: number, perPage: number) => {
   return axiosInstance.get('/shares', {
