@@ -22,7 +22,10 @@ const ArticleContent = ({ title, content, children }: ArticleProp) => {
       </header>
       <article>
         <ArticleCarousel banners={testImageList} />
-        <p className="text-lg font-medium text-gray-800 my-4">{content}</p>
+        <p
+          dangerouslySetInnerHTML={{ __html: content }}
+          className="text-lg font-medium text-gray-800 my-4"
+        ></p>
         <hr />
       </article>
       <section>{children}</section>

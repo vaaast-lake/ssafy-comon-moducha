@@ -12,7 +12,7 @@ const Pagination = ({ page, totalPage, setPage }: Page) => {
     pageButtonArray.push(
       <button
         key={i}
-        className={`join-item btn ${i === page ? 'btn-active' : ''}`}
+        className={`join-item btn rounded-2xl hover:bg-[#ccd5ae] border-none font-bold text-white ${i === page ? 'bg-[#ccd5ae]' : 'bg-[#e9edc9]'}`}
         onClick={() => setPage(i)}
       >
         {i}
