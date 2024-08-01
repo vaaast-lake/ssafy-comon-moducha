@@ -31,8 +31,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private static final Long MS_TO_S = 1000L;
 
-    @Value("${app.redirect.url}")
-    private String appRedirectUrl;
+    @Value("${app.redirect.uri}")
+    private String appRedirectUri;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -86,7 +86,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     // 액세스 토큰을 queryParam에 추가
     private String getTargetUrl(String accessToken) {
-        return UriComponentsBuilder.fromUriString(appRedirectUrl)
+        return UriComponentsBuilder.fromUriString(appRedirectUri)
                 .queryParam("access", accessToken)
                 .build()
                 .toUriString();
