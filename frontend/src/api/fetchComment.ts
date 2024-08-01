@@ -1,5 +1,5 @@
 import { BoardType } from '../types/BoardType';
-import axiosInstance from './axiosInstance';
+import apiAxios from './apiAxios';
 
 interface CommentRequestOption {
   boardType: BoardType;
@@ -18,7 +18,7 @@ export const fetchCommentList = ({
   page,
   perPage,
 }: CommentRequestOption) => {
-  return axiosInstance.get(`/${boardType}/${boardId}/comments`, {
+  return apiAxios.get(`/${boardType}/${boardId}/comments`, {
     params: { page, perPage },
   });
 };
@@ -30,7 +30,7 @@ export const fetchReplyList = ({
   page,
   perPage,
 }: ReplyRequestOption) => {
-  return axiosInstance.get(
+  return apiAxios.get(
     `/${boardType}/${boardId}/comments/${commentId}/replies`,
     {
       params: { page, perPage },

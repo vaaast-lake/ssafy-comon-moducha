@@ -3,12 +3,14 @@ import { ShareDetailItem } from '../../types/ShareType';
 import { useEffect } from 'react';
 import { EVDown, EVDownItem, EVDownMenu } from '../Dropdown/EllipsisDropdown';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-
+import useAuthStore from '../../stores/authStore';
+import apiAxios from '../../api/apiAxios';
 interface ArticleProp extends ShareDetailItem {
   children: React.ReactNode;
 }
 const ArticleContent = ({
   title,
+  boardId,
   nickName,
   content,
   children,
@@ -22,14 +24,22 @@ const ArticleContent = ({
     { url: 'https://picsum.photos/id/14/1600/900' },
     { url: 'https://picsum.photos/id/15/1600/900' },
   ];
-  const handleDelete = () => {};
+  const { currentUsername } = useAuthStore();
+  const handleDelete = () => {
+    apiAxios.patch(`/shares/deativated-shares/${boardId}`).then();
+  };
   const handleUpdate = () => {};
 
   return (
     <div className="p-4 shadow border flex flex-col gap-4">
       <header className="flex  justify-between items-center border rounded p-4 pr-1 shadow-md">
         <h1 className="text-2xl font-semibold text-wood truncate">{title}</h1>
-        <DropdownMenu handleUpdate={handleUpdate} handleDelete={handleDelete} />
+        {currentUsername === nickName && (
+          <DropdownMenu
+            handleUpdate={handleUpdate}
+            handleDelete={handleDelete}
+          />
+        )}
       </header>
       <article>
         <ArticleCarousel banners={testImageList} />
@@ -46,6 +56,7 @@ interface Dropdown {
   handleDelete: () => void;
   handleUpdate: () => void;
 }
+
 const DropdownMenu = ({ handleDelete, handleUpdate }: Dropdown) => (
   <EVDown>
     <EVDownMenu className="w-24">

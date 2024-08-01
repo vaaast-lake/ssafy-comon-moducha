@@ -5,7 +5,7 @@ import TextEditor from '../../utils/TextEditor/TextEditor';
 import testImageList from '../../constants/uploadImageTest';
 import ArticleImageUpload from './ArticleImageUpload';
 import { ImageList } from '../../types/ArticleType';
-import axiosInstance from '../../api/axiosInstance';
+import apiAxios from '../../api/apiAxios';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { BoardType } from '../../types/BoardType';
 
@@ -33,7 +33,7 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
     };
 
     try {
-      const response = await axiosInstance.post(`/${boardType}`, inputData);
+      const response = await apiAxios.post(`/${boardType}`, inputData);
       const boardId = response.data.data.boardId;
       navigate(`/${boardType}/${boardId}`);
     } catch (error) {
