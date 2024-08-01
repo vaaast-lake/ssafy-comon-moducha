@@ -73,6 +73,10 @@ services:
       args:
         PROFILE: ${PROFILE}
     image: frontend
+    volumes:
+      - "/etc/letsencrypt/live/moducha.site/fullchain.pem:/etc/letsencrypt/live/moducha.site/fullchain.pem"
+      - "/etc/letsencrypt/live/moducha.site/privkey.pem:/etc/letsencrypt/live/moducha.site/privkey.pem"
+      - "/etc/nginx/:/etc/nginx/"
     restart: 'always'
     ports:
       - "80:80"
