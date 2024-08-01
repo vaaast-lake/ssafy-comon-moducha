@@ -37,7 +37,7 @@ RUN if [ "$PROFILE" = "prod" ]; then \
     apt-get update; \
     apt-get install -y certbot; \
     # letsencrypt 인증서 발급
-    certbot --nginx -d moducha.site -d www.moducha.site; \
+    certbot --nginx -d moducha.site -d www.moducha.site -d livekit.moducha.site; \
     fi
 
 # 80 포트 오픈
