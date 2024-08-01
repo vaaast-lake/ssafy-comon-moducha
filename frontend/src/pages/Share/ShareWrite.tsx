@@ -11,7 +11,7 @@ const ShareWrite = () => {
             <span className="text-disabled">나눔 글쓰기</span>
           </TitleCard>
           <hr />
-          <ArticleWrite />
+          <ArticleWrite boardType="shares" />
         </main>
         <aside className="hidden lg:flex col-span-3"></aside>
       </div>

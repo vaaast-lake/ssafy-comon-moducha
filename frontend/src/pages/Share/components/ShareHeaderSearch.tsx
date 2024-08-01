@@ -17,7 +17,7 @@ const ShareHeaderSearch = ({ className }: { className: string }) => {
         <option value="author">작성자</option>
       </select>
       <div className="indicator">
-        <button className="btn join-item bg-beige text-white hover:bg-tea rounded-xl">
+        <button className="btn join-item bg-teabg text-white hover:bg-tea rounded-xl">
           <CiSearch size={36} />
         </button>
       </div>

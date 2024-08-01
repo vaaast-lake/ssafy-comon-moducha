@@ -17,7 +17,7 @@ const ShareHeader = ({ sort, setSort }: Prop) => {
   return (
     <Disclosure as="div" className="justify-between w-full">
       <div className="flex justify-between">
-        <DisclosureButton className="group relative inline-flex items-center justify-center btn md:hidden bg-beige text-white hover:bg-tea rounded-xl">
+        <DisclosureButton className="group relative inline-flex items-center justify-center btn md:hidden bg-tea text-white hover:bg-tea rounded-xl">
           <MagnifyingGlassIcon
             aria-hidden="true"
             className="h-6 w-6 group-data-[open]:hidden"
