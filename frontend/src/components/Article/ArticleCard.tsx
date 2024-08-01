@@ -23,7 +23,7 @@ const ArticleCard = ({
         <div className="pl-0 flex flex-col">
           <span>작성 : {dateParser(createdDate)}</span>
           <span>신청 : {participants + ' / ' + maxParticipants}</span>
-          <span id="share-end_date">기한 : {dateParser(endDate)}</span>
+          <span id="share-end_date">마감 : {dateParser(endDate)}</span>
         </div>
       </div>
       <button className="btn bg-success hover:bg-rose-500 text-white">
