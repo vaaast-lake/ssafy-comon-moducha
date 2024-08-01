@@ -1,34 +1,60 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-// import { getUserInfo } from '../Login/api/getUserInfo';
-import useAuthStore from '../../stores/authStore'; 
-
-interface Profile {}
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import useAuthStore from '../../stores/authStore';
 
 const Profile = () => {
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  const navigate = useNavigate();
-  const [info, setInfo] = useState({
-    email: '',
-    firstName: '',
-    lastName: '',
-  });
-  
-  useEffect(() => {
-    if (!isLoggedIn) navigate('/'); // 예외처리: 로그아웃 상태에서 강제 접근시 인덱스로 보냄
+  const { setCurrentUsername, currentUsername, isLoggedIn } = useAuthStore();
+  const [username, setUsername] = useState(currentUsername);
+  const [isEditing, setIsEditing] = useState(false);
 
-    const initUserinfo = async () => {
-      const newinfo = await getUserInfo();
-      setInfo(newinfo);
-    };
-    initUserinfo();
-  }, [isLoggedIn, navigate]);
+  useEffect(() => {
+    // 로그인하지 않은 상태일 때 홈으로 리디렉션
+    if (!isLoggedIn) {
+      return <Navigate to="/" />;
+    }
+  }, [isLoggedIn]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setCurrentUsername(username); // 새로운 사용자 이름 설정
+    setIsEditing(false); // 편집 모드 종료
+  };
+
+  const handleChange = (e) => {
+    setUsername(e.target.value); // 입력 필드 값 변경
+  };
+
+  const toggleEditMode = () => {
+    setIsEditing(!isEditing); // 편집 모드 토글
+  };
+
+  // 로그인하지 않은 상태일 때 홈으로 리디렉션
+  if (!isLoggedIn) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <div>
-      <h1>My Page</h1>
-      <p>email: {info.email}</p>
-      <p>name: {`${info.lastName} ${info.firstName}`}</p>
+      <h1>마이페이지</h1>
+      <div>
+        <span>닉네임: [닉네임 수정하면 DB에서도 수정되게 날려주기]</span>
+        {isEditing ? (
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={username}
+              onChange={handleChange}
+              placeholder={currentUsername}
+            />
+            <button type="submit">[수정완료]</button>
+          </form>
+        ) : (
+          <div>
+            {currentUsername} {/* 기존 사용자 이름을 표시 */}
+            <button onClick={toggleEditMode}>[수정하기]</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

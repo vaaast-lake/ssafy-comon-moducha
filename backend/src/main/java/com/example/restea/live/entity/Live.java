@@ -25,9 +25,9 @@ public class Live extends BaseTimeEntity {
     @Id
     @Column(name = "live_id", updatable = false, nullable = false)
     private String id;
-    
+
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teatime_board_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "teatime_board_id", nullable = false, updatable = false)
     private TeatimeBoard teatimeBoard;
 
     @Builder

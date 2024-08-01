@@ -179,6 +179,12 @@ public class LiveService {
         try {
             Call<Void> deleteCall = client.removeParticipant(live.getId(), kickUserId.toString());
             Response<Void> deleteResponse = deleteCall.execute();
+
+            if (deleteResponse.isSuccessful()) {
+                return;
+            }
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, deleteResponse.errorBody().string());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST);
         }
@@ -207,6 +213,12 @@ public class LiveService {
                     trackSid,
                     true);
             Response<LivekitModels.TrackInfo> muteResponse = muteCall.execute();
+
+            if (muteResponse.isSuccessful()) {
+                return;
+            }
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, muteResponse.errorBody().string());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST);
         }

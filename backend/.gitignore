@@ -41,3 +41,6 @@ out/
 
 ### .env ###
 .env*
+
+### QueryDSL ###
+/src/main/generated/

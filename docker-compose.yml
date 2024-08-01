@@ -1,36 +1,72 @@
 # 선행 조건
-# 1. React build : npm run build
-# 2. spring boot build : ./gradlew build
-# 3. profile 설정 후  compose
-### 3-1. PROFILE=dev docker compose up
-### 3-2. PROFILE=prod docker compose up
+# build
+# 0. window는 cmd, powershell에서만 실행할 것. (wsl2는 권한 문제로 gradle 빌드 불가)
+# 1. 기존의 docker image 삭제 (frontend, backend)
+# 2. react build - npm run clean && npm run build
+# 3. spring build - ./gradlew clean build -x test
+# 4. profile 설정 후  compose - $env:PROFILE = "docker"; docker compose up -d
+# 5. 이 모든 과정이 귀찮다면 ./init.sh 실행
 
 services:
 
   db:
     image: mysql:8.4.1
     volumes:
-      - ./db_data:/var/lib/mysql # TODO: ./db_data 경로가 올바른가?
+      - 'mysql_data:/var/lib/mysql'
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DB}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      
+      TZ: Asia/Seoul
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    expose:
+      - "3306"
+    networks:
+      - moducha
+    container_name: db
+
   backend:
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     build:
       context: ./backend
       dockerfile: Dockerfile
     image: backend
+    env_file: '.env'
     restart: 'always'
-    ports:
-      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: ${PROFILE}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DB: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      DDL_AUTO_OPTION: ${DDL_AUTO_OPTION}
+      GOOGLE_CLIENT_NAME: ${GOOGLE_CLIENT_NAME}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI}
+      GOOGLE_AUTHORIZATION_GRANT_TYPE: ${GOOGLE_AUTHORIZATION_GRANT_TYPE}
+      GOOGLE_SCOPE: ${GOOGLE_SCOPE}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
+      REDIRECT_URI: ${REDIRECT_URI}
+    expose:
+      - "8080"
+    networks:
+      - moducha
     container_name: backend
 
   frontend:
+    depends_on:
+      - backend
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -42,3 +78,12 @@ services:
       - "80:80"
       - "443:443"
     container_name: frontend
+    networks:
+      - moducha
+
+volumes:
+  mysql_data:
+
+networks:
+  moducha:
+    driver: bridge
