@@ -21,7 +21,7 @@ export default function RoomVideo({
   const handleKickUser = () => {
     axios({
       method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/6/lives/kick/1`,
+      url: `${APPLICATION_SERVER_URL}/teatimes/7/lives/kick/1`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -34,6 +34,28 @@ export default function RoomVideo({
         console.log(err);
       });
   };
+
+  const handleMuteUser = () => {
+    axios({
+      method: 'post',
+      url: `${APPLICATION_SERVER_URL}/teatimes/7/lives/mute/1`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        userId: `${participantIdentity}`,
+        trackSid: `${track.sid}`
+      }
+    })
+    .then((res) => {
+      console.log(res);
+      
+    })
+    .catch((err) => {
+      console.log(err);
+      
+    })
+  }
 
   useEffect(() => {
     if (videoElement.current) {
@@ -59,6 +81,14 @@ export default function RoomVideo({
       >
         KICK
       </button>
+      {participantIdentity !== '1' && 
+        <button
+          className="bg-yellow-500 text-white px-4 py-1 rounded ml-2 hover:bg-yellow-600"
+          onClick={handleMuteUser}
+        >
+          REMOTE USER MUTE VIDEO
+        </button>
+      }
     </div>
   );
 }
