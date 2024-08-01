@@ -24,7 +24,7 @@ const ArticleContent = ({ title, content, children }: ArticleProp) => {
         <ArticleCarousel banners={testImageList} />
         <p
           dangerouslySetInnerHTML={{ __html: content }}
-          className="text-lg font-medium text-gray-800 my-4"
+          className="my-4"
         ></p>
         <hr />
       </article>
