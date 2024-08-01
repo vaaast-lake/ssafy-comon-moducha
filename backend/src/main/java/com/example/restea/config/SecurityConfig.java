@@ -79,9 +79,11 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
 
         http
-                .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndpointConfig -> userInfoEndpointConfig
-                                .userService(customOAuth2UserService)))
+                .oauth2Login(oauth2 -> oauth2
+                        .authorizationEndpoint(authorizationEndpointConfig ->
+                                authorizationEndpointConfig.baseUri("/api/v1/oauth2/authorization"))
+                        .userInfoEndpoint(userInfoEndpointConfig ->
+                                userInfoEndpointConfig.userService(customOAuth2UserService))
                         .successHandler(customSuccessHandler)
                         .redirectionEndpoint(redirectionEndpointConfig ->
                                 redirectionEndpointConfig.baseUri("/api/v1/login/oauth2/code/*")));
