@@ -57,7 +57,7 @@ services:
       GOOGLE_SCOPE: ${GOOGLE_SCOPE}
       LIVEKIT_API_KEY: ${LIVEKIT_API_KEY}
       LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET}
-      REDIRECT_URL: ${REDIRECT_URL}
+      REDIRECT_URI: ${REDIRECT_URI}
     expose:
       - "8080"
     networks:
