@@ -2,7 +2,7 @@
 export const logout = async (): Promise<void> => {
   const accessToken = localStorage.getItem('authorization');
   if (!accessToken) {
-    throw new Error('No access token found');
+    console.log('[Dev: logout] Access Token이 없습니다.');
   }
   // const response = await fetch(
   //   `${import.meta.env.VITE_API_URL}/api/v1/logout`,
