@@ -8,12 +8,14 @@ import { ShareListItem } from '../../types/ShareType';
 import { fetchShareList } from '../../api/fetchShare';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import useAuthStore from '../../stores/authStore';
 
 const Share = () => {
   const [shareList, setShareList] = useState(shareResponse.data);
   const [sort, setSort] = useState('latest');
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(10);
+  const { isLoggedIn } = useAuthStore();
   const perPage = 12;
 
   useEffect(() => {
@@ -38,9 +40,11 @@ const Share = () => {
           <TitleCard>
             <div className="flex justify-between items-center">
               <span className="text-disabled">나눔</span>
-              <Link to={'write'} className="btn btn-sm text-wood bg-papaya">
-                글쓰기
-              </Link>
+              {isLoggedIn && (
+                <Link to={'write'} className="btn btn-sm text-wood bg-papaya">
+                  글쓰기
+                </Link>
+              )}
             </div>
           </TitleCard>
           <div className="divider"></div>

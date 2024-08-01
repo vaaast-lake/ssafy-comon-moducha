@@ -14,13 +14,19 @@ interface AuthState {
   currentUserRole: string;
 }
 
+interface TokenType {
+  username: string;
+  userId: string;
+  role: string;
+}
+
 const useAuthStore = create<AuthState>()(
   devtools((set) => {
     const token = localStorage.getItem('authorization');
     const isLoggedIn = token ? true : false;
-    const currentUsername = token ? jwtDecode(token).username : '';
-    const currentUserId = token ? jwtDecode(token).userId : '';
-    const currentUserRole = token ? jwtDecode(token).role : '';
+    const currentUsername = token ? jwtDecode<TokenType>(token).username : '';
+    const currentUserId = token ? jwtDecode<TokenType>(token).userId : '';
+    const currentUserRole = token ? jwtDecode<TokenType>(token).role : '';
     return {
       isLoggedIn,
       setLoggedIn: (status) => set({ isLoggedIn: status }),

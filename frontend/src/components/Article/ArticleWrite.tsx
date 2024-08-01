@@ -1,16 +1,17 @@
 import { useState } from 'react';
+import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import TextEditor from '../../utils/TextEditor/TextEditor';
 import testImageList from '../../constants/uploadImageTest';
 import ArticleImageUpload from './ArticleImageUpload';
 import { ImageList } from '../../types/ArticleType';
-import axiosInstance from '../../api/axiosInstance';
-import dayjs from 'dayjs';
+import apiAxios from '../../api/apiAxios';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { BoardType } from '../../types/BoardType';
 
 const dayJsNow = (time?: string) => dayjs(time).format('YYYY-MM-DDTHH:mm');
 
-const ArticleWrite = ({ boardType }: { boardType: string }) => {
+const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
   const [pickedDate, setPickedDate] = useState<string>(dayJsNow());
   const [imageList, setImageList] = useState<ImageList>(testImageList());
   const [content, setContent] = useState<string>('');
@@ -32,7 +33,7 @@ const ArticleWrite = ({ boardType }: { boardType: string }) => {
     };
 
     try {
-      const response = await axiosInstance.post(`/${boardType}`, inputData);
+      const response = await apiAxios.post(`/${boardType}`, inputData);
       const boardId = response.data.data.boardId;
       navigate(`/${boardType}/${boardId}`);
     } catch (error) {

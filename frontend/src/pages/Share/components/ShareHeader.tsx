@@ -17,37 +17,10 @@ const ShareHeader = ({ sort, setSort }: Prop) => {
   return (
     <Disclosure as="div" className="justify-between w-full">
       <div className="flex justify-between">
-        <DisclosureButton className="group relative inline-flex items-center justify-center btn md:hidden bg-tea text-white hover:bg-tea rounded-xl">
-          <MagnifyingGlassIcon
-            aria-hidden="true"
-            className="h-6 w-6 group-data-[open]:hidden"
-          />
-          <XMarkIcon
-            aria-hidden="true"
-            className="hidden h-6 w-6 group-data-[open]:block"
-          />
-        </DisclosureButton>
-
+        <CollapseButton />
         {/* md 이상인 경우 검색창 노출 */}
-        <div className="hidden md:block">
-          <ShareHeaderSearch className="join" />
-        </div>
-        <div className="flex gap-2 items-center">
-          <TabToggleButton
-            value={sort}
-            toggleOption="latest"
-            onClick={() => setSort('latest')}
-          >
-            최신 순
-          </TabToggleButton>
-          <TabToggleButton
-            value={sort}
-            toggleOption="urgent"
-            onClick={() => setSort('urgent')}
-          >
-            마감일 순
-          </TabToggleButton>
-        </div>
+        <ShareHeaderSearch className="hidden md:flex join" />
+        <ToggleSort {...{ sort, setSort }} />
       </div>
 
       {/* md 이하인 경우 검색창 collapse 패널 노출 */}
@@ -60,5 +33,37 @@ const ShareHeader = ({ sort, setSort }: Prop) => {
     </Disclosure>
   );
 };
+
+const CollapseButton = () => (
+  <DisclosureButton className="group relative inline-flex items-center justify-center btn md:hidden bg-tea text-white hover:bg-tea rounded-xl">
+    <MagnifyingGlassIcon
+      aria-hidden="true"
+      className="h-6 w-6 group-data-[open]:hidden"
+    />
+    <XMarkIcon
+      aria-hidden="true"
+      className="hidden h-6 w-6 group-data-[open]:block"
+    />
+  </DisclosureButton>
+);
+
+const ToggleSort = ({ sort, setSort }: Prop) => (
+  <div className="flex gap-2 items-center">
+    <TabToggleButton
+      value={sort}
+      toggleOption="latest"
+      onClick={() => setSort('latest')}
+    >
+      최신 순
+    </TabToggleButton>
+    <TabToggleButton
+      value={sort}
+      toggleOption="urgent"
+      onClick={() => setSort('urgent')}
+    >
+      마감일 순
+    </TabToggleButton>
+  </div>
+);
 
 export default ShareHeader;

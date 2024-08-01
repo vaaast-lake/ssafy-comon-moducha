@@ -1,11 +1,11 @@
-import axiosInstance from './axiosInstance';
+import apiAxios from './apiAxios';
 
 export const fetchShareList = (sort: string, page: number, perPage: number) => {
-  return axiosInstance.get('/shares', {
+  return apiAxios.get('/shares', {
     params: { sort, page, perPage },
   });
 };
 
 export const fetchShareDetail = (shareId: string) => {
-  return axiosInstance.get(`/shares/${shareId}`);
+  return apiAxios.get(`/shares/${shareId}`);
 };
