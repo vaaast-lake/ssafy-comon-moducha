@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -125,9 +124,9 @@ public class LiveController {
      * @param customOAuth2User 현재 인증된 사용자.
      * @return 내용이 빈 ResponseEntity 객체를 반환합니다. 강퇴에 실패하면 에러 메시지를 담은 ResponseEntity를 반환합니다.
      */
-    @GetMapping("/kick")
+    @PostMapping("/kick")
     public ResponseEntity<ResponseDTO<LiveKickResponseDTO>> liveKick(
-            @PathVariable("teatimeBoardId") int teatimeBoardId, @RequestParam("userId") Integer kickUserId,
+            @PathVariable("teatimeBoardId") int teatimeBoardId, @RequestBody Integer kickUserId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         liveService.liveKick(teatimeBoardId, kickUserId, customOAuth2User.getUserId());
