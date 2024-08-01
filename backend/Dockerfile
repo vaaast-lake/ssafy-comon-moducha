@@ -1,5 +1,5 @@
 # springboot image
-FROM openjdk:17-jdk
+FROM openjdk:17-oracle
 EXPOSE 8080
 ARG PROFILE
 ARG JAR_FILE=build/libs/*.jar

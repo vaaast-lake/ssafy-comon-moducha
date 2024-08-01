@@ -13,17 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/v1/teatimes/{teatimeBoardId}/lives")
 @RequiredArgsConstructor
@@ -108,15 +104,6 @@ public class LiveController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // LiveKit 웹훅 이벤트를 수신 -> LiveKit Server로 부터 받음, 항상 ok를 반환해 줘야함.
-    @PostMapping(value = "/livekit/webhook", consumes = "application/webhook+json")
-    public ResponseEntity<String> receiveWebhook(@RequestHeader("Authorization") String authHeader,
-                                                 @RequestBody String body) {
-
-        liveService.webHook(authHeader, body);
-        return ResponseEntity.ok("ok");
-    }
-
     /**
      * 주어진 참가자에 방송에서 강퇴
      *
@@ -125,9 +112,9 @@ public class LiveController {
      * @param customOAuth2User 현재 인증된 사용자.
      * @return 내용이 빈 ResponseEntity 객체를 반환합니다. 강퇴에 실패하면 에러 메시지를 담은 ResponseEntity를 반환합니다.
      */
-    @GetMapping("/kick")
+    @PostMapping("/kick")
     public ResponseEntity<ResponseDTO<LiveKickResponseDTO>> liveKick(
-            @PathVariable("teatimeBoardId") int teatimeBoardId, @RequestParam("userId") Integer kickUserId,
+            @PathVariable("teatimeBoardId") int teatimeBoardId, @RequestBody Integer kickUserId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         liveService.liveKick(teatimeBoardId, kickUserId, customOAuth2User.getUserId());
