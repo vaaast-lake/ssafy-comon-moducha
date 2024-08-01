@@ -49,13 +49,14 @@ const RoomVideoAudioTracks = ({
               <RoomAudio
                 key={remoteTrack.trackPublication.trackSid}
                 track={remoteTrack.trackPublication.audioTrack!}
+                participantIdentity={remoteTrack.participantIdentity}
               />
             );
           })}
           {/* screen_share video end */}
           {/* local video start */}
           {localTrack && (
-            <>
+            <div>
               <RoomVideo
                 track={localTrack}
                 participantIdentity={participantName}
@@ -76,28 +77,31 @@ const RoomVideoAudioTracks = ({
                   unmute
                 </button>
               )}
-            </>
+            </div>
           )}
           {/* local video end */}
           {/* remote video start */}
-          {remoteTracks.map((remoteTrack) => {
-            if (remoteTrack.trackPublication.source === 'screen_share')
-              return null;
-            return remoteTrack.trackPublication.kind === 'video' ? (
-              <>
-                <RoomVideo
+          <div>
+            {remoteTracks.map((remoteTrack) => {
+              if (remoteTrack.trackPublication.source === 'screen_share')
+                return null;
+              return remoteTrack.trackPublication.kind === 'video' ? (
+                <>
+                  <RoomVideo
+                    key={remoteTrack.trackPublication.trackSid}
+                    track={remoteTrack.trackPublication.videoTrack!}
+                    participantIdentity={remoteTrack.participantIdentity}
+                    />
+                </>
+              ) : (
+                <RoomAudio
                   key={remoteTrack.trackPublication.trackSid}
-                  track={remoteTrack.trackPublication.videoTrack!}
+                  track={remoteTrack.trackPublication.audioTrack!}
                   participantIdentity={remoteTrack.participantIdentity}
                 />
-              </>
-            ) : (
-              <RoomAudio
-                key={remoteTrack.trackPublication.trackSid}
-                track={remoteTrack.trackPublication.audioTrack!}
-              />
-            );
-          })}
+              );
+            })}
+          </div>
           {/* local video end */}
         </div>
       </div>

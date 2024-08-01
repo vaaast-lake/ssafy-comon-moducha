@@ -29,7 +29,7 @@ export default async function getOpenViduToken(
     method: `${participantName === '1' ? 'post' : 'get'}`,
     // 방송 생성 POST /api/v1/teatimes/{teatime_board_id}/lives
     // 방송 참가 GET /api/v1/teatimes/{teatime_board_id}/lives/token
-    url: `${APPLICATION_SERVER_URL}/teatimes/6/lives/${participantName === '1' ? participantName : 'token/' + participantName}`,
+    url: `${APPLICATION_SERVER_URL}/teatimes/7/lives/${participantName === '1' ? participantName : 'token/' + participantName}`,
     headers: {
       'Content-Type': 'application/json',
     },
