@@ -1,5 +1,5 @@
 import { ShareListItem } from '../../../types/ShareType';
-import { UserIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { HiEye, HiUsers } from "react-icons/hi";
 import { Link } from 'react-router-dom';
 
 const ShareCard = ({
@@ -23,15 +23,15 @@ const ShareCard = ({
       </figure>
       <article className="flex flex-col w-full p-2 h-32 overflow-hidden">
         <h2 className="font-bold truncate">{title}</h2>
-        <section className="flex items-center gap-3">
+        <section className="flex items-center gap-2">
           <div>
-            <UserIcon className="inline size-4" />
-            <span className="text-sm">
+            <HiUsers className="inline size-4 text-green-500" />
+            <span className="text-sm ms-1">
               {participants} / {maxParticipants}
             </span>
           </div>
           <div>
-            <EyeIcon className="inline size-4" />
+            <HiEye className="inline size-4 text-orange-500" />
             <span className="text-sm ms-1">{viewCount}</span>
           </div>
         </section>
