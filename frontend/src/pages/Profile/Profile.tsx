@@ -5,7 +5,7 @@ import useAuthStore from '../../stores/authStore';
 const Profile = () => {
   const { setCurrentUsername, currentUsername, isLoggedIn } = useAuthStore();
   const [username, setUsername] = useState(currentUsername);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // 닉네임 수정 여부에 따라 form 모양 바꾸는 local state 변수
 
   useEffect(() => {
     // 로그인하지 않은 상태일 때 홈으로 리디렉션
@@ -37,7 +37,7 @@ const Profile = () => {
     <div>
       <h1>마이페이지</h1>
       <div>
-        <span>닉네임: [닉네임 수정하면 DB에서도 수정되게 날려주기]</span>
+        <span>닉네임</span>
         {isEditing ? (
           <form onSubmit={handleSubmit}>
             <input
