@@ -3,11 +3,12 @@ import Layout from './components/Layout/Layout';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/LoginPage';
 import Profile from './pages/Profile/Profile';
-import TeaTime from './pages/TeaTime/TeaTime';
+import Teatime from './pages/Teatime/Teatime';
 import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
 import WebRTC from './pages/WebRTC/WebRTC';
 import ShareDetail from './pages/Share/ShareDetail';
+import TeatimeDetail from './pages/Teatime/TeatimeDetail';
 import ShareWrite from './pages/Share/ShareWrite';
 import AccessPage from './pages/Login/AccessPage';
 
@@ -28,8 +29,12 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: 'teatime',
-        element: <TeaTime />,
+        path: 'teatimes',
+        element: <Teatime />,
+      },
+      {
+        path: 'teatimes/:boardId',
+        element: <TeatimeDetail />,
       },
       {
         path: 'shares',

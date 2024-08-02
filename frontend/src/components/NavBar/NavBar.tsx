@@ -32,7 +32,7 @@ const NavBar = () => {
             <>
               <li>
                 <Link
-                  to="/teatime"
+                  to="/teatimes"
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
                   티타임
@@ -76,7 +76,7 @@ const NavBar = () => {
               </li>
               <li>
                 <Link
-                  to="/teatime"
+                  to="/teatimes"
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
                   티타임

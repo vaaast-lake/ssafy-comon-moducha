@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 import { fetchArticleDetail } from '../../api/fetchArticle';
 import { useParams } from 'react-router-dom';
-import { ShareDetailItem } from '../../types/ShareType';
-import { ShareDetailResponse } from '../../constants/shareResponseTest';
+import { TeatimeDetailItem } from '../../types/TeatimeType';
+import { mockDetail } from '../../constants/teatimeMock';
 import ArticleCard from '../../components/Article/ArticleCard';
 import ArticleContent from '../../components/Article/ArticleContent';
 import CommentList from '../../components/Comment/CommentList';
 
-const ShareDetail = () => {
+const TeatimeDetail = () => {
   const { boardId } = useParams();
-  const [shareDetail, setsShareDetail] = useState<ShareDetailItem>(
-    ShareDetailResponse.data
+  const [teatimeDetail, setsTeatimeDetail] = useState<TeatimeDetailItem>(
+    mockDetail.data
   );
 
   useEffect(() => {
     if (boardId) {
-      fetchArticleDetail({ boardType: 'shares', boardId })
-        .then((res) => setsShareDetail(res.data.data))
+      fetchArticleDetail({ boardType: 'teatimes', boardId })
+        .then((res) => setsTeatimeDetail(res.data.data))
         .catch((err) => console.log(err));
     }
   }, [boardId]);
@@ -27,11 +27,11 @@ const ShareDetail = () => {
       <aside className="hidden lg:flex col-span-2"></aside>
       <main className="col-span-12 lg:col-span-8 md:grid md:grid-cols-12">
         <section className="md:col-span-4 p-2">
-          <ArticleCard {...{ boardType: 'shares', ...shareDetail }} />
+          <ArticleCard {...{ boardType: 'teatimes', ...teatimeDetail }} />
         </section>
         <article className="md:col-span-8 p-2">
-          <ArticleContent {...{ ...shareDetail, boardType: 'shares' }}>
-            <CommentList boardType="shares" boardId={parseInt(boardId)} />
+          <ArticleContent {...{ boardType: 'teatimes', ...teatimeDetail }}>
+            <CommentList boardType="teatimes" boardId={parseInt(boardId)} />
           </ArticleContent>
         </article>
       </main>
@@ -40,4 +40,4 @@ const ShareDetail = () => {
   );
 };
 
-export default ShareDetail;
+export default TeatimeDetail;

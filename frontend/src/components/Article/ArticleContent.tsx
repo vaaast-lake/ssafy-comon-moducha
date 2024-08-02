@@ -30,7 +30,7 @@ const ArticleContent = ({
   const navigate = useNavigate();
   const handleDelete = () => {
     apiAxios
-      .patch(`/shares/deativated-shares/${boardId}`, {
+      .patch(`/${boardType}/deativated-${boardType}/${boardId}`, {
         // Authorization: `Bearer <accessToken>`,
       })
       .then(() => {
