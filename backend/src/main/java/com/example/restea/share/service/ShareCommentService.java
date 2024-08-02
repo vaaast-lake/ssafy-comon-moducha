@@ -48,12 +48,12 @@ public class ShareCommentService {
 
     private @NotNull Page<ShareComment> getShareComments(ShareBoard shareBoard, Integer page, Integer perPage) {
 
-        Page<ShareComment> shareCoomments = shareCommentRepository.findAllByShareBoard(shareBoard,
+        Page<ShareComment> shareComments = shareCommentRepository.findAllByShareBoard(shareBoard,
                 PageRequest.of(page - 1, perPage));
-        if (shareCoomments.isEmpty()) {
+        if (shareComments.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoardComment not found");
         }
-        return shareCoomments;
+        return shareComments;
     }
 
     private List<ShareCommentListResponse> createResponseFormShareComments(List<ShareComment> shareComments) {
