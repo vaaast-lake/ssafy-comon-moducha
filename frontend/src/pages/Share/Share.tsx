@@ -5,7 +5,7 @@ import Pagination from '../../components/Pagination/Pagination';
 import { shareResponse } from '../../constants/shareResponseTest';
 
 import { ShareListItem } from '../../types/ShareType';
-import { fetchShareList } from '../../api/fetchShare';
+import { fetchArticleList } from '../../api/fetchArticle';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';
@@ -19,7 +19,7 @@ const Share = () => {
   const perPage = 12;
 
   useEffect(() => {
-    fetchShareList(sort, page, perPage)
+    fetchArticleList({ boardType: 'shares', sort, page, perPage })
       .then((res) => {
         setShareList(res.data.data);
         setTotalPage(res.data.pagination.total);

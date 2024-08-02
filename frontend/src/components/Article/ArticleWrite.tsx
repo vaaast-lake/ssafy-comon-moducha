@@ -85,6 +85,7 @@ type DateInputProps = {
   setPickedDate: (date: string) => void;
 };
 
+
 const DateInput = ({ pickedDate, setPickedDate }: DateInputProps) => (
   <label className="input input-bordered w-full md:w-1/2 flex items-center gap-2">
     <span className="pr-2 border-r-2">마감</span>
