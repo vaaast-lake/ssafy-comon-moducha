@@ -154,7 +154,7 @@ public class LiveController {
             @PathVariable("teatimeBoardId") int teatimeBoardId, @Valid @RequestBody LiveMuteRequestDTO request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        liveService.liveMute(teatimeBoardId, request.getUserId(), request.getTrackSid(), customOAuth2User.getUserId());
+        liveService.liveMute(teatimeBoardId, request, customOAuth2User.getUserId());
 
         ResponseDTO<LiveMuteRequestDTO> response = ResponseDTO.<LiveMuteRequestDTO>builder()
                 .data(request)
