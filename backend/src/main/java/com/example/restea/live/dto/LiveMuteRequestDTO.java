@@ -16,4 +16,7 @@ public class LiveMuteRequestDTO {
 
     @NotBlank(message = "empty trackSid.")
     private String trackSid;
+
+    @NotBlank(message = "empty isMute.")
+    private Boolean isMute;
 }
