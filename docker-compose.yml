@@ -129,7 +129,8 @@ services:
       - prod
     image: ramen4598/moducha_frontend
     volumes:
-      - "/etc/letsencrypt/live/:/etc/letsencrypt/live/"
+      - "/etc/letsencrypt/live/moducha.site/fullchain.pem:/etc/letsencrypt/live/moducha.site/fullchain.pem"
+      - "/etc/letsencrypt/live/moducha.site/privkey.pem:/etc/letsencrypt/live/moducha.site/privkey.pem"
       - "/etc/nginx/:/etc/nginx/"
       - "./frontend/nginx/moducha.conf:/etc/nginx/sites-available/moducha.conf"
     restart: 'always'
