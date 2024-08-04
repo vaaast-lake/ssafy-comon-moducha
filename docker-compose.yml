@@ -72,7 +72,7 @@ services:
         condition: service_healthy
     profiles:
       - prod
-    image: tired_i/moducha_backend
+    image: ramen4598/moducha_backend
     env_file: '.env'
     restart: 'always'
     environment:
@@ -127,7 +127,7 @@ services:
       - backend-prod
     profiles:
       - prod
-    image: tired_i/moducha_frontend
+    image: ramen4598/moducha_frontend
     volumes:
       - "/etc/letsencrypt/live/:/etc/letsencrypt/live/"
       - "/etc/nginx/:/etc/nginx/"
