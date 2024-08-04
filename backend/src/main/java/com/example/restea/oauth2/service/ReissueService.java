@@ -38,7 +38,7 @@ public class ReissueService {
         }
 
         // 토큰 카테고리 확인
-        if (isTokenValid(refreshToken)) {
+        if (isTokenInvalid(refreshToken)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, REFRESH_INVALID.getMessage());
         }
     }
@@ -59,9 +59,9 @@ public class ReissueService {
     }
 
     // 토큰 카테고리 확인
-    private boolean isTokenValid(String refreshToken) {
+    private boolean isTokenInvalid(String refreshToken) {
         String category = jwtUtil.getCategory(refreshToken);
-        return category.equals(REFRESH.getType()); // RefreshToken 카테고리이면 true
+        return !category.equals(REFRESH.getType());
     }
 
     // 새로운 AccessToken 발급
