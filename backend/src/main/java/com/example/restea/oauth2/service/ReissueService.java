@@ -70,7 +70,8 @@ public class ReissueService {
         Integer userId = jwtUtil.getUserId(refresh);
         String role = jwtUtil.getRole(refresh);
 
-        return BEARER + jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role, ACCESS.getExpiration() * MS_TO_S);
+        return BEARER.getType() + jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role,
+                ACCESS.getExpiration() * MS_TO_S);
     }
 
     // RefreshToken이 존재하는지 확인
