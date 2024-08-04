@@ -7,7 +7,10 @@
     "dev": "vite --host",
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+	  "build:local": "./node_modules/.bin/env-cmd -e local vite build",
+	  "build:dev": "./node_modules/.bin/env-cmd -e dev vite build",
+	  "build:prod": "./node_modules/.bin/env-cmd -e prod vite build"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",
@@ -20,6 +23,7 @@
     "axios": "^1.7.2",
     "ckeditor5": "^42.0.2",
     "dayjs": "^1.11.12",
+    "env-cmd": "^10.1.0",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "livekit-client": "^2.3.2",
