@@ -8,7 +8,7 @@ pipeline {
     //     pollSCM('H 9,12,17 * * *')
     // }
     environment {
-        DOCKER_ID = 'ramen4598'
+        DOCKER_ID = credentials
         GITHUB_OAUTH_TOKEN = credentials('github-oauth-token')
     }
     stages {
@@ -32,27 +32,23 @@ pipeline {
                 echo "FE Building.."
                 dir('./frontend') {
                     withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
-                        sh '''
-                        cat $ENV_FILE > .env 
-                        npm install 
-                        npm run build 
-                        '''
+                        sh 'cat $ENV_FILE > .env'
                     }
+                    sh 'npm install'
+                    sh 'npm run build'
                 }
             }
         }
         stage('FE-Delivery') {
             steps {
                 dir('./frontend') {
-                    echo "Building FE Image.."
-                    withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
-                        sh '''
-                        docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
-                        docker.build("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
-                        docker.tag("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_frontend:latest")
-                        docker.push("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
-                        docker.push("${DOCKER_ID}/moducha_frontend:latest")
-                        '''
+                    echo "Delivery FE Image.."
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                        docker.build("$DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}")
+                        docker.tag("$DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}", "$DOCKER_USERNAME/moducha_frontend:latest")
+                        docker.push("$DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}")
+                        docker.push("$DOCKER_USERNAME/moducha_frontend:latest")
                     }
                 }
             }
@@ -70,7 +66,7 @@ pipeline {
     //     stage('BE-Delivery') {
     //         steps {
     //             dir('./backend') {
-    //                 echo "Building BE Image.."
+    //                 echo "Delivery BE Image.."
     //                 withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
     //                     sh '''
     //                     docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
