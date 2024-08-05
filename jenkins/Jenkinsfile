@@ -30,34 +30,33 @@ pipeline {
         stage('FE-Build') {
             steps {
                 echo "FE Building.."
-                sh 'npm config ls'
                 dir('./frontend') {
                     withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
                         sh '''
-                        cat $ENV_FILE > .env || { echo 'fail to set env file' }
-                        npm install || { echo 'fail to npm install' }
-                        npm run build || { echo 'fail to npm run build' }
+                        cat $ENV_FILE > .env 
+                        npm install 
+                        npm run build 
                         '''
                     }
                 }
             }
         }
-    //     stage('FE-Delivery') {
-    //         steps {
-    //             dir('./frontend') {
-    //                 echo "Building FE Image.."
-    //                 withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
-    //                     sh '''
-    //                     docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
-    //                     docker.build("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
-    //                     docker.tag("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_frontend:latest")
-    //                     docker.push("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
-    //                     docker.push("${DOCKER_ID}/moducha_frontend:latest")
-    //                     '''
-    //                 }
-    //             }
-    //         }
-    //     }
+        stage('FE-Delivery') {
+            steps {
+                dir('./frontend') {
+                    echo "Building FE Image.."
+                    withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
+                        sh '''
+                        docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
+                        docker.build("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
+                        docker.tag("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_frontend:latest")
+                        docker.push("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
+                        docker.push("${DOCKER_ID}/moducha_frontend:latest")
+                        '''
+                    }
+                }
+            }
+        }
     //     stage('BE-Build') {
     //         steps {
     //             echo "BE Building.."
