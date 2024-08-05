@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -39,4 +40,14 @@ public class Record extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
+
+    @Builder
+    public Record(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
 }

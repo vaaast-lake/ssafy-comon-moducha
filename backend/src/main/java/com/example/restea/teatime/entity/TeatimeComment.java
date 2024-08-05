@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -47,4 +48,11 @@ public class TeatimeComment extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "teatimeComment") // 댓글이 삭제되어도 대댓글은 보존
     private List<TeatimeReply> teatimeReplies = new ArrayList<>();
+
+    @Builder
+    public TeatimeComment(String content, TeatimeBoard teatimeBoard, User user) {
+        this.content = content;
+        this.teatimeBoard = teatimeBoard;
+        this.user = user;
+    }
 }

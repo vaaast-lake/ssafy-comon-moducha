@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -42,4 +43,11 @@ public class TeatimeReply extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id", insertable = false, updatable = false)
     private User user;
+
+    @Builder
+    public TeatimeReply(String content, TeatimeComment teatimeComment, User user) {
+        this.content = content;
+        this.teatimeComment = teatimeComment;
+        this.user = user;
+    }
 }
