@@ -18,7 +18,7 @@ const NavBar = () => {
   };
 
   const handleLogoutClick = () => {
-    handleLogout(setLoggedIn, setCurrentUsername, navigate);
+    handleLogout(setLoggedIn, setCurrentUsername);
   };
 
   return (

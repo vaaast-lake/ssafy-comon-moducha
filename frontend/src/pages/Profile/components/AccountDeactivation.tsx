@@ -83,9 +83,9 @@ const AccountDeactivation = () => {
 
   return (
     <div>
-      <h2 className="title">[회원 탈퇴]</h2>
+      <h1 className="font-semibold text-2xl">회원 탈퇴</h1>
       <p>작성한 글은 삭제하지 않으면 탈퇴 이후에도 남겨집니다.</p>
-      <button className="abcd" onClick={handleDeactivate}>
+      <button onClick={handleDeactivate} className="font-semibold">
         회원 탈퇴
       </button>
       <br />

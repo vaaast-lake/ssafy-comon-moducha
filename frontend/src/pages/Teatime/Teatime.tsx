@@ -3,7 +3,6 @@ import TeatimeHeader from './components/TeatimeHeader';
 import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
 import { mockList } from '../../constants/teatimeMock';
-
 import { TeatimeListItem } from '../../types/TeatimeType';
 import { fetchArticleList } from '../../api/fetchArticle';
 import { useEffect, useState } from 'react';

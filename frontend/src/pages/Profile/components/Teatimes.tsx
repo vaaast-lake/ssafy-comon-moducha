@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import useAuthStore from '../../../stores/authStore';
+import MyTeatime from '../../Home/componenets/MyTeatime';
 // 더미
 const Teatimes = () => {
   const { accessToken, user_id } = useAuthStore();
@@ -66,9 +67,10 @@ const Teatimes = () => {
 
   return (
     <div>
-      <h2 className="title">[나의 티타임]</h2>
+      <h1 className="font-semibold text-2xl">나의 티타임</h1>
       <div>
-        <h3 className="title">참여한 티타임</h3>
+        <h3 className="font-semibold">참여한 티타임</h3>
+        <MyTeatime className="flex flex-col gap-4" />
         {participatedTeatimes.length > 0 ? (
           <ul>
             {participatedTeatimes.map((teatime) => (
@@ -85,7 +87,6 @@ const Teatimes = () => {
         <div>
           {paginationParticipated.page > 1 && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationParticipated((prev) => ({
                   ...prev,
@@ -99,7 +100,6 @@ const Teatimes = () => {
           {paginationParticipated.page <
             Math.ceil(paginationParticipated.total / 10) && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationParticipated((prev) => ({
                   ...prev,
@@ -114,7 +114,7 @@ const Teatimes = () => {
       </div>
 
       <div>
-        <h3 className="title">작성한 티타임</h3>
+        <h3 className="font-semibold">작성한 티타임</h3>
         {writtenTeatimes.length > 0 ? (
           <ul>
             {writtenTeatimes.map((teatime) => (
@@ -131,7 +131,6 @@ const Teatimes = () => {
         <div>
           {paginationWritten.page > 1 && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationWritten((prev) => ({
                   ...prev,
@@ -144,7 +143,6 @@ const Teatimes = () => {
           )}
           {paginationWritten.page < Math.ceil(paginationWritten.total / 10) && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationWritten((prev) => ({
                   ...prev,
