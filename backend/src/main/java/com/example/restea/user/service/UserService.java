@@ -1,5 +1,6 @@
 package com.example.restea.user.service;
 
+import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.oauth2.repository.AuthTokenRepository;
@@ -30,6 +31,11 @@ public class UserService {
     public void withdrawUser(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
+
+        // 이미 탈퇴한 유저의 경우 다시 탈퇴 할 수 없음.
+        if (!user.getActivated()) {
+            throw new IllegalArgumentException(USER_ALREADY_WITHDRAWN.getMessage());
+        }
 
         deleteRecords(user);
         deleteParticipants(user); // 참여기록 clear 및 삭제
