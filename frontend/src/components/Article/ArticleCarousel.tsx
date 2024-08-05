@@ -1,12 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
 
-const ArticleCarousel = ({ banners, autoplayInterval = 5000 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoplayActive, setIsAutoplayActive] = useState(true);
-  const carouselRef = useRef(null);
+type Banner = {
+  url: string;
+};
+
+type ArticleCarouselProps = {
+  banners: Banner[];
+  autoplayInterval?: number;
+};
+
+const ArticleCarousel = ({
+  banners,
+  autoplayInterval = 5000,
+}: ArticleCarouselProps) => {
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [isAutoplayActive, setIsAutoplayActive] = useState<boolean>(true);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const slideTo = (targetImageNumber: number) => {
-    let carouselWidth = carouselRef.current?.clientWidth;
+    let carouselWidth = carouselRef.current?.clientWidth || 0;
     let targetXPixel = carouselWidth * targetImageNumber + 1;
     carouselRef.current?.scrollTo(targetXPixel, 0);
   };
@@ -33,13 +45,13 @@ const ArticleCarousel = ({ banners, autoplayInterval = 5000 }) => {
     <div className="relative">
       <a
         onClick={handlePreviousSlide}
-        className="btn btn-circle absolute left-5 top-1/2 transform -translate-y-1/2 z-50 opacity-40"
+        className="btn btn-circle absolute left-5 top-1/2 -mt-5 z-50 opacity-40"
       >
         ❮
       </a>
       <a
         onClick={handleNextSlide}
-        className="btn btn-circle absolute right-5 top-1/2 transform -translate-y-1/2 z-50 opacity-40"
+        className="btn btn-circle absolute right-5 top-1/2 -mt-5 z-50 opacity-40"
       >
         ❯
       </a>
@@ -51,7 +63,6 @@ const ArticleCarousel = ({ banners, autoplayInterval = 5000 }) => {
             className={`carousel-item relative w-full transition ease-in-out duration-700`}
           >
             <img src={el.url} className="w-full" />
-            {/* <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2"></div> */}
           </div>
         ))}
       </div>

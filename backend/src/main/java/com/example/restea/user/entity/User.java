@@ -33,11 +33,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
+@DynamicUpdate
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
@@ -125,4 +127,16 @@ public class User extends BaseTimeEntity {
         this.activated = false;
     }
 
+    public void clearRecords() {
+        records.clear(); // 기록 삭제
+    }
+
+    public void clearParticipants() {
+        shareParticipants.clear(); // 나눔 게시판 clear
+        teatimeParticipants.clear(); // 티타임 게시판 clear
+    }
+
+    public void deleteAuthToken() {
+        this.authToken = null;
+    }
 }

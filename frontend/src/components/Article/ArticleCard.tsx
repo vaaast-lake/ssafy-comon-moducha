@@ -1,13 +1,15 @@
-import { ShareDetailItem } from '../../types/ShareType';
+import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 const ArticleCard = ({
+  boardType,
   nickName,
   createdDate,
   endDate,
   viewCount,
+  broadcastDate,
   participants,
   maxParticipants,
-}: ShareDetailItem) => {
+}: ArticleDetail) => {
   return (
     <div className="md:sticky md:top-2 flex flex-col p-2 overflow-clip rounded-lg shadow gap-4">
       <figure
@@ -23,7 +25,8 @@ const ArticleCard = ({
         <div className="pl-0 flex flex-col">
           <span>작성 : {dateParser(createdDate)}</span>
           <span>신청 : {participants + ' / ' + maxParticipants}</span>
-          <span id="share-end_date">기한 : {dateParser(endDate)}</span>
+          <span>마감 : {dateParser(endDate)}</span>
+          {broadcastDate && <span>예정 : {dateParser(broadcastDate)}</span>}
         </div>
       </div>
       <button className="btn bg-success hover:bg-rose-500 text-white">

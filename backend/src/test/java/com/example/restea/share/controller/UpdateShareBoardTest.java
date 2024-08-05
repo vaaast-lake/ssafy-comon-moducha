@@ -51,8 +51,8 @@ public class UpdateShareBoardTest {
 
     @Autowired
     public UpdateShareBoardTest(MockMvc mockMvc, ObjectMapper objectMapper,
-                                   WebApplicationContext context,
-                                   ShareBoardRepository shareBoardRepository, UserRepository userRepository
+                                WebApplicationContext context,
+                                ShareBoardRepository shareBoardRepository, UserRepository userRepository
             , CustomOAuth2UserService custumOAuth2UserService, ShareParticipantRepository shareParticipantRepository) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
@@ -97,7 +97,7 @@ public class UpdateShareBoardTest {
         final String content = "Content";
         final Integer maxParticipants = 10;
         final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
-        ShareBoard shareBoard =  shareBoardRepository.save(ShareBoard.builder()
+        ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
                 .title(title)
                 .content(content)
                 .maxParticipants(maxParticipants)
@@ -168,7 +168,7 @@ public class UpdateShareBoardTest {
         final String content = "Content";
         final Integer maxParticipants = 10;
         final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
-        ShareBoard shareBoard =  shareBoardRepository.save(ShareBoard.builder()
+        ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
                 .title(title)
                 .content(content)
                 .maxParticipants(maxParticipants)
@@ -256,17 +256,17 @@ public class UpdateShareBoardTest {
 
         // 참여자 추가
         User participant;
-        for(int i=0; i<3; i++){
-            custumOAuth2UserService.handleNewUser("authId"+i, "authToken"+i);
-            participant = userRepository.findByAuthId("authId"+i)
+        for (int i = 0; i < 3; i++) {
+            custumOAuth2UserService.handleNewUser("authId" + i, "authToken" + i);
+            participant = userRepository.findByAuthId("authId" + i)
                     .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
             shareParticipantRepository.save(ShareParticipant.builder()
-                    .name("TestName"+i)
-                    .phone("010-1234-000"+i)
-                    .address("TestAddress"+i)
-                    .shareBoardId(shareBoard.getId())
-                    .userId(participant.getId())
+                    .name("TestName" + i)
+                    .phone("010-1234-000" + i)
+                    .address("TestAddress" + i)
+                    .shareBoard(shareBoard)
+                    .user(participant)
                     .build());
         }
 

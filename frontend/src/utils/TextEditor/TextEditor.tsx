@@ -4,7 +4,6 @@ import editorConfig from './editorConfig';
 import 'ckeditor5/ckeditor5.css';
 import './TextEditor.css';
 import { Dispatch, SetStateAction } from 'react';
-import { ArticlePost } from '../../types/ArticleType';
 
 interface EditorType {
   setInput: Dispatch<SetStateAction<string>>;
