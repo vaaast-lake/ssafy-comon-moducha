@@ -27,63 +27,63 @@ pipeline {
             }
         }
         stage ('build and Deploy') {
-            steps {
-                script {
-                    parallel(
-                        BE: {
-                            stage('BE-Build') {
-                                steps {
-                                    echo "BE Building.."
-                                    dir('./backend') {
-                                        sh 'chmod +x ./gradlew'
-                                        sh './gradlew clean build -x test'
-                                    }
+            parallel{
+                stage('BE Proccess'){
+                    stages{
+                        stage('BE-Build') {
+                            steps {
+                                echo "BE Building.."
+                                dir('./backend') {
+                                    sh 'chmod +x ./gradlew'
+                                    sh './gradlew clean build -x test'
                                 }
                             }
-                            stage('BE-Delivery') {
-                                steps {
-                                    dir('./backend') {
-                                        echo "Delivery BE Image.."
-                                        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                            sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                                            sh "docker build -t $DOCKER_USERNAME/moducha_backend:${env.BUILD_ID} ."
-                                            sh "docker tag $DOCKER_USERNAME/moducha_backend:${env.BUILD_ID} $DOCKER_USERNAME/moducha_backend:latest"
-                                            sh "docker push $DOCKER_USERNAME/moducha_backend:${env.BUILD_ID}"
-                                            sh "docker push $DOCKER_USERNAME/moducha_backend:latest"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        FE: {
-                            stage('FE-Build') {
-                                steps {
-                                    echo "FE Building.."
-                                    dir('./frontend') {
-                                        withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
-                                            sh 'cat $ENV_FILE > .env'
-                                        }
-                                        sh 'npm install'
-                                        sh 'npm run build'
-                                    }
-                                }
-                            }
-                            stage('FE-Delivery') {
-                                steps {
-                                    dir('./frontend') {
-                                        echo "Delivery FE Image.."
-                                        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                                            sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
-                                            sh "docker build -t $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID} ."
-                                            sh "docker tag $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID} $DOCKER_USERNAME/moducha_frontend:latest"
-                                            sh "docker push $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}"
-                                            sh "docker push $DOCKER_USERNAME/moducha_frontend:latest"
-                                        }
+                        }
+                        stage('BE-Delivery') {
+                            steps {
+                                dir('./backend') {
+                                    echo "Delivery BE Image.."
+                                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                        sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                                        sh "docker build -t $DOCKER_USERNAME/moducha_backend:${env.BUILD_ID} ."
+                                        sh "docker tag $DOCKER_USERNAME/moducha_backend:${env.BUILD_ID} $DOCKER_USERNAME/moducha_backend:latest"
+                                        sh "docker push $DOCKER_USERNAME/moducha_backend:${env.BUILD_ID}"
+                                        sh "docker push $DOCKER_USERNAME/moducha_backend:latest"
                                     }
                                 }
                             }
                         }
-                    )
+                    }
+                },
+                stage('FE Proccess'){
+                    stages{
+                        stage('FE-Build') {
+                            steps {
+                                echo "FE Building.."
+                                dir('./frontend') {
+                                    withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
+                                        sh 'cat $ENV_FILE > .env'
+                                    }
+                                    sh 'npm install'
+                                    sh 'npm run build'
+                                }
+                            }
+                        }
+                        stage('FE-Delivery') {
+                            steps {
+                                dir('./frontend') {
+                                    echo "Delivery FE Image.."
+                                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                                        sh "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin"
+                                        sh "docker build -t $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID} ."
+                                        sh "docker tag $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID} $DOCKER_USERNAME/moducha_frontend:latest"
+                                        sh "docker push $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}"
+                                        sh "docker push $DOCKER_USERNAME/moducha_frontend:latest"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
