@@ -1,9 +1,6 @@
 pipeline {
     agent {
-        node {
-            label 'docker-agent-dind'
-            cloud 'docker'
-        }
+        label 'docker-agent'
     }
     triggers {
         pollSCM 'H 9,12,17 * * *'
