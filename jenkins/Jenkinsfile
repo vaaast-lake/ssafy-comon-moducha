@@ -32,9 +32,8 @@ pipeline {
                 dir('./frontend') {
                     // 'frontend-env' 자격 증명을 'Secret file'로 처리
                     withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
-                        nodejs{
-                            env.NODJS_HOME = "${tool '20.15.0'}"
-                            env.PATH="${env.NODJS_HOME}/bin:${env.PATH}"
+                        nodejs(nodeJSInstallationName: '20.15.0', configId: 'npm-config-file') {
+                            sh 'npm config ls'
                             sh 'npm --version'
                             // sh '''
                             // cat $ENV_FILE > .env || { echo 'fail to set env file' }
