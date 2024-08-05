@@ -3,7 +3,7 @@ pipeline {
     options {
         skipDefaultCheckout(true)
     }
-    tools { nodes "20.15.0"}
+    tools { nodejs "20.15.0"}
     // triggers {
     //     pollSCM('H 9,12,17 * * *')
     // }
