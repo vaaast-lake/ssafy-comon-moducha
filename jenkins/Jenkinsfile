@@ -26,20 +26,20 @@ pipeline {
                 echo 'Cloning done'
             }
         }
-    //     stage('FE-Build') {
-    //         steps {
-    //             echo "FE Building.."
-    //             dir('./frontend') {
-    //                 withCredentials([string(credentialsId: 'frontend-env', variable: 'frontend-env')]) {
-    //                     sh '''
-    //                     echo $frontend-env > .env
-    //                     npm install
-    //                     npm run build
-    //                     '''
-    //                 }
-    //             }
-    //         }
-    //     }
+        stage('FE-Build') {
+            steps {
+                echo "FE Building.."
+                dir('./frontend') {
+                    withCredentials([string(credentialsId: 'frontend-env', variable: 'frontend-env')]) {
+                        sh '''
+                        echo $frontend-env > .env
+                        npm install
+                        npm run build
+                        '''
+                    }
+                }
+            }
+        }
     //     stage('FE-Delivery') {
     //         steps {
     //             dir('./frontend') {
