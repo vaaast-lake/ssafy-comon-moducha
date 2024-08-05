@@ -1,15 +1,26 @@
 pipeline {
     agent any
-    triggers {
-        pollSCM('H 9,12,17 * * *')
-    }
+    options {
+        skipDefaultCheckout(true)
+    }}
+    // triggers {
+    //     pollSCM('H 9,12,17 * * *')
+    // }
     environment {
         DOCKER_ID = 'ramen4598'
         GITHUB_OAUTH_TOKEN = credentials('github-oauth-token')
     }
     stages {
+        stage ('clean workspace') {
+            steps {
+                echo 'Cleaning workspace...'
+                cleanWs()
+                echo 'Cleaning done'
+            } 
+        }
         stage ('clone') {
             steps {
+                checkout scm
                 echo 'Cloning...'
                 git branch: 'S11P12D202-810-we-멀티-프로필-관리', credentialsId: 'gitlab-repo', url: 'https://lab.ssafy.com/s11-webmobile1-sub2/S11P12D202.git'
                 echo 'Cloning done'
@@ -71,5 +82,11 @@ pipeline {
     //             }
     //         }
     //     }
+    }
+    post {
+        always {
+            cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, 
+            disableDeferredWipeout: true, notFailBuild: true)
+        }
     }
 }
