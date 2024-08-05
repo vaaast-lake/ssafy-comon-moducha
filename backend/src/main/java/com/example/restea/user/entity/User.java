@@ -127,4 +127,16 @@ public class User extends BaseTimeEntity {
         this.activated = false;
     }
 
+    public void clearRecords() {
+        records.clear(); // 기록 삭제
+    }
+
+    public void clearParticipants() {
+        shareParticipants.clear(); // 나눔 게시판 clear
+        teatimeParticipants.clear(); // 티타임 게시판 clear
+    }
+
+    public void deleteAuthToken() {
+        this.authToken = null;
+    }
 }
