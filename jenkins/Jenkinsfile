@@ -34,12 +34,12 @@ pipeline {
                     // 'frontend-env' 자격 증명을 'Secret file'로 처리
                     withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
                         nodejs('20.15.0'){
-                            sh '''
-                            echo 'start doing'
-                            cat $ENV_FILE > .env || { echo 'fail to set env file' }
-                            npm install || { echo 'fail to npm install' }
-                            npm run build || { echo 'fail to npm run build' }
-                            '''
+                            sh 'npm -v'
+                            // sh '''
+                            // cat $ENV_FILE > .env || { echo 'fail to set env file' }
+                            // npm install || { echo 'fail to npm install' }
+                            // npm run build || { echo 'fail to npm run build' }
+                            // '''
                         }
                     }
                 }
