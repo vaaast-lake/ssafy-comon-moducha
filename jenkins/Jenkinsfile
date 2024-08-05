@@ -54,7 +54,7 @@ pipeline {
                             }
                         }
                     }
-                },
+                }
                 stage('FE Proccess'){
                     stages{
                         stage('FE-Build') {
