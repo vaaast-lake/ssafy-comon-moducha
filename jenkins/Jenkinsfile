@@ -37,6 +37,11 @@ pipeline {
         }
         stage('FE-Delivery') {
             steps {
+                script {
+                    sh 'unset DOCKER_HOST'
+                    sh 'unset DOCKER_CERT_PATH'
+                    sh 'unset DOCKER_TLS_VERIFY'
+                }
                 dir('./frontend') {
                     echo "Delivery FE Image.."
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -49,16 +54,16 @@ pipeline {
                 }
             }
         }
-    //     stage('BE-Build') {
-    //         steps {
-    //             echo "BE Building.."
-    //             dir('./backend') {
-    //                 sh '''
-    //                 ./gradlew clean build -x test
-    //                 '''
-    //             }
-    //         }
-    //     }
+        // stage('BE-Build') {
+        //     steps {
+        //         echo "BE Building.."
+        //         dir('./backend') {
+        //             sh '''
+        //             ./gradlew clean build -x test
+        //             '''
+        //         }
+        //     }
+        // }
     //     stage('BE-Delivery') {
     //         steps {
     //             dir('./backend') {
