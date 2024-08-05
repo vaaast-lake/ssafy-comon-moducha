@@ -23,7 +23,7 @@ const NavBar = () => {
 
   return (
     <div className="flex justify-center border-b-2 border-[#eee]">
-      <nav className="flex justify-between w-full lg:w-2/3 h-16 items-center">
+      <nav className="flex justify-between w-full lg:w-3/5 h-16 items-center">
         <Link to="/" className="btn btn-ghost">
           <img src={navModucha} alt="Nav Logo" />
         </Link>

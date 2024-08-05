@@ -6,6 +6,7 @@ import { mockDetail } from '../../constants/teatimeMock';
 import ArticleCard from '../../components/Article/ArticleCard';
 import ArticleContent from '../../components/Article/ArticleContent';
 import CommentList from '../../components/Comment/CommentList';
+import SideLayout from '../../components/Layout/SideLayout';
 
 const TeatimeDetail = () => {
   const { boardId } = useParams();
@@ -23,9 +24,9 @@ const TeatimeDetail = () => {
   // router 파라미터가 누락된 경우
   if (!boardId) return null;
   return (
-    <div className="grid grid-cols-12">
-      <aside className="hidden lg:flex col-span-2"></aside>
-      <main className="col-span-12 lg:col-span-8 md:grid md:grid-cols-12">
+    <div className="grid grid-cols-10">
+      <SideLayout></SideLayout>
+      <main className="col-span-10 lg:col-span-6 md:grid md:grid-cols-12">
         <section className="md:col-span-4 p-2">
           <ArticleCard {...{ boardType: 'teatimes', ...teatimeDetail }} />
         </section>
@@ -35,7 +36,7 @@ const TeatimeDetail = () => {
           </ArticleContent>
         </article>
       </main>
-      <aside className="hidden lg:flex col-span-2"></aside>
+      <SideLayout></SideLayout>
     </div>
   );
 };

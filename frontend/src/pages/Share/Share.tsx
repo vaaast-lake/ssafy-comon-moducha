@@ -9,6 +9,8 @@ import { fetchArticleList } from '../../api/fetchArticle';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';
+import SideLayout from '../../components/Layout/SideLayout';
+import MainLayout from '../../components/Layout/MainLayout';
 
 const Share = () => {
   const [shareList, setShareList] = useState(shareResponse.data);
@@ -29,13 +31,10 @@ const Share = () => {
   }, [sort, page]);
 
   return (
-    <div className="grid grid-cols-12">
+    <div className="grid grid-cols-10">
       {/* 좌측 사이드바 영역 */}
-      <aside className="hidden lg:flex col-span-2"></aside>
-      <main
-        id="share-body"
-        className="col-span-12 m-5 lg:col-span-8 flex flex-col gap-4"
-      >
+      <SideLayout></SideLayout>
+      <MainLayout className="gap-4">
         <header>
           <TitleCard>
             <div className="flex justify-between items-center">
@@ -63,9 +62,9 @@ const Share = () => {
         <footer className="flex justify-center">
           <Pagination {...{ page, totalPage, setPage }} />
         </footer>
-      </main>
+      </MainLayout>
       {/* 우측 사이드바 영역 */}
-      <aside className="hidden lg:flex col-span-2"></aside>
+      <SideLayout></SideLayout>
     </div>
   );
 };

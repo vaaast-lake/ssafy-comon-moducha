@@ -6,7 +6,7 @@ import {
 } from '@headlessui/react';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Dispatch, SetStateAction } from 'react';
-import TabToggleButton from '../../../components/Button/TabToggleButton';
+import TabButton from '../../../components/Button/TabButton';
 
 interface Prop {
   sort: string;
@@ -49,20 +49,20 @@ const CollapseButton = () => (
 
 const ToggleSort = ({ sort, setSort }: Prop) => (
   <div className="flex gap-2 items-center">
-    <TabToggleButton
-      value={sort}
-      toggleOption="latest"
+    <TabButton
+      currentTab={sort}
+      value="latest"
       onClick={() => setSort('latest')}
     >
       최신 순
-    </TabToggleButton>
-    <TabToggleButton
-      value={sort}
-      toggleOption="urgent"
+    </TabButton>
+    <TabButton
+      currentTab={sort}
+      value="urgent"
       onClick={() => setSort('urgent')}
     >
       마감일 순
-    </TabToggleButton>
+    </TabButton>
   </div>
 );
 

@@ -1,12 +1,13 @@
 // 아이템 12개의 테스트 나눔리스트 생성
-const genShareListItems = () => {
+export const genShareListItems = (n: number) => {
   const shareItems = [];
-  for (let i = 1; i < 13; i++) {
+  for (let i = 0; i < n; i++) {
     const shareItem = {
       boardId: i,
-      title: 'Post Title ' + i,
+      title: '나눔 ' + i,
       createdDate: '2023-07-01T12:00:00Z',
       lastUpdated: '2023-07-10T15:00:00Z',
+      content: '보이차 나눔해요 선착순 세분',
       endDate: '2023-07-10T15:00:00Z',
       maxParticipants: 2 + i,
       participants: 1 + i,
@@ -25,7 +26,7 @@ export const shareResponse = {
     page: 1,
     perPage: 10,
   },
-  data: genShareListItems(),
+  data: genShareListItems(12),
 };
 
 export const ShareDetailResponse = {
