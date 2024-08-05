@@ -7,6 +7,7 @@ pipeline {
     //     pollSCM('H 9,12,17 * * *')
     // }
     environment {
+        PATH = '/usr/local/bin'
         DOCKER_ID = 'ramen4598'
         GITHUB_OAUTH_TOKEN = credentials('github-oauth-token')
     }
@@ -32,11 +33,13 @@ pipeline {
                 dir('./frontend') {
                     // 'frontend-env' 자격 증명을 'Secret file'로 처리
                     withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
-                        sh '''
-                        cat $ENV_FILE > .env
-                        npm install
-                        npm run build
-                        '''
+                        nodejs('20.15.0'){
+                            sh '''
+                            cat $ENV_FILE > .env
+                            npm install
+                            npm run build
+                            '''
+                        }
                     }
                 }
             }
