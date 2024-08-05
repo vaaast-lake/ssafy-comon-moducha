@@ -38,11 +38,11 @@ public class TeatimeComment extends BaseTimeEntity {
     private Boolean activated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teatime_board_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "teatime_board_id", nullable = false)
     private TeatimeBoard teatimeBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "teatimeComment") // 댓글이 삭제되어도 대댓글은 보존

@@ -37,6 +37,6 @@ public class Record extends BaseTimeEntity {
     private Boolean activated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 }
