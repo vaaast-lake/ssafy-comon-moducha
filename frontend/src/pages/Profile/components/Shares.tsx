@@ -66,9 +66,9 @@ const Shares = () => {
 
   return (
     <div>
-      <h2 className="title">[나의 나눔 / 교환]</h2>
+      <h1 className="font-semibold text-2xl">나의 나눔 / 교환</h1>
       <div>
-        <h3 className="title">참여한 나눔</h3>
+        <h3 className="font-semibold">참여한 나눔</h3>
         {participatedShares.length > 0 ? (
           <ul>
             {participatedShares.map((share) => (
@@ -85,7 +85,6 @@ const Shares = () => {
         <div>
           {paginationParticipated.page > 1 && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationParticipated((prev) => ({
                   ...prev,
@@ -99,7 +98,6 @@ const Shares = () => {
           {paginationParticipated.page <
             Math.ceil(paginationParticipated.total / 10) && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationParticipated((prev) => ({
                   ...prev,
@@ -114,7 +112,7 @@ const Shares = () => {
       </div>
 
       <div>
-        <h3 className="title">작성한 나눔</h3>
+        <h3 className="font-semibold">작성한 나눔</h3>
         {writtenShares.length > 0 ? (
           <ul>
             {writtenShares.map((share) => (
@@ -131,7 +129,6 @@ const Shares = () => {
         <div>
           {paginationWritten.page > 1 && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationWritten((prev) => ({
                   ...prev,
@@ -144,7 +141,6 @@ const Shares = () => {
           )}
           {paginationWritten.page < Math.ceil(paginationWritten.total / 10) && (
             <button
-              className="abcd"
               onClick={() =>
                 setPaginationWritten((prev) => ({
                   ...prev,

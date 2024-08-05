@@ -33,7 +33,7 @@ const Records = () => {
 
   return (
     <div>
-      <h2 className="title">[나의 기록]</h2>
+      <h1 className="font-semibold text-2xl">나의 기록</h1>
       {records.length > 0 ? (
         <ul>
           {records.map((record) => (
@@ -50,7 +50,6 @@ const Records = () => {
       <div>
         {pagination.page > 1 && (
           <button
-            className="abcd"
             onClick={() =>
               setPagination((prev) => ({ ...prev, page: prev.page - 1 }))
             }
@@ -60,7 +59,6 @@ const Records = () => {
         )}
         {pagination.page < Math.ceil(pagination.total / 10) && (
           <button
-            className="abcd"
             onClick={() =>
               setPagination((prev) => ({ ...prev, page: prev.page + 1 }))
             }

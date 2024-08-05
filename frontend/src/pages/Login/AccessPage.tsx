@@ -25,14 +25,14 @@ const Access = () => {
     // 3. authStore.ts에서 localStorage를 보고 isLoggedIn 초기화(done)
     setLoggedIn(!!accessToken); // Access.tsx에서도 초기화. 크게 의미는 없는데 일단 양쪽에 로직을 구현해두었습니다.
     // 4. index.tsx로 redirect, 페이지 리프레시로 인해 자동 로그인 처리
-    // window.location.replace('/');
+    window.location.replace('/');
   }, [setLoggedIn]);
 
   return (
     <>
-      <button onClick={() => (window.location.href = '/')}>
+      {/* <button onClick={() => (window.location.href = '/')}>
         [Dev용: 홈으로 redirect]
-      </button>
+      </button> */}
     </>
   );
 };
