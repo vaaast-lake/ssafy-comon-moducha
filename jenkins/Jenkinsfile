@@ -92,11 +92,11 @@ pipeline {
                 echo 'EC2에 배포 시작!'
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sshagent(credentials: ['ubuntu']) { 
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'sudo docker rm -f $DOCKER_USERNAME/moducha_frontend'"
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'sudo docker rm -f $DOCKER_USERNAME/moducha_backend'"
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'sudo docker rm -f $DOCKER_USERNAME/moducha_frontend'"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'cd S11P12D202 && sudo docker-compose --profile prod down'"
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'sudo docker rmi $DOCKER_USERNAME/moducha_frontend:latest'"
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'sudo docker rmi $DOCKER_USERNAME/moducha_backend:latest'"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'frontend_images=\$(docker images -q moducha_frontend) && if [ -n \"\$frontend_images\" ]; then sudo docker rmi -f \$frontend_images; fi'"
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'backend_images=\$(docker images -q moducha_backend) && if [ -n \"\$backend_images\" ]; then sudo docker rmi -f \$backend_images; fi'"
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'sudo docker image prune -f'"
                         sh "ssh -o StrictHostKeyChecking=no ubuntu@$AWS_IP 'cd S11P12D202 && sudo docker-compose --profile prod up -d'"
                     }
