@@ -35,8 +35,8 @@ pipeline {
             }
         }
         stage('FE-Delivery') {
-            dir('./frontend') {
-                steps {
+            steps {
+                dir('./frontend') {
                     echo "Building FE Image.."
                     script {
                         docker.build("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
@@ -61,8 +61,8 @@ pipeline {
             }
         }
         stage('BE-Delivery') {
-            dir('./backend') {
-                steps {
+            steps {
+                dir('./backend') {
                     echo "Building BE Image.."
                     script {
                         docker.build("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}")
