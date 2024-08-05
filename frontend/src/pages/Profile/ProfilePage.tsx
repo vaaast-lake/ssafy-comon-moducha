@@ -1,18 +1,18 @@
-// import Profile from './components/Profile';
-// import Records from './components/Records';
-// import Shares from './components/Shares';
-// import Teatimes from './components/Teatimes';
+import Profile from './components/Profile';
+import Records from './components/Records';
+import Shares from './components/Shares';
+import Teatimes from './components/Teatimes';
 import AccountDeactivation from './components/AccountDeactivation';
 import './ProfilePage.css';
 
 const ProfilePage = () => {
   return (
     <div>
-      {/* <Profile />
+      <Profile />
       <Records />
       <Shares />
       <Teatimes />
-      <AccountDeactivation /> */}
+      <AccountDeactivation />
     </div>
   );
 };

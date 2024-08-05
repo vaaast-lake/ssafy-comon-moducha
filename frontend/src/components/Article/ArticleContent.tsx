@@ -3,7 +3,7 @@ import { ShareDetailItem } from '../../types/ShareType';
 import { EVDown, EVDownItem, EVDownMenu } from '../Dropdown/EllipsisDropdown';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import useAuthStore from '../../stores/authStore';
-import apiAxios from '../../api/apiAxios';
+import apiAxios from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { BoardType } from '../../types/BoardType';
 interface ArticleProp extends ShareDetailItem {
