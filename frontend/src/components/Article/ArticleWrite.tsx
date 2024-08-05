@@ -5,7 +5,7 @@ import TextEditor from '../../utils/TextEditor/TextEditor';
 import testImageList from '../../constants/uploadImageTest';
 import ArticleImageUpload from './ArticleImageUpload';
 import { ImageList } from '../../types/ArticleType';
-import apiAxios from '../../api/apiAxios';
+import apiAxios from '../../api/axiosInstance';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { BoardType } from '../../types/BoardType';
 
@@ -84,7 +84,6 @@ type DateInputProps = {
   pickedDate: string;
   setPickedDate: (date: string) => void;
 };
-
 
 const DateInput = ({ pickedDate, setPickedDate }: DateInputProps) => (
   <label className="input input-bordered w-full md:w-1/2 flex items-center gap-2">

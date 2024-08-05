@@ -1,5 +1,5 @@
 import { BoardType } from '../types/BoardType';
-import apiAxios from './apiAxios';
+import apiAxios from './axiosInstance';
 
 interface CommentRequestOption {
   boardType: BoardType;
