@@ -7,10 +7,6 @@ pipeline {
     // triggers {
     //     pollSCM('H 9,12,17 * * *')
     // }
-    environment {
-        DOCKER_ID = credentials
-        GITHUB_OAUTH_TOKEN = credentials('github-oauth-token')
-    }
     stages {
         stage ('clean workspace') {
             steps {
