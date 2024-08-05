@@ -4,9 +4,9 @@ pipeline {
         skipDefaultCheckout(true)
     }
     tools { nodejs "20.15.0"}
-    // triggers {
-    //     pollSCM('H 9,12,17 * * *')
-    // }
+    triggers {
+        pollSCM('H 9,12,17 * * *')
+    }
     stages {
         stage ('clean workspace') {
             steps {
@@ -17,8 +17,8 @@ pipeline {
         }
         stage ('clone') {
             steps {
-                checkout scm
                 echo 'Cloning...'
+                // checkout scm
                 git branch: 'S11P12D202-810-we-멀티-프로필-관리', credentialsId: 'gitlab-repo', url: 'https://lab.ssafy.com/s11-webmobile1-sub2/S11P12D202.git'
                 echo 'Cloning done'
             }
@@ -37,11 +37,6 @@ pipeline {
         }
         stage('FE-Delivery') {
             steps {
-                script {
-                    sh 'unset DOCKER_HOST'
-                    sh 'unset DOCKER_CERT_PATH'
-                    sh 'unset DOCKER_TLS_VERIFY'
-                }
                 dir('./frontend') {
                     echo "Delivery FE Image.."
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
