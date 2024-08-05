@@ -30,17 +30,15 @@ pipeline {
             steps {
                 echo "FE Building.."
                 dir('./frontend') {
-                    // 'frontend-env' 자격 증명을 'Secret file'로 처리
-                    withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
-                        nodejs(nodeJSInstallationName: '20.15.0', configId: 'npm-config-file') {
-                            sh 'npm config ls'
-                            sh 'npm --version'
-                            // sh '''
-                            // cat $ENV_FILE > .env || { echo 'fail to set env file' }
-                            // npm install || { echo 'fail to npm install' }
-                            // npm run build || { echo 'fail to npm run build' }
-                            // '''
-                        }
+                    nodejs(nodeJSInstallationName: '20.15.0', configId: 'npm-config-file') {
+                        sh 'npm config ls'
+                        // withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
+                        //     // sh '''
+                        //     // cat $ENV_FILE > .env || { echo 'fail to set env file' }
+                        //     // npm install || { echo 'fail to npm install' }
+                        //     // npm run build || { echo 'fail to npm run build' }
+                        //     // '''
+                        // }
                     }
                 }
             }
