@@ -1,11 +1,18 @@
+import SideLayout from '../../components/Layout/SideLayout';
+import MyTeatime from './componenets/MyTeatime';
+import ShareList from './componenets/ShareList';
+import TeatimeList from './componenets/TeatimeList';
+
 const Home = () => {
   return (
-    <div className="grid grid-cols-12 h-screen">
-      {/* 좌측 사이드바 영역 */}
-      <aside className="hidden lg:flex col-span-2"></aside>
-      <main className="col-span-12 m-5 lg:col-span-8 flex flex-col gap-4 bg-gray-200"></main>
-      {/* 우측 사이드바 영역 */}
-      <aside className="hidden lg:flex col-span-2"></aside>
+    <div className="grid grid-cols-10">
+      <SideLayout></SideLayout>
+      <main className="col-span-10 m-5 lg:col-span-6 flex flex-col gap-14">
+        <MyTeatime className="flex flex-col gap-4" />
+        <TeatimeList className="flex flex-col gap-4" />
+        <ShareList className="flex flex-col gap-4" />
+      </main>
+      <SideLayout></SideLayout>
     </div>
   );
 };

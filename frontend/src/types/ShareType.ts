@@ -5,6 +5,7 @@ export interface ShareListItem {
   title: string;
   createdDate: string;
   lastUpdated: string;
+  content: string;
   endDate: string;
   maxParticipants: number;
   participants: number;

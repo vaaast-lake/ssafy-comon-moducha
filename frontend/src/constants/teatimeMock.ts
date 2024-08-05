@@ -1,7 +1,7 @@
 // 아이템 12개의 테스트 나눔리스트 생성
-const genMockList = () => {
+export const genMockList = (n: number) => {
   const mockItems = [];
-  for (let i = 1; i < 13; i++) {
+  for (let i = 0; i < n; i++) {
     const mockItem = {
       userId: i,
       boardId: i,
@@ -23,7 +23,7 @@ export const mockList = {
     page: 1,
     perPage: 10,
   },
-  data: genMockList(),
+  data: genMockList(12),
 };
 
 export const mockDetail = {
