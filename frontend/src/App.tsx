@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/LoginPage';
-import Profile from './pages/Profile/Profile';
+import Profile from './pages/Profile/ProfilePage';
 import Teatime from './pages/Teatime/Teatime';
 import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
