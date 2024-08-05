@@ -1,19 +1,18 @@
-package com.example.restea.share.repository;
+package com.example.restea.record.repository;
 
-import com.example.restea.share.entity.ShareBoard;
-import com.example.restea.share.entity.ShareParticipant;
+import com.example.restea.record.entity.Record;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface ShareParticipantRepository extends JpaRepository<ShareParticipant, Integer> {
-
-    Long countByShareBoard(ShareBoard shareBoard);
+@Repository
+public interface RecordRepository extends JpaRepository<Record, Integer> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM ShareParticipant sp WHERE sp.user.id = :userId")
+    @Query("DELETE FROM Record r WHERE r.user.id = :userId")
     void deleteByUserId(@Param("userId") Integer userId);
 }
