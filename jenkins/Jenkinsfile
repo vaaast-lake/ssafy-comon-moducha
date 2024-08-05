@@ -1,0 +1,80 @@
+pipeline {
+    agent {
+        node {
+            label 'docker-agent-dind'
+        }
+    }
+    triggers {
+        pollSCM 'H 9,12,17 * * *'
+    }
+    environment {
+        PATH = '/usr/local/bin'
+        DOCKER_ID = credentials('docker-hub-id')
+        GITHUB_OAUTH_TOKEN = credentials('github-oauth-token')
+    }
+    stages {
+        stage ('clone') {
+            steps {
+                echo 'Cloning...'
+                git branch: 'S11P12D202-810-we-멀티-프로필-관리', credentialsId: 'gitlab-repo', url: 'https://lab.ssafy.com/s11-webmobile1-sub2/S11P12D202.git'
+                echo 'Cloning done'
+            }
+        }
+        stage('FE-Build') {
+            steps {
+                echo "FE Building.."
+                dir('./frontend') {
+                    withCredentials([string(credentialsId: 'frontend-env', variable: 'frontend-env')]) {
+                        sh '''
+                        echo $frontend-env > .env
+                        npm install
+                        npm run build
+                        '''
+                    }
+                }
+            }
+        }
+        stage('FE-Delivery') {
+            dir('./frontend') {
+                steps {
+                    echo "Building FE Image.."
+                    script {
+                        docker.build("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
+                        docker.tag("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_frontend:latest")
+                        withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
+                            sh "docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN"
+                        }
+                        docker.push("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
+                        docker.push("${DOCKER_ID}/moducha_frontend:latest")
+                    }
+                }
+            }
+        }
+        stage('BE-Build') {
+            steps {
+                echo "BE Building.."
+                dir('./backend') {
+                    sh '''
+                    ./gradlew clean build -x test
+                    '''
+                }
+            }
+        }
+        stage('BE-Delivery') {
+            dir('./backend') {
+                steps {
+                    echo "Building BE Image.."
+                    script {
+                        docker.build("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}")
+                        docker.tag("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_backend:latest")
+                        withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
+                            sh "docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN"
+                        }
+                        docker.push("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}")
+                        docker.push("${DOCKER_ID}/moducha_backend:latest")
+                    }
+                }
+            }
+        }
+    }
+}
