@@ -3,10 +3,10 @@ pipeline {
     triggers {
         pollSCM('H 9,12,17 * * *')
     }
-    // environment {
-    //     DOCKER_ID = credentials('docker-hub-id')
-    //     GITHUB_OAUTH_TOKEN = credentials('github-oauth-token')
-    // }
+    environment {
+        DOCKER_ID = 'ramen4598'
+        GITHUB_OAUTH_TOKEN = credentials('github-oauth-token')
+    }
     stages {
         stage ('clone') {
             steps {
