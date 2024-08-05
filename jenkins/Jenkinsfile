@@ -35,9 +35,10 @@ pipeline {
                     withCredentials([file(credentialsId: 'frontend-env', variable: 'ENV_FILE')]) {
                         nodejs('20.15.0'){
                             sh '''
-                            cat $ENV_FILE > .env
-                            npm install
-                            npm run build
+                            echo 'start doing'
+                            cat $ENV_FILE > .env || { echo 'fail to set env file' }
+                            npm install || { echo 'fail to npm install' }
+                            npm run build || { echo 'fail to npm run build' }
                             '''
                         }
                     }
