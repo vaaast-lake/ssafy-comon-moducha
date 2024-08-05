@@ -1,5 +1,6 @@
 package com.example.restea.user.service;
 
+import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -108,8 +109,6 @@ class UserServiceTest {
         userService.withdrawUser(user.getId());
         em.flush();
         em.clear();
-
-        System.out.println(authTokenRepository.findAll().size());
 
         // then
         // User 상태 확인
@@ -277,5 +276,32 @@ class UserServiceTest {
 
         // 오류 메시지 확인
         assertEquals(USER_NOT_FOUND.getMessage(), thrown.getMessage());
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("이미 탈퇴한 유저에 대한 회원 탈퇴 시나리오")
+    void 이미_탈퇴한_유저_탈퇴_시_에러() {
+        // given
+        User user = createUser();
+
+        // when
+        userService.withdrawUser(user.getId());
+        em.flush();
+        em.clear();
+
+        // when & then
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
+            userService.withdrawUser(user.getId()); // 이미 탈퇴된 상태이므로 예외 발생해야 함
+        });
+
+        // 오류 메시지 확인
+        assertEquals(USER_ALREADY_WITHDRAWN.getMessage(), thrown.getMessage());
+
+        // 이후 유저 상태 검토
+        Optional<User> deletedUserOpt = userRepository.findById(user.getId());
+        assertTrue(deletedUserOpt.isPresent());
+        User deletedUser = deletedUserOpt.get();
+        assertFalse(deletedUser.getActivated()); // 비활성화 상태 확인
     }
 }
