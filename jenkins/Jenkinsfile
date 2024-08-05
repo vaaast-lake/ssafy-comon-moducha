@@ -15,61 +15,61 @@ pipeline {
                 echo 'Cloning done'
             }
         }
-        stage('FE-Build') {
-            steps {
-                echo "FE Building.."
-                dir('./frontend') {
-                    withCredentials([string(credentialsId: 'frontend-env', variable: 'frontend-env')]) {
-                        sh '''
-                        echo $frontend-env > .env
-                        npm install
-                        npm run build
-                        '''
-                    }
-                }
-            }
-        }
-        stage('FE-Delivery') {
-            steps {
-                dir('./frontend') {
-                    echo "Building FE Image.."
-                    withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
-                        sh '''
-                        docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
-                        docker.build("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
-                        docker.tag("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_frontend:latest")
-                        docker.push("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
-                        docker.push("${DOCKER_ID}/moducha_frontend:latest")
-                        '''
-                    }
-                }
-            }
-        }
-        stage('BE-Build') {
-            steps {
-                echo "BE Building.."
-                dir('./backend') {
-                    sh '''
-                    ./gradlew clean build -x test
-                    '''
-                }
-            }
-        }
-        stage('BE-Delivery') {
-            steps {
-                dir('./backend') {
-                    echo "Building BE Image.."
-                    withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
-                        sh '''
-                        docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
-                        docker.build("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}")
-                        docker.tag("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_backend:latest")
-                        docker.push("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}")
-                        docker.push("${DOCKER_ID}/moducha_backend:latest")
-                        '''
-                    }
-                }
-            }
-        }
+    //     stage('FE-Build') {
+    //         steps {
+    //             echo "FE Building.."
+    //             dir('./frontend') {
+    //                 withCredentials([string(credentialsId: 'frontend-env', variable: 'frontend-env')]) {
+    //                     sh '''
+    //                     echo $frontend-env > .env
+    //                     npm install
+    //                     npm run build
+    //                     '''
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     stage('FE-Delivery') {
+    //         steps {
+    //             dir('./frontend') {
+    //                 echo "Building FE Image.."
+    //                 withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
+    //                     sh '''
+    //                     docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
+    //                     docker.build("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
+    //                     docker.tag("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_frontend:latest")
+    //                     docker.push("${DOCKER_ID}/moducha_frontend:${env.BUILD_ID}")
+    //                     docker.push("${DOCKER_ID}/moducha_frontend:latest")
+    //                     '''
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     stage('BE-Build') {
+    //         steps {
+    //             echo "BE Building.."
+    //             dir('./backend') {
+    //                 sh '''
+    //                 ./gradlew clean build -x test
+    //                 '''
+    //             }
+    //         }
+    //     }
+    //     stage('BE-Delivery') {
+    //         steps {
+    //             dir('./backend') {
+    //                 echo "Building BE Image.."
+    //                 withCredentials([string(credentialsId: 'github-oauth-token', variable: 'GITHUB_OAUTH_TOKEN')]) {
+    //                     sh '''
+    //                     docker login -u $DOCKER_ID -p $GITHUB_OAUTH_TOKEN
+    //                     docker.build("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}")
+    //                     docker.tag("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}", "${DOCKER_ID}/moducha_backend:latest")
+    //                     docker.push("${DOCKER_ID}/moducha_backend:${env.BUILD_ID}")
+    //                     docker.push("${DOCKER_ID}/moducha_backend:latest")
+    //                     '''
+    //                 }
+    //             }
+    //         }
+    //     }
     }
 }
