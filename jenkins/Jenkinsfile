@@ -2,7 +2,7 @@ pipeline {
     agent any
     options {
         skipDefaultCheckout(true)
-    }}
+    }
     // triggers {
     //     pollSCM('H 9,12,17 * * *')
     // }
