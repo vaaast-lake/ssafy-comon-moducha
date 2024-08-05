@@ -44,11 +44,11 @@ pipeline {
                 dir('./frontend') {
                     echo "Delivery FE Image.."
                     withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        docker.build("$DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}")
-                        docker.tag("$DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}", "$DOCKER_USERNAME/moducha_frontend:latest")
-                        docker.push("$DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}")
-                        docker.push("$DOCKER_USERNAME/moducha_frontend:latest")
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                        sh 'docker build -t $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID} .'
+                        sh 'docker tag $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}, $DOCKER_USERNAME/moducha_frontend:latest'
+                        sh 'docker push $DOCKER_USERNAME/moducha_frontend:${env.BUILD_ID}'
+                        sh 'docker push $DOCKER_USERNAME/moducha_frontend:latest'
                     }
                 }
             }
