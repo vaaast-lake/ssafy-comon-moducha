@@ -14,6 +14,11 @@ export default {
         teabg: '#E6F9E4',
         disabled: '#626262',
       },
+      gridTemplateRows: {
+        // Simple 16 row grid
+        '14': 'repeat(14, minmax(0, 1fr))',
+        '16': 'repeat(16, minmax(0, 1fr))',
+      },
     },
   },
   plugins: [daisyui],
