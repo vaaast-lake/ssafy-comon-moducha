@@ -158,9 +158,9 @@ public class CreateShareCommentTest {
         assertThat(shareComments.size()).isEqualTo(0);
     }
 
-    @DisplayName("createShareBoard : content가 비었을 때 실패한다.")
+    @DisplayName("createShareComment : content가 비었을 때 실패한다.")
     @Test
-    public void createShareBoard_EmptyContent_Failure() throws Exception {
+    public void createShareComment_EmptyContent_Failure() throws Exception {
         // given
         User user = userRepository.findByAuthId("authId")
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
@@ -193,5 +193,49 @@ public class CreateShareCommentTest {
         List<ShareComment> shareComments = shareCommentRepository.findAll();
         assertThat(shareComments.size()).isEqualTo(0);
     }
-    
+
+    @DisplayName("createShareComment : shareBoard가 비활성화됐을 때 실패한다.")
+    @Test
+    public void createShareComment_deactivatedShardBoard_Failure() throws Exception {
+        // given
+        User user = userRepository.findByAuthId("authId")
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+        final String title = "Title";
+        final String shareBoardcontent = "Content";
+        final Integer maxParticipants = 10;
+        final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
+
+        ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
+                .title(title)
+                .content(shareBoardcontent)
+                .maxParticipants(maxParticipants)
+                .endDate(endDate)
+                .user(user)
+                .build());
+
+        ShareBoard testShareBoard = shareBoardRepository.findById(shareBoard.getId())
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 나눔 게시판 생성 실패"));
+
+        testShareBoard.deactivate();
+
+        shareBoardRepository.save(testShareBoard);
+
+        final String url = "/api/v1/shares/" + shareBoard.getId() + "/comments";
+        final String content = "TestContent";
+        final ShareCommentCreationRequest shareCommentCreationRequest = new ShareCommentCreationRequest(content);
+        final String requestBody = objectMapper.writeValueAsString(shareCommentCreationRequest);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody));
+
+        // then
+        result.andExpect(status().isBadRequest());
+        List<ShareComment> shareComments = shareCommentRepository.findAll();
+        assertThat(shareComments.size()).isEqualTo(0);
+    }
+
 }
