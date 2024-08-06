@@ -160,6 +160,36 @@ public class GetMyPageShareBoardTest {
         }
     }
 
+    /**
+     * testName, Page, perPage
+     */
+    private static Stream<Arguments> noContentParameter() {
+        return Stream.of(
+                Arguments.of("2page, 5perPage, 4totalContent", 2, 5),
+                Arguments.of("1page, 5perPage, 0totalContent", 1, 5)
+        );
+    }
+
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("noContentParameter")
+    @DisplayName("[NoContent] getMyPageShareBoard : 나눔게시판 내가 작성한 글목록 가져오기 - 최신순")
+    void NoContent_getMyPageShareBoard_테스트(String testName, Integer page, Integer perPage)
+            throws Exception {
+        // given
+        final String url = "/api/v1/users/mypage/shares";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "latest")
+                .param("page", String.valueOf(page))
+                .param("perPage", String.valueOf(perPage))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isNoContent());
+    }
+
+
     private void writeUserShareBoard(List<ShareBoard> shareBoards, User user, Integer contentsCount) {
         for (int i = 0; i < contentsCount; i++) {
             final String title = "Title" + i;
