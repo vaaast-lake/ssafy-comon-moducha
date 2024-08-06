@@ -19,4 +19,5 @@ public interface ShareBoardRepository extends JpaRepository<ShareBoard, Integer>
 
     Page<ShareBoard> findAllByActivatedAndEndDateAfter(boolean b, LocalDateTime now, PageRequest endDate);
 
+    Page<ShareBoard> findAllByActivatedAndUserId(boolean b, Integer userId, Pageable pageable);
 }
