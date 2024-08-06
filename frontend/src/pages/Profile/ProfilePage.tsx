@@ -1,5 +1,5 @@
-import Records from './components/myRecords';
-import Shares from './components/myShares';
+import Records from './components/Records';
+import Shares from './components/Shares';
 import Teatimes from './components/myTeatimes';
 import AccountDeactivation from './components/AccountDeactivation';
 import MainLayout from '../../components/Layout/MainLayout';
