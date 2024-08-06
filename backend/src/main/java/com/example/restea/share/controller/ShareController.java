@@ -1,5 +1,6 @@
 package com.example.restea.share.controller;
 
+import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
@@ -7,21 +8,18 @@ import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.service.ShareService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -32,11 +30,10 @@ public class ShareController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getShareBoardList(
-            @NotBlank @RequestParam("sort") String sort,
-            @NotNull @Positive @RequestParam("perPage") Integer perPage,
-            @NotNull @Positive @RequestParam("page") Integer page) {
+            @Valid @ModelAttribute PaginationAndSortingDto dto) {
 
-        Map<String, Object> result = shareService.getShareBoardList(sort, page, perPage);
+        Map<String, Object> result =
+                shareService.getShareBoardList(dto.getSort(), dto.getPage(), dto.getPerPage());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.builder()
