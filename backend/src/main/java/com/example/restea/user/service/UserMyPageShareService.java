@@ -20,7 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
-public class UserMyPageService {
+public class UserMyPageShareService {
 
     private final ShareBoardRepository shareBoardRepository;
     private final ShareParticipantRepository shareParticipantRepository;
