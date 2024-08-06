@@ -94,12 +94,12 @@ public class CreateShareCommentTest {
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         final String title = "Title";
-        final String shareBoardcontent = "Content";
+        final String shareBoardContent = "Content";
         final Integer maxParticipants = 10;
         final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
                 .title(title)
-                .content(shareBoardcontent)
+                .content(shareBoardContent)
                 .maxParticipants(maxParticipants)
                 .endDate(endDate)
                 .user(user)
@@ -131,12 +131,12 @@ public class CreateShareCommentTest {
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         final String title = "Title";
-        final String shareBoardcontent = "Content";
+        final String shareBoardContent = "Content";
         final Integer maxParticipants = 10;
         final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
                 .title(title)
-                .content(shareBoardcontent)
+                .content(shareBoardContent)
                 .maxParticipants(maxParticipants)
                 .endDate(endDate)
                 .user(user)
@@ -166,12 +166,12 @@ public class CreateShareCommentTest {
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         final String title = "Title";
-        final String shareBoardcontent = "Content";
+        final String shareBoardContent = "Content";
         final Integer maxParticipants = 10;
         final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
                 .title(title)
-                .content(shareBoardcontent)
+                .content(shareBoardContent)
                 .maxParticipants(maxParticipants)
                 .endDate(endDate)
                 .user(user)
@@ -202,13 +202,13 @@ public class CreateShareCommentTest {
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         final String title = "Title";
-        final String shareBoardcontent = "Content";
+        final String shareBoardContent = "Content";
         final Integer maxParticipants = 10;
         final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
 
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
                 .title(title)
-                .content(shareBoardcontent)
+                .content(shareBoardContent)
                 .maxParticipants(maxParticipants)
                 .endDate(endDate)
                 .user(user)
@@ -220,6 +220,51 @@ public class CreateShareCommentTest {
         testShareBoard.deactivate();
 
         shareBoardRepository.save(testShareBoard);
+
+        final String url = "/api/v1/shares/" + shareBoard.getId() + "/comments";
+        final String content = "TestContent";
+        final ShareCommentCreationRequest shareCommentCreationRequest = new ShareCommentCreationRequest(content);
+        final String requestBody = objectMapper.writeValueAsString(shareCommentCreationRequest);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody));
+
+        // then
+        result.andExpect(status().isBadRequest());
+        List<ShareComment> shareComments = shareCommentRepository.findAll();
+        assertThat(shareComments.size()).isEqualTo(0);
+    }
+
+    @DisplayName("createShareComment : shareBoard 작성자가 비활성화됐을 때 실패한다.")
+    @Test
+    public void createShareComment_deactivatedShardBoardUser_Failure() throws Exception {
+        // given
+        User user = userRepository.save(User.builder()
+                .authId("authId2")
+                .nickname("TestUser2")
+                .build());
+
+        User testUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 회원2 생성 실패"));
+
+        testUser.deactivate();
+        userRepository.save(testUser);
+
+        final String title = "Title";
+        final String shareBoardContent = "Content";
+        final Integer maxParticipants = 10;
+        final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
+
+        ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
+                .title(title)
+                .content(shareBoardContent)
+                .maxParticipants(maxParticipants)
+                .endDate(endDate)
+                .user(testUser)
+                .build());
 
         final String url = "/api/v1/shares/" + shareBoard.getId() + "/comments";
         final String content = "TestContent";
