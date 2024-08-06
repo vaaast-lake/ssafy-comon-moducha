@@ -1,13 +1,17 @@
 package com.example.restea.share.service;
 
 import com.example.restea.common.dto.PaginationDTO;
+import com.example.restea.share.dto.ShareCommentCreationRequest;
+import com.example.restea.share.dto.ShareCommentCreationResponse;
 import com.example.restea.share.dto.ShareCommentListResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
 import com.example.restea.share.repository.ShareBoardRepository;
 import com.example.restea.share.repository.ShareCommentRepository;
 import com.example.restea.share.repository.ShareReplyRepository;
+import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +48,36 @@ public class ShareCommentService {
                 .build();
 
         return Map.of("data", data, "pagination", pagination);
+    }
+
+    @Transactional
+    public ShareCommentCreationResponse createShareComment(ShareCommentCreationRequest request, Integer shareBoardId,
+                                                           Integer userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+
+        ShareBoard shareBoard = shareBoardRepository.findByIdAndActivated(shareBoardId, true)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ShareBoard not found"));
+
+        if (!shareBoard.getUser().getActivated()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not activated");
+        }
+
+        ShareComment shareComment = ShareComment.builder()
+                .user(user)
+                .content(request.getContent())
+                .shareBoard(shareBoard)
+                .build();
+
+        shareCommentRepository.save(shareComment);
+
+        return ShareCommentCreationResponse.builder()
+                .commentId(shareComment.getId())
+                .boardId(shareComment.getShareBoard().getId())
+                .content(shareComment.getContent())
+                .createdDate(shareComment.getCreatedDate())
+                .build();
     }
 
     private @NotNull Page<ShareComment> getShareComments(ShareBoard shareBoard, Integer page, Integer perPage) {
