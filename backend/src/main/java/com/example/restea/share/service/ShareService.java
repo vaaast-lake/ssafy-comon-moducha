@@ -89,6 +89,7 @@ public class ShareService {
                 .participants(shareParticipantRepository.countByShareBoard(shareBoard).intValue())
                 .viewCount(shareBoard.getViewCount())
                 .nickname(shareBoard.getUser().getExposedNickname())
+                .userId(shareBoard.getUser().getId())
                 .build();
     }
 

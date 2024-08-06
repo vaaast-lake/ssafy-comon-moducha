@@ -17,11 +17,14 @@ public class ShareViewResponse {
     private final Integer participants;
     private final Integer viewCount;
     private final String nickname;
+    private final Integer userId;
 
     @Builder
     public ShareViewResponse(Integer boardId, String title, String content,
                              LocalDateTime createdDate, LocalDateTime lastUpdated, LocalDateTime endDate,
-                             Integer maxParticipants, Integer participants, Integer viewCount, String nickname) {
+                             Integer maxParticipants, Integer participants, Integer viewCount,
+                             String nickname, Integer userId) {
+
         this.boardId = boardId;
         this.title = title;
         this.content = content;
@@ -32,6 +35,7 @@ public class ShareViewResponse {
         this.participants = participants;
         this.viewCount = viewCount;
         this.nickname = nickname;
+        this.userId = userId;
     }
 
 }
