@@ -61,7 +61,7 @@ public class ShareCommentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ShareBoard not found"));
 
         if (!shareBoard.getUser().getActivated()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User not activated");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "shareBoard User not activated");
         }
 
         ShareComment shareComment = ShareComment.builder()
