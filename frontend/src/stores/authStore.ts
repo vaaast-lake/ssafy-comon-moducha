@@ -18,24 +18,16 @@ interface TokenType {
   username: string;
   userId: string;
   role: string;
-  accessToken: string;
 }
 
 const useAuthStore = create<AuthState>()(
   devtools((set) => {
-    const accessToken = localStorage.getItem('authorization');
-    const isLoggedIn = accessToken ? true : false;
-    const currentUsername = accessToken
-      ? jwtDecode<TokenType>(accessToken).username
-      : '';
-    const currentUserId = accessToken
-      ? jwtDecode<TokenType>(accessToken).userId
-      : '';
-    const currentUserRole = accessToken
-      ? jwtDecode<TokenType>(accessToken).role
-      : '';
+    const token = localStorage.getItem('authorization');
+    const isLoggedIn = token ? true : false;
+    const currentUsername = token ? jwtDecode<TokenType>(token).username : '';
+    const currentUserId = token ? jwtDecode<TokenType>(token).userId : '';
+    const currentUserRole = token ? jwtDecode<TokenType>(token).role : '';
     return {
-      accessToken,
       isLoggedIn,
       setLoggedIn: (status) => set({ isLoggedIn: status }),
       currentUsername,

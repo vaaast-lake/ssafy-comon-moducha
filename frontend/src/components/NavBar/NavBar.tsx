@@ -68,14 +68,6 @@ const NavBar = () => {
             <>
               <li>
                 <Link
-                  to="/"
-                  className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
-                >
-                  로고(홈)
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/teatimes"
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
