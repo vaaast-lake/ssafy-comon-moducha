@@ -4,7 +4,8 @@ import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.share.dto.ShareListResponse;
-import com.example.restea.user.service.UserMyPageService;
+import com.example.restea.user.service.UserMyPageShareService;
+import com.example.restea.user.service.UserMyPageTeatimeService;
 import com.example.restea.user.service.UserService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -23,7 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
-    private final UserMyPageService userMypageService;
+    private final UserMyPageShareService userMyPageShareService;
+    private final UserMyPageTeatimeService userMyPageTeatimeService;
 
     /**
      * 유저를 비활성화하는 메소드. 회원이 탈퇴버튼을 누를 경우 작동
@@ -57,5 +59,26 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(shareBoardList);
+    }
+
+    /**
+     * 내가 작성한 TeatimeBoardList를 최신순으로 불러오는 API
+     *
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @param dto              sort, page, perPage query Parameter
+     * @return ResponseEntity
+     */
+    @GetMapping("/mypage/teatimes")
+    public ResponseEntity<ResponseDTO<?>> getTeatimeBoardList(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        ResponseDTO<List<com.example.restea.teatime.dto.TeatimeListResponse>> teatimeBoardList =
+                userMyPageTeatimeService.getTeatimeBoardList(customOAuth2User.getUserId(),
+                        dto.getPage(),
+                        dto.getPerPage());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(teatimeBoardList);
     }
 }
