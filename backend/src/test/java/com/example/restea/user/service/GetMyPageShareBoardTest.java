@@ -57,6 +57,52 @@ public class GetMyPageShareBoardTest {
     private User testUser;
 
     /**
+     * testName, Page, perPage, contentsCount
+     */
+    private static Stream<Arguments> validParameter() {
+        return Stream.of(
+                Arguments.of("1page, 5perPage, 4totalContent", 1, 5, 4),
+                Arguments.of("1page, 5perPage, 6totalContent", 1, 5, 6),
+                Arguments.of("2page, 5perPage, 6totalContent", 2, 5, 6)
+        );
+    }
+
+    /**
+     * testName, Page, perPage
+     */
+    private static Stream<Arguments> noContentParameter() {
+        return Stream.of(
+                Arguments.of("2page, 5perPage, 4totalContent", 2, 5),
+                Arguments.of("1page, 5perPage, 0totalContent", 1, 5)
+        );
+    }
+
+    /**
+     * testName, Page, perPage
+     */
+    private static Stream<Arguments> invalidParameter() {
+        return Stream.of(
+                Arguments.of("page가 null", null, "1"),
+                Arguments.of("page가 0", "0", "1"),
+                Arguments.of("page가 음수", "-1", "1"),
+                Arguments.of("page가 문자열인 경우", "String", "1"),
+                Arguments.of("page가 float인 경우", "2.456", "1"),
+                Arguments.of("page가 blank인 경우", "  ", "1"),
+                Arguments.of("page가 empty인 경우", "", "1"),
+                Arguments.of("page가 Long인 경우", "2_147_483_648", "1"),
+
+                Arguments.of("perPage가 null", "1", null),
+                Arguments.of("perPage가 0", "1", "0"),
+                Arguments.of("perPage가 음수", "1", "-1"),
+                Arguments.of("perPage가 문자열인 경우", "1", "String"),
+                Arguments.of("page가 float인 경우", "1", "2.456"),
+                Arguments.of("page가 blank인 경우", "1", "  "),
+                Arguments.of("page가 empty인 경우", "1", ""),
+                Arguments.of("page가 Long인 경우", "1", "2_147_483_648")
+        );
+    }
+
+    /**
      * Spring 5.2 버전 이후로 기본 인코딩 문자는 UTF-8이 아님. -> 따라서 Charset을 UTF-8로 등록해야함.
      */
     @BeforeEach()
@@ -88,17 +134,6 @@ public class GetMyPageShareBoardTest {
     void tearDown() {
         shareBoardRepository.deleteAll();
         userRepository.deleteAll();
-    }
-
-    /**
-     * testName, Page, perPage, contentsCount
-     */
-    private static Stream<Arguments> validParameter() {
-        return Stream.of(
-                Arguments.of("1page, 5perPage, 4totalContent", 1, 5, 4),
-                Arguments.of("1page, 5perPage, 6totalContent", 1, 5, 6),
-                Arguments.of("2page, 5perPage, 6totalContent", 2, 5, 6)
-        );
     }
 
     @ParameterizedTest(name = "{index}: {0}")
@@ -160,16 +195,6 @@ public class GetMyPageShareBoardTest {
         }
     }
 
-    /**
-     * testName, Page, perPage
-     */
-    private static Stream<Arguments> noContentParameter() {
-        return Stream.of(
-                Arguments.of("2page, 5perPage, 4totalContent", 2, 5),
-                Arguments.of("1page, 5perPage, 0totalContent", 1, 5)
-        );
-    }
-
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("noContentParameter")
     @DisplayName("[NoContent] getMyPageShareBoard : 나눔게시판 내가 작성한 글목록 가져오기 - 최신순")
@@ -187,31 +212,6 @@ public class GetMyPageShareBoardTest {
 
         // then
         resultActions.andExpect(status().isNoContent());
-    }
-
-    /**
-     * testName, Page, perPage
-     */
-    private static Stream<Arguments> invalidParameter() {
-        return Stream.of(
-                Arguments.of("page가 null", null, "1"),
-                Arguments.of("page가 0", "0", "1"),
-                Arguments.of("page가 음수", "-1", "1"),
-                Arguments.of("page가 문자열인 경우", "String", "1"),
-                Arguments.of("page가 float인 경우", "2.456", "1"),
-                Arguments.of("page가 blank인 경우", "  ", "1"),
-                Arguments.of("page가 empty인 경우", "", "1"),
-                Arguments.of("page가 Long인 경우", "2_147_483_648", "1"),
-
-                Arguments.of("perPage가 null", "1", null),
-                Arguments.of("perPage가 0", "1", "0"),
-                Arguments.of("perPage가 음수", "1", "-1"),
-                Arguments.of("perPage가 문자열인 경우", "1", "String"),
-                Arguments.of("page가 float인 경우", "1", "2.456"),
-                Arguments.of("page가 blank인 경우", "1", "  "),
-                Arguments.of("page가 empty인 경우", "1", ""),
-                Arguments.of("page가 Long인 경우", "1", "2_147_483_648")
-        );
     }
 
     @ParameterizedTest(name = "{index}: {0}")
