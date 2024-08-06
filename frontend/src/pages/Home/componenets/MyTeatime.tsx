@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { genMockList } from '../../../constants/teatimeMock';
-import MyTeatimeCard from './MyTeatimeCard';
+import MyTeatimeCarousel from './MyTeatimeCarousel';
 
 const MyTeatime = ({ ...props }) => {
-  const [myTeatimeList, setMyTeatime] = useState(genMockList(4));
+  const [myTeatimeList, setMyTeatime] = useState(genMockList(12));
+  useEffect(() => {});
   return (
     <section {...props}>
       <header className="flex justify-between items-center">
@@ -13,11 +14,9 @@ const MyTeatime = ({ ...props }) => {
           모두보기
         </Link>
       </header>
-      <article className="grid grid-cols-2 lg:grid-cols-4 items-center gap-4">
-        {myTeatimeList.map((el) => (
-          <MyTeatimeCard key={el.boardId} {...el} />
-        ))}
-      </article>
+      <main className="relative">
+        <MyTeatimeCarousel myTeatimeList={myTeatimeList} />
+      </main>
     </section>
   );
 };

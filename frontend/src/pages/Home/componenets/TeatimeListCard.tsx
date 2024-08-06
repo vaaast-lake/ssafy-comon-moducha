@@ -8,8 +8,8 @@ const TeatimeListCard = ({ boardId, title, content }: TeatimeListItem) => {
       className="flex flex-col overflow-hidden border rounded-lg transition ease-in-out hover:bg-teabg hover:shadow-lg duration-150"
     >
       <figure
-        className="overflow-hidden h-40 bg-cover bg-no-repeat"
-        style={{ backgroundImage: `url(/mock/maincard/tea${boardId + 1}.jpg)` }}
+        className="overflow-hidden h-40 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(/mock/maincard/tea${boardId}.jpg)` }}
       ></figure>
       <main className="p-4 pt-2">
         <header className="font-semibold">{title}</header>

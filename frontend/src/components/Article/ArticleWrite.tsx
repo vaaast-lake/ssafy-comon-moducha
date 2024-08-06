@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import TextEditor from '../../utils/TextEditor/TextEditor';
 import testImageList from '../../constants/uploadImageTest';
-import ArticleImageUpload from './ArticleImageUpload';
+// import ArticleImageUpload from './ArticleImageUpload';
 import { ImageList } from '../../types/ArticleType';
 import apiAxios from '../../api/axiosInstance';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
@@ -45,7 +45,7 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && <Error error={error} />}
       <Header />
-      <ArticleImageUpload imageList={imageList} />
+      {/* <ArticleImageUpload imageList={imageList} /> */}
       <DateInput pickedDate={pickedDate} setPickedDate={setPickedDate} />
       <ParticipantsInput />
       <TextEditor setInput={setContent} />
