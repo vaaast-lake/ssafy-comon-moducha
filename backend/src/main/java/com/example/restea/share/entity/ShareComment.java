@@ -56,4 +56,14 @@ public class ShareComment extends BaseTimeEntity {
         this.shareBoard = shareBoard;
         this.user = user;
     }
+
+    // 보여질 댓글 내용을 반환하는 메소드
+    public String getExposedContent() {
+        return activated ? content : "삭제된 댓글입니다.";
+    }
+
+    // 보여질 닉네임을 반환하는 메소드
+    public String getExposedNickName() {
+        return activated ? user.getExposedNickname() : "";
+    }
 }

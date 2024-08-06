@@ -62,10 +62,10 @@ public class ShareCommentService {
             data.add(ShareCommentListResponse.builder()
                     .commentId(shareComment.getId())
                     .boardId(shareComment.getShareBoard().getId())
-                    .content(shareComment.getContent())
+                    .content(shareComment.getExposedContent())
                     .createdDate(shareComment.getCreatedDate())
                     .userId(shareComment.getUser().getId())
-                    .nickname(shareComment.getUser().getExposedNickname())
+                    .nickname(shareComment.getExposedNickName())
                     .replyCount(shareReplyRepository.countByShareComment(shareComment).intValue())
                     .build());
         }
