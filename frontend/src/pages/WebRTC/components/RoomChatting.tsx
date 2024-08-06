@@ -38,7 +38,6 @@ const RoomChatting = ({
         grid
         col-span-3
         grid-rows-12
-        lg:h-5/6
       "
     >
       <div
@@ -63,7 +62,7 @@ const RoomChatting = ({
       <div
         id="chat-message-box"
         className="
-          min-h-full overflow-y-scroll 
+          overflow-y-scroll 
           row-span-9
           bg-slate-200
         "
