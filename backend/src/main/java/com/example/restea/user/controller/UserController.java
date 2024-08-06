@@ -51,7 +51,7 @@ public class UserController {
             @Valid @ModelAttribute PaginationAndSortingDto dto) {
 
         ResponseDTO<List<ShareListResponse>> shareBoardList =
-                userMypageService.getShareBoardList(customOAuth2User.getUserId(),
+                userMyPageShareService.getShareBoardList(customOAuth2User.getUserId(),
                         dto.getPage(),
                         dto.getPerPage());
 
