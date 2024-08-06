@@ -1,10 +1,12 @@
 package com.example.restea.share.dto;
 
+import com.example.restea.share.entity.ShareBoard;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class ShareListResponse {
 
     private final Integer boardId;
@@ -16,6 +18,20 @@ public class ShareListResponse {
     private final Integer participants;
     private final Integer viewCount;
     private final String nickname;
+
+    public static ShareListResponse of(ShareBoard shareBoard, Integer participants) {
+        return ShareListResponse.builder()
+                .boardId(shareBoard.getId())
+                .title(shareBoard.getTitle())
+                .createdDate(shareBoard.getCreatedDate())
+                .lastUpdated(shareBoard.getLastUpdated())
+                .endDate(shareBoard.getEndDate())
+                .maxParticipants(shareBoard.getMaxParticipants())
+                .participants(participants)
+                .viewCount(shareBoard.getViewCount())
+                .nickname(shareBoard.getUser().getExposedNickname())
+                .build();
+    }
 
     @Builder
     public ShareListResponse(

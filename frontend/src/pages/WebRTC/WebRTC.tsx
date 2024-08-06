@@ -58,13 +58,12 @@ export default function WebRTC() {
           leaveRoom={leaveRoom}
         />
       ) : (
-        <div id="room" className='lg:col-span-10 lg:col-start-2 col-span-12'>
+        <div id="room" className='lg:col-span-8 lg:col-start-3 col-span-12'>
           <RoomHeader roomName={roomName} />
           <div 
             className='
               room-container 
               grid grid-cols-12
-              h-5/6
             '
           >
             <RoomVideoAudioTracks

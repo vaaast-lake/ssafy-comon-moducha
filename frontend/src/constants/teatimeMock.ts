@@ -1,11 +1,11 @@
 // 아이템 12개의 테스트 나눔리스트 생성
 export const genMockList = (n: number) => {
   const mockItems = [];
-  for (let i = 0; i < n; i++) {
+  for (let i = 1; i < n + 1; i++) {
     const mockItem = {
       userId: i,
       boardId: i,
-      title: `Teatime ${i}`,
+      title: `티타임 ${i}`,
       content:
         '여러 가지 홍차에 대해 탐구하고 나누는 시간입니다. 부담없이 함께해요~',
       createdDate: '2023-07-15T14:30:00Z',

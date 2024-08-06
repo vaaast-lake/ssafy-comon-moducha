@@ -19,6 +19,8 @@ export default function RoomVideo({
       // attach 관련 설명. 현재 트랙을 html 요소와 연결하고자 할 때 사용.
       // https://docs.livekit.io/realtime/client/receive/
       track.attach(videoElement.current);
+      console.log(videoElement.current);
+      
     }
 
     return () => {
@@ -33,6 +35,7 @@ export default function RoomVideo({
         border-4 border-indigo-500/50
         relative
         h-full w-full
+        overflow-hidden
       `}
     >
       <div 

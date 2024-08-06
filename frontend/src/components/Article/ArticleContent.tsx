@@ -51,7 +51,7 @@ const ArticleContent = ({
         )}
       </header>
       <article>
-        <ArticleCarousel banners={testImageList} />
+        {/* <ArticleCarousel banners={testImageList} /> */}
         {/* content -> HTML 태그로 렌더링 */}
         <p dangerouslySetInnerHTML={{ __html: content }} className="my-4"></p>
         <hr />

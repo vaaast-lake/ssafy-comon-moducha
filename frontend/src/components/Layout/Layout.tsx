@@ -5,7 +5,7 @@ import NavBar from '../NavBar/NavBar';
 // Outlet에 페이지들이 렌더링
 const Layout = () => {
   return (
-    <div className='flex flex-col h-full'>
+    <div className='flex flex-col'>
       <NavBar />
       <Outlet />
     </div>

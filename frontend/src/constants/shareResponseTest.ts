@@ -1,7 +1,7 @@
 // 아이템 12개의 테스트 나눔리스트 생성
 export const genShareListItems = (n: number) => {
   const shareItems = [];
-  for (let i = 0; i < n; i++) {
+  for (let i = 1; i < n + 1; i++) {
     const shareItem = {
       boardId: i,
       title: '나눔 ' + i,

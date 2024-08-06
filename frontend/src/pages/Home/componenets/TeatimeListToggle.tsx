@@ -12,27 +12,19 @@ const TeatimeListToggle = ({
   <>
     <TabButton
       className="h-8"
-      onClick={() => setCurrentTab('total')}
-      value="total"
+      onClick={() => setCurrentTab('latest')}
+      value="latest"
       currentTab={currentTab}
     >
-      전체
+      최신 순
     </TabButton>
     <TabButton
       className="h-8"
-      onClick={() => setCurrentTab('progress')}
-      value="progress"
+      onClick={() => setCurrentTab('urgent')}
+      value="urgent"
       currentTab={currentTab}
     >
-      모집
-    </TabButton>
-    <TabButton
-      className="h-8"
-      onClick={() => setCurrentTab('end')}
-      value="end"
-      currentTab={currentTab}
-    >
-      종료
+      마감 순
     </TabButton>
   </>
 );

@@ -5,7 +5,7 @@ import TeatimeList from './componenets/TeatimeList';
 
 const Home = () => {
   return (
-    <div className="grid grid-cols-10">
+    <div className="grid grid-cols-10 mb-20">
       <SideLayout></SideLayout>
       <main className="col-span-10 m-5 lg:col-span-6 flex flex-col gap-14">
         <MyTeatime className="flex flex-col gap-4" />

@@ -3,10 +3,15 @@ import Badge from '../../../components/Badge/Badge';
 import { TeatimeListItem } from '../../../types/TeatimeType';
 const MyTeatimeCard = ({ boardId, title, content }: TeatimeListItem) => {
   return (
-    <Link to={`teatimes/${boardId}`} className="flex flex-col gap-3 rounded">
+    <Link
+      to={`teatimes/${boardId}`}
+      className={`flex flex-col gap-3 rounded group/myteatime duration-300 delay-50 transition ease-in-out hover:text-tea`}
+    >
       <figure
-        className="overflow-hidden rounded border h-32 bg-cover bg-no-repeat bg-center"
-        style={{ backgroundImage: `url(/mock/maincard/my${boardId + 1}.png)` }}
+        className={`overflow-hidden rounded border h-32 bg-cover bg-no-repeat bg-center duration-300 delay-50 transition ease-in-out group-hover/myteatime:scale-105`}
+        style={{
+          backgroundImage: `url(/mock/maincard/my${(boardId % 4) + 1}.png)`,
+        }}
       ></figure>
       <main className="flex flex-col gap-1">
         <header className="flex items-center gap-1">
