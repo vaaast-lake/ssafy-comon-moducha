@@ -4,6 +4,7 @@ import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.share.dto.ShareListResponse;
+import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.user.service.UserMyPageShareService;
 import com.example.restea.user.service.UserMyPageTeatimeService;
 import com.example.restea.user.service.UserService;
@@ -73,7 +74,7 @@ public class UserController {
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
             @Valid @ModelAttribute PaginationAndSortingDto dto) {
 
-        ResponseDTO<List<com.example.restea.teatime.dto.TeatimeListResponse>> teatimeBoardList =
+        ResponseDTO<List<TeatimeListResponse>> teatimeBoardList =
                 userMyPageTeatimeService.getTeatimeBoardList(customOAuth2User.getUserId(),
                         dto.getPage(),
                         dto.getPerPage());
