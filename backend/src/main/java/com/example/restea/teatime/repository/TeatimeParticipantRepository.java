@@ -10,7 +10,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface TeatimeParticipantRepository extends JpaRepository<TeatimeParticipant, Integer> {
+
     boolean existsByTeatimeBoardAndUser(TeatimeBoard teatimeBoard, User user);
+
+    Long countByTeatimeBoard(TeatimeBoard teatimeBoard);
 
     @Modifying
     @Transactional
