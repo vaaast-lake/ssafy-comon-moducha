@@ -14,6 +14,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -39,13 +40,30 @@ public class ShareComment extends BaseTimeEntity {
     private Boolean activated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "share_board_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "share_board_id", nullable = false)
     private ShareBoard shareBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false, nullable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "shareComment") // 댓글이 삭제되어도 대댓글은 보존
     private List<ShareReply> shareReplies = new ArrayList<>();
+
+    @Builder
+    public ShareComment(String content, ShareBoard shareBoard, User user) {
+        this.content = content;
+        this.shareBoard = shareBoard;
+        this.user = user;
+    }
+
+    // 보여질 댓글 내용을 반환하는 메소드
+    public String getExposedContent() {
+        return activated ? content : "삭제된 댓글입니다.";
+    }
+
+    // 보여질 닉네임을 반환하는 메소드
+    public String getExposedNickName() {
+        return activated ? user.getExposedNickname() : "";
+    }
 }

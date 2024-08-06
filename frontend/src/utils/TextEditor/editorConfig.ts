@@ -1,17 +1,42 @@
 import translations from 'ckeditor5/translations/ko.js';
 import {
+  AutoImage,
   Autosave,
   Bold,
   Essentials,
   FontBackgroundColor,
   FontColor,
   FontSize,
+  GeneralHtmlSupport,
+  ImageBlock,
+  ImageInline,
+  ImageInsert,
+  ImageInsertViaUrl,
+  ImageResize,
+  ImageToolbar,
+  ImageUpload,
   Italic,
+  Link,
+  LinkImage,
   Paragraph,
   SelectAll,
+  SimpleUploadAdapter,
+  SpecialCharacters,
+  SpecialCharactersArrows,
+  SpecialCharactersCurrency,
+  SpecialCharactersEssentials,
+  SpecialCharactersLatin,
+  SpecialCharactersMathematical,
+  SpecialCharactersText,
+  Table,
+  TableToolbar,
   Underline,
   Undo,
 } from 'ckeditor5';
+
+import useAuthStore from '../../stores/authStore';
+// const token = useAuthStore.getState().token;
+
 const editorConfig = {
   toolbar: {
     items: [
@@ -27,19 +52,46 @@ const editorConfig = {
       'bold',
       'italic',
       'underline',
+      '|',
+      'specialCharacters',
+      'link',
+      'insertImage',
+      'insertTable',
+      '|',
     ],
     shouldNotGroupWhenFull: false,
   },
   plugins: [
+    AutoImage,
     Autosave,
     Bold,
     Essentials,
     FontBackgroundColor,
     FontColor,
     FontSize,
+    GeneralHtmlSupport,
+    ImageBlock,
+    ImageInline,
+    ImageInsert,
+    ImageInsertViaUrl,
+    ImageResize,
+    ImageToolbar,
+    ImageUpload,
     Italic,
+    Link,
+    LinkImage,
     Paragraph,
     SelectAll,
+    SimpleUploadAdapter,
+    SpecialCharacters,
+    SpecialCharactersArrows,
+    SpecialCharactersCurrency,
+    SpecialCharactersEssentials,
+    SpecialCharactersLatin,
+    SpecialCharactersMathematical,
+    SpecialCharactersText,
+    Table,
+    TableToolbar,
     Underline,
     Undo,
   ],
@@ -49,6 +101,42 @@ const editorConfig = {
   fontSize: {
     options: [10, 12, 14, 'default', 18, 20, 22],
     supportAllValues: true,
+  },
+  image: {
+    toolbar: ['imageTextAlternative', '|', 'resizeImage'],
+  },
+  htmlSupport: {
+    allow: [
+      {
+        name: /^.*$/,
+        styles: true,
+        attributes: true,
+        classes: true,
+      },
+    ],
+  },
+  link: {
+    addTargetToExternalLinks: true,
+    defaultProtocol: 'https://',
+    decorators: {
+      toggleDownloadable: {
+        mode: 'manual',
+        label: 'Downloadable',
+        attributes: {
+          download: 'file',
+        },
+      },
+    },
+  },
+  table: {
+    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+  },
+  simpleUpload: {
+    uploadUrl: 'test',
+    withCredentials: true,
+    headers: {
+      Authorization: 'Bearer <JSON Web Token>',
+    },
   },
   initialData: '',
   language: 'ko',

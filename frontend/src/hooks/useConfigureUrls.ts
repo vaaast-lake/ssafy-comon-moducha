@@ -8,16 +8,16 @@ type configureUrls = {
 
 export default function useConfigureUrls(): configureUrls {
   // SSAFY TEST URL
-  let APPLICATION_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
-  let LIVEKIT_URL = import.meta.env.VITE_LIVETKIT_URL;
+  // let APPLICATION_SERVER_URL = import.meta.env.VITE_APP_SERVER_URL;
+  // let LIVEKIT_URL = import.meta.env.VITE_LIVETKIT_URL;
 
   // TUTORIAL TEST URL
   // let APPLICATION_SERVER_URL = import.meta.env.VITE_TEST_APP_SERVER_URL;
   // let LIVEKIT_URL = import.meta.env.VITE_LIVETKIT_URL;
 
   // LOCAL TEST URL
-  // let APPLICATION_SERVER_URL = '';
-  // let LIVEKIT_URL = '';
+  let APPLICATION_SERVER_URL = '';
+  let LIVEKIT_URL = '';
 
   // If APPLICATION_SERVER_URL is not configured, use default value from local development
   if (!APPLICATION_SERVER_URL) {

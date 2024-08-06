@@ -2,16 +2,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/LoginPage';
-import Profile from './pages/Profile/Profile';
-import TeaTime from './pages/TeaTime/TeaTime';
+import Profile from './pages/Profile/ProfilePage';
+import Teatime from './pages/Teatime/Teatime';
 import Share from './pages/Share/Share';
 import Notifications from './pages/Notifications/Notifications';
 import WebRTC from './pages/WebRTC/WebRTC';
 import ShareDetail from './pages/Share/ShareDetail';
+import TeatimeDetail from './pages/Teatime/TeatimeDetail';
 import ShareWrite from './pages/Share/ShareWrite';
-import Access from './pages/Login/Access';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+import AccessPage from './pages/Login/AccessPage';
 
 // Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
 // 새로운 컴포넌트를 추가하려면 children에 등록해 주세요
@@ -30,8 +29,12 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: 'teatime',
-        element: <TeaTime />,
+        path: 'teatimes',
+        element: <Teatime />,
+      },
+      {
+        path: 'teatimes/:boardId',
+        element: <TeatimeDetail />,
       },
       {
         path: 'shares',
@@ -59,7 +62,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  { path: 'access', element: <Access /> }, // access token 처리용 더미 페이지
+  { path: 'access', element: <AccessPage /> }, // access token 처리용 더미 페이지
 ]);
 
 // RouterProvider에 라우트 객체들이 렌더링

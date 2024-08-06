@@ -1,5 +1,6 @@
 import { Room } from 'livekit-client';
 import { useCallback } from 'react';
+import { GoShare } from 'react-icons/go';
 
 interface RoomSharingButtonProps {
   room: Room;
@@ -27,22 +28,20 @@ export default function RoomSharingButton({
 
   return (
     <>
-      <div className="flex justify-center">
-        <button
-          onClick={toggleScreenShare}
-          className={`
-            px-6 py-3 text-lg font-semibold rounded-md transition-colors duration-300
-            focus:outline-none focus:ring-2 focus:ring-offset-2
-            ${
-              isScreenSharing
-                ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500'
-                : 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500'
-            }
-            `}
-        >
-          {isScreenSharing ? '화면 공유 중지' : '화면 공유 시작'}
-        </button>
-      </div>
+      <button
+        onClick={toggleScreenShare}
+        className={`
+          px-5 py-3 text-3xl font-semibold rounded-md transition-colors duration-300
+          focus:outline-none focus:ring-2 focus:ring-offset-2
+          ${
+            isScreenSharing
+              ? 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500'
+              : 'bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500'
+          }
+          `}
+      >
+        <GoShare />
+      </button>
     </>
   );
 }

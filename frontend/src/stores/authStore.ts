@@ -8,18 +8,32 @@ interface AuthState {
   currentUsername: string;
   // 닉네임 변경 페이지에서 닉네임 바꾸면 setCurrentUsername을 쓰세요
   setCurrentUsername: (username: string) => void;
+  // currentUserId, currentUserRole 설정,
+  //setCurrentUserId, setCurrentUserRole은 만들면 안됩니다.
+  currentUserId: string;
+  currentUserRole: string;
+}
+
+interface TokenType {
+  username: string;
+  userId: string;
+  role: string;
 }
 
 const useAuthStore = create<AuthState>()(
   devtools((set) => {
     const token = localStorage.getItem('authorization');
     const isLoggedIn = token ? true : false;
-    const currentUsername = token ? jwtDecode(token).username : '';
+    const currentUsername = token ? jwtDecode<TokenType>(token).username : '';
+    const currentUserId = token ? jwtDecode<TokenType>(token).userId : '';
+    const currentUserRole = token ? jwtDecode<TokenType>(token).role : '';
     return {
       isLoggedIn,
       setLoggedIn: (status) => set({ isLoggedIn: status }),
       currentUsername,
       setCurrentUsername: (username) => set({ currentUsername: username }),
+      currentUserId,
+      currentUserRole,
     };
   })
 );

@@ -7,6 +7,7 @@ import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_WRITER;
 import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_NOT_FOUND;
 
+import com.example.restea.live.dto.LiveMuteRequestDTO;
 import com.example.restea.live.entity.Live;
 import com.example.restea.live.repository.LiveRepository;
 import com.example.restea.teatime.entity.TeatimeBoard;
@@ -190,9 +191,8 @@ public class LiveService {
         }
     }
 
-    public void liveMute(Integer teatimeBoardId, Integer muteUserId, String trackSid, Integer userId) {
+    public void liveMute(Integer teatimeBoardId, LiveMuteRequestDTO request, Integer userId) {
         User user = userRepository.getReferenceById(userId);
-
         // 티타임 게시글 존재 여부 확인
         TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
 
@@ -209,9 +209,10 @@ public class LiveService {
 
         // trackSid에 해당하는 track 음소거
         try {
-            Call<LivekitModels.TrackInfo> muteCall = client.mutePublishedTrack(live.getId(), muteUserId.toString(),
-                    trackSid,
-                    true);
+            Call<LivekitModels.TrackInfo> muteCall = client.mutePublishedTrack(live.getId(),
+                    request.getUserId().toString(),
+                    request.getTrackSid(),
+                    request.getIsMute());
             Response<LivekitModels.TrackInfo> muteResponse = muteCall.execute();
 
             if (muteResponse.isSuccessful()) {

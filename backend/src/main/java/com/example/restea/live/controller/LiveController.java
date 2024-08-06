@@ -134,7 +134,7 @@ public class LiveController {
      * 주어진 참가자에 trackSid에 해당하는 track 방송에서 음소거
      *
      * @param teatimeBoardId 티타임게시판 ID. 티타임게시판ID을 외래키로 가지는 live테이블에 저장된 liveId를 사용. liveId는 사용자가 참여하고 있는 방의 이름
-     * @param request        muteUserId       음소거될 사용자. trackSid         음소거될 trackSid.
+     * @param request        muteUserId       음소거될 사용자. trackSid         음소거될 trackSid. isMute         음소거여부.
      * @return 내용이 빈 ResponseEntity 객체를 반환합니다. 음소거에 실패하면 에러 메시지를 담은 ResponseEntity를 반환합니다.
      */
     @PostMapping("/mute")
@@ -142,7 +142,7 @@ public class LiveController {
             @PathVariable("teatimeBoardId") int teatimeBoardId, @Valid @RequestBody LiveMuteRequestDTO request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        liveService.liveMute(teatimeBoardId, request.getUserId(), request.getTrackSid(), customOAuth2User.getUserId());
+        liveService.liveMute(teatimeBoardId, request, customOAuth2User.getUserId());
 
         ResponseDTO<LiveMuteRequestDTO> response = ResponseDTO.<LiveMuteRequestDTO>builder()
                 .data(request)

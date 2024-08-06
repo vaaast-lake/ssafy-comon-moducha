@@ -1,12 +1,10 @@
 import { LocalVideoTrack, Room } from 'livekit-client';
-import './WebRTC.css';
 import { useState } from 'react';
 import JoinRoom from './components/JoinRoom';
 import RoomVideoAudioTracks from './components/RoomVideoAudioTracks';
 import RoomHeader from './components/RoomHeader';
 import RoomChatting from './components/RoomChatting';
-import RoomSharingButton from './components/RoomSharingButton';
-import { Message, TrackInfo } from '../../types/WebRTCType';
+import { GroupedTracks, Message } from '../../types/WebRTCType';
 import useConfigureUrls from '../../hooks/useConfigureUrls';
 
 export default function WebRTC() {
@@ -20,7 +18,7 @@ export default function WebRTC() {
   const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
     undefined
   );
-  const [remoteTracks, setRemoteTracks] = useState<TrackInfo[]>([]);
+  const [remoteTracks, setRemoteTracks] = useState<GroupedTracks>({});
 
   // Chat state
   const [messages, setMessages] = useState<Message[]>([]);
@@ -36,13 +34,14 @@ export default function WebRTC() {
     // Reset the state
     setRoom(undefined);
     setLocalTrack(undefined);
-    setRemoteTracks([]);
+    setRemoteTracks({});
     setMessages([]);
     setIsScreenSharing(false);
   }
 
+
   return (
-    <>
+    <div className='room-wrapper grid grid-cols-12'>
       {!room ? (
         <JoinRoom
           APPLICATION_SERVER_URL={APPLICATION_SERVER_URL}
@@ -59,26 +58,32 @@ export default function WebRTC() {
           leaveRoom={leaveRoom}
         />
       ) : (
-        <div id="room">
-          <RoomHeader roomName={roomName} leaveRoom={leaveRoom} />
-          <RoomVideoAudioTracks
-            room={room}
-            localTrack={localTrack}
-            remoteTracks={remoteTracks}
-            participantName={participantName}
-          />
-          <RoomChatting
-            room={room}
-            messages={messages}
-            setMessages={setMessages}
-            inputMessage={inputMessage}
-            setInputMessage={setInputMessage}
-          />
-          {/* 화면 공유 버튼 */}
-          <RoomSharingButton room={room} isScreenSharing={isScreenSharing} />
-          {/* 화면 공유 버튼 끗 */}
+        <div id="room" className='lg:col-span-8 lg:col-start-3 col-span-12'>
+          <RoomHeader roomName={roomName} />
+          <div 
+            className='
+              room-container 
+              grid grid-cols-12
+            '
+          >
+            <RoomVideoAudioTracks
+              room={room}
+              isScreenSharing={isScreenSharing}
+              localTrack={localTrack}
+              remoteTracks={remoteTracks}
+              participantName={participantName}
+              leaveRoom={leaveRoom}
+            />
+            <RoomChatting
+              room={room}
+              messages={messages}
+              setMessages={setMessages}
+              inputMessage={inputMessage}
+              setInputMessage={setInputMessage}
+            />
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
