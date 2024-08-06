@@ -12,15 +12,13 @@ const axiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 });
-// 액세스 토큰을 로컬 스토리지에서 가져오는 함수
+
 const getAccessToken = (): string | null => {
   return localStorage.getItem('authorization');
 };
-// 액세스 토큰을 로컬 스토리지에 저장하는 함수
 const setAccessToken = (token: string) => {
   localStorage.setItem('authorization', token);
 };
-
 // 리프레시 토큰으로 액세스 토큰을 갱신하는 함수
 const refreshAccessToken = async (): Promise<string> => {
   try {
@@ -31,8 +29,9 @@ const refreshAccessToken = async (): Promise<string> => {
         withCredentials: true,
       }
     );
-    const newAccessToken = response.data.accessToken;
+    const newAccessToken = response.data.accessToken; // 이거 추적하기
     if (!newAccessToken) {
+      alert(response.data.accessToken);
       throw new Error('새 액세스 토큰이 없습니다.'); // 백엔드 response를 분석해서 newAccessToken을 고치면 됩니다.
     }
     setAccessToken(newAccessToken);
@@ -42,19 +41,19 @@ const refreshAccessToken = async (): Promise<string> => {
   }
 };
 
-// 요청 인터셉터: 모든 요청에 액세스 토큰을 헤더에 추가합니다.
+// request 인터셉터: 모든 요청에 액세스 토큰을 헤더에 추가합니다.
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = getAccessToken();
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers.common['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
 );
 
-// 응답 인터셉터: 401 오류가 발생하면 액세스 토큰을 갱신하고 요청을 재시도합니다.
+// response 인터셉터: 401 오류가 발생하면 액세스 토큰을 갱신하고 요청을 재시도합니다.
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
@@ -73,9 +72,10 @@ axiosInstance.interceptors.response.use(
       } catch (refreshError) {
         // 리프레시 토큰 갱신 실패 시 - 로그인 페이지로 리다이렉트 및 로그아웃 처리
         const { setLoggedIn, setCurrentUsername } = useAuthStore.getState();
-        setLoggedIn(false);
-        setCurrentUsername(''); // zustand에서 닉네임을 ''으로 설정
-        window.location.href = '/login';
+
+        // setLoggedIn(false);
+        // setCurrentUsername(''); // zustand에서 닉네임을 ''으로 설정
+        // window.location.href = '/login';
         return Promise.reject(refreshError);
       }
     }
