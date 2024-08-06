@@ -189,6 +189,50 @@ public class GetMyPageShareBoardTest {
         resultActions.andExpect(status().isNoContent());
     }
 
+    /**
+     * testName, Page, perPage
+     */
+    private static Stream<Arguments> invalidParameter() {
+        return Stream.of(
+                Arguments.of("page가 null", null, "1"),
+                Arguments.of("page가 0", "0", "1"),
+                Arguments.of("page가 음수", "-1", "1"),
+                Arguments.of("page가 문자열인 경우", "String", "1"),
+                Arguments.of("page가 float인 경우", "2.456", "1"),
+                Arguments.of("page가 blank인 경우", "  ", "1"),
+                Arguments.of("page가 empty인 경우", "", "1"),
+                Arguments.of("page가 Long인 경우", "2_147_483_648", "1"),
+
+                Arguments.of("perPage가 null", "1", null),
+                Arguments.of("perPage가 0", "1", "0"),
+                Arguments.of("perPage가 음수", "1", "-1"),
+                Arguments.of("perPage가 문자열인 경우", "1", "String"),
+                Arguments.of("page가 float인 경우", "1", "2.456"),
+                Arguments.of("page가 blank인 경우", "1", "  "),
+                Arguments.of("page가 empty인 경우", "1", ""),
+                Arguments.of("page가 Long인 경우", "1", "2_147_483_648")
+        );
+    }
+
+    @ParameterizedTest(name = "{index}: {0}")
+    @MethodSource("invalidParameter")
+    @DisplayName("[BadRequest] getMyPageShareBoard : 나눔게시판 내가 작성한 글목록 가져오기 - 최신순")
+    void invalid_getMyPageShareBoard_테스트(String testName, String page, String perPage)
+            throws Exception {
+        // given
+        final String url = "/api/v1/users/mypage/shares";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "latest")
+                .param("page", page)
+                .param("perPage", perPage)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
+    }
+
 
     private void writeUserShareBoard(List<ShareBoard> shareBoards, User user, Integer contentsCount) {
         for (int i = 0; i < contentsCount; i++) {
