@@ -69,7 +69,7 @@ public class ShareCommentController {
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ResponseDTO.of(result));
+                .body(ResponseDTO.from(result));
     }
 
     /**
@@ -88,6 +88,6 @@ public class ShareCommentController {
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseDTO.of(result));
+                .body(ResponseDTO.from(result));
     }
 }

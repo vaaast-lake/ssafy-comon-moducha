@@ -8,7 +8,7 @@ import lombok.Getter;
 public class ShareCommentDeleteResponse {
     private final Integer shareCommentId;
 
-    public static ShareCommentDeleteResponse of(Integer shareCommentId) {
+    public static ShareCommentDeleteResponse from(Integer shareCommentId) {
         return ShareCommentDeleteResponse.builder()
                 .shareCommentId(shareCommentId)
                 .build();
