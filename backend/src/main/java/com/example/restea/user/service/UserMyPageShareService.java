@@ -84,7 +84,31 @@ public class UserMyPageShareService {
      *
      * @return 총 개수
      */
-    private Long calculateCount() {
-        return shareBoardRepository.countByActivated(true);
+    private Long calculateCount(Integer userId) {
+        return shareBoardRepository.countByActivatedAndUserId(true, userId);
     }
-}
+
+    /**
+     * @param userId  userId
+     * @param sort    정렬 정보
+     * @param page    몇번째 페이지인지?
+     * @param perPage 넘겨줄 데이터 개수
+     * @return ShareListResponse List의 ResponseDTO
+     */
+    @Transactional
+    public ResponseDTO<List<ShareListResponse>> getParticipatedShareBoardList(Integer userId, String sort, Integer page,
+                                                                              Integer perPage) {
+
+        if (isInvalidSort(sort)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
+        }
+
+        List<ShareBoard> shareBoards = fetchActiveParticipatedShareBoards(userId, sort, page, perPage);
+
+        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards); // shareboard를 sharelistresponse로
+        Long count = calculateParticipatedCount(userId, sort); // 조건에 해당하는 전체 shareboard의 개수
+
+        PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
+
+        return ResponseDTO.of(data, pagination);
+    }
