@@ -34,7 +34,8 @@ import {
   Undo,
 } from 'ckeditor5';
 
-import useAuthStore from '../../stores/authStore';
+// 이미지 업로더 토큰
+// import useAuthStore from '../../stores/authStore';
 // const token = useAuthStore.getState().token;
 
 const editorConfig = {

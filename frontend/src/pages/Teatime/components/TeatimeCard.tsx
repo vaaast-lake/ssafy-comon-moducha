@@ -4,11 +4,9 @@ import Badge from '../../../components/Badge/Badge';
 import teaimage from '/mock/mocktea.png';
 
 const TeatimeCard = ({
-  userId,
   boardId,
   title,
   content,
-  createdDate,
 }: TeatimeListItem) => {
   return (
     <Link

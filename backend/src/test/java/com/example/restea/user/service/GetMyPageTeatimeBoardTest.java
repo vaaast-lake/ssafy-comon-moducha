@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.restea.ResteaApplication;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.oauth2.service.CustomOAuth2UserService;
-import com.example.restea.share.entity.ShareBoard;
-import com.example.restea.share.repository.ShareBoardRepository;
+import com.example.restea.teatime.entity.TeatimeBoard;
+import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import com.example.restea.util.SecurityTestUtil;
@@ -41,7 +41,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @SpringBootTest
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
-public class GetMyPageShareBoardTest {
+public class GetMyPageTeatimeBoardTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +50,7 @@ public class GetMyPageShareBoardTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private ShareBoardRepository shareBoardRepository;
+    private TeatimeBoardRepository teatimeBoardRepository;
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
 
@@ -116,7 +116,7 @@ public class GetMyPageShareBoardTest {
     @Transactional
     @BeforeEach
     void mockMvcSetUp() {
-        shareBoardRepository.deleteAll();
+        teatimeBoardRepository.deleteAll();
         userRepository.deleteAll();
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
@@ -132,22 +132,22 @@ public class GetMyPageShareBoardTest {
 
     @AfterEach
     void tearDown() {
-        shareBoardRepository.deleteAll();
+        teatimeBoardRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("validParameter")
-    @DisplayName("[OK] getMyPageShareBoard : 나눔게시판 내가 작성한 글목록 가져오기 - 최신순")
-    void 올바른_getMyPageShareBoard_테스트(String testName, Integer page, Integer perPage, Integer contentsCount)
+    @DisplayName("[OK] getMyPageTeatimeBoard : 티타임 게시판 내가 작성한 글목록 가져오기 - 최신순")
+    void 올바른_getMyPageTeatimeBoard_테스트(String testName, Integer page, Integer perPage, Integer contentsCount)
             throws Exception {
         // given
-        List<ShareBoard> myTotalShareBoards = new ArrayList<>();
+        List<TeatimeBoard> myTotalTeatimeBoards = new ArrayList<>();
 
-        writeUserShareBoard(myTotalShareBoards, testUser, contentsCount);
-        writeOtherUserShareBoard(contentsCount);
+        writeUserTeatimeBoard(myTotalTeatimeBoards, testUser, contentsCount);
+        writeOtherUserTeatimeBoard(contentsCount);
 
-        final String url = "/api/v1/users/mypage/shares";
+        final String url = "/api/v1/users/mypage/teatimes";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -167,17 +167,17 @@ public class GetMyPageShareBoardTest {
         int jsonDataLength = jsonNode.path("data").size();
         assertThat(jsonDataLength).isLessThanOrEqualTo(perPage);
 
-        // 최신순으로 myTotalShareBoards를 정렬
-        myTotalShareBoards.sort(
+        // 최신순으로 myTotalTeatimeBoards를 정렬
+        myTotalTeatimeBoards.sort(
                 (b1, b2) -> b2.getCreatedDate().compareTo(b1.getCreatedDate()));
 
         // 보여줄 컨텐츠 수 vs perPage 중 작은 것으로...
-        int compareCounts = Math.min(myTotalShareBoards.size() - (page - 1) * perPage, perPage);
+        int compareCounts = Math.min(myTotalTeatimeBoards.size() - (page - 1) * perPage, perPage);
 
         // perPage개수 만큼 테스트
         for (int i = 0; i < compareCounts; i++) {
             JsonNode item = jsonNode.path("data").path(i);
-            ShareBoard expectedBoard = myTotalShareBoards.get((page - 1) * perPage + i);
+            TeatimeBoard expectedBoard = myTotalTeatimeBoards.get((page - 1) * perPage + i);
 
             assertThat(item.path("boardId").asText()).isEqualTo(expectedBoard.getId().toString());
             assertThat(item.path("title").asText()).isEqualTo(expectedBoard.getTitle());
@@ -197,11 +197,11 @@ public class GetMyPageShareBoardTest {
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("noContentParameter")
-    @DisplayName("[NoContent] getMyPageShareBoard : 나눔게시판 내가 작성한 글목록 가져오기 - 최신순")
-    void NoContent_getMyPageShareBoard_테스트(String testName, Integer page, Integer perPage)
+    @DisplayName("[NoContent] getMyPageTeatimeBoard : 티타임 게시판 내가 작성한 글목록 가져오기 - 최신순")
+    void NoContent_getMyPageTeatimeBoard_테스트(String testName, Integer page, Integer perPage)
             throws Exception {
         // given
-        final String url = "/api/v1/users/mypage/shares";
+        final String url = "/api/v1/users/mypage/teatimes";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -216,11 +216,11 @@ public class GetMyPageShareBoardTest {
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("invalidParameter")
-    @DisplayName("[BadRequest] getMyPageShareBoard : 나눔게시판 내가 작성한 글목록 가져오기 - 최신순")
-    void invalid_getMyPageShareBoard_테스트(String testName, String page, String perPage)
+    @DisplayName("[BadRequest] getMyPageTeatimeBoard : 티타임 게시판 내가 작성한 글목록 가져오기 - 최신순")
+    void invalid_getMyPageTeatimeBoard_테스트(String testName, String page, String perPage)
             throws Exception {
         // given
-        final String url = "/api/v1/users/mypage/shares";
+        final String url = "/api/v1/users/mypage/teatimes";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -234,17 +234,19 @@ public class GetMyPageShareBoardTest {
     }
 
 
-    private void writeUserShareBoard(List<ShareBoard> shareBoards, User user, Integer contentsCount) {
+    private void writeUserTeatimeBoard(List<TeatimeBoard> teatimeBoards, User user, Integer contentsCount) {
         for (int i = 0; i < contentsCount; i++) {
             final String title = "Title" + i;
             final String content = "Content" + i;
             final Integer maxParticipants = 10 + i;
             final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L + i);
-            shareBoards.add(shareBoardRepository.save(ShareBoard.builder()
+            final LocalDateTime broadcastDate = LocalDateTime.now().plusWeeks(2L + i);
+            teatimeBoards.add(teatimeBoardRepository.save(TeatimeBoard.builder()
                     .title(title)
                     .content(content)
                     .maxParticipants(maxParticipants)
                     .endDate(endDate)
+                    .broadcastDate(broadcastDate)
                     .user(user)
                     .build()));
             try {
@@ -255,7 +257,7 @@ public class GetMyPageShareBoardTest {
         }
     }
 
-    private void writeOtherUserShareBoard(Integer contentsCount) {
+    private void writeOtherUserTeatimeBoard(Integer contentsCount) {
         User otherUser = User.builder()
                 .nickname("otherUser")
                 .authId("otherAuthId")
@@ -268,11 +270,13 @@ public class GetMyPageShareBoardTest {
             final String content = "Other Content" + i;
             final Integer maxParticipants = 10 + i;
             final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L + i);
-            shareBoardRepository.save(ShareBoard.builder()
+            final LocalDateTime broadcastDate = LocalDateTime.now().plusWeeks(2L + i);
+            teatimeBoardRepository.save(TeatimeBoard.builder()
                     .title(title)
                     .content(content)
                     .maxParticipants(maxParticipants)
                     .endDate(endDate)
+                    .broadcastDate(broadcastDate)
                     .user(otherUser)
                     .build());
             try {
