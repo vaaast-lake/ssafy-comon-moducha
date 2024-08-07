@@ -1,14 +1,9 @@
 import { LocalVideoTrack, Room } from 'livekit-client';
 import RoomVideo from './RoomVideo';
-import RoomAudio from './RoomAudio';
 import { GroupedTracks } from '../../../types/WebRTCType';
-import { useMemo, useState } from 'react';
-import axios from 'axios';
-import useConfigureUrls from '../../../hooks/useConfigureUrls';
+import { useState } from 'react';
 import RoomSharingButton from './RoomSharingButton';
 import { GoUnmute, GoMute } from 'react-icons/go';
-import { IoVideocamOutline } from 'react-icons/io5';
-import { RiLogoutBoxRLine } from 'react-icons/ri';
 import RoomRemoteTrack from './RoomRemoteTrack';
 
 interface RoomVideoAudioProps {
@@ -82,7 +77,7 @@ const RoomVideoAudioTracks = ({
       {/* remote video start */}
       <RoomRemoteTrack remoteTracks={remoteTracks} />
       {/* remote video end */}
-      
+
       <div className="room-controller row-span-2 flex justify-center items-center relative border-e-2">
         <div
             className="
