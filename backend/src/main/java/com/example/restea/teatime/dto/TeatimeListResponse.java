@@ -11,6 +11,7 @@ public class TeatimeListResponse {
 
     private final Integer boardId;
     private final String title;
+    private final String content;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastUpdated;
     private final LocalDateTime broadcastDate;
@@ -24,6 +25,7 @@ public class TeatimeListResponse {
         return TeatimeListResponse.builder()
                 .boardId(teatimeBoard.getId())
                 .title(teatimeBoard.getTitle())
+                .content(teatimeBoard.getContent())
                 .createdDate(teatimeBoard.getCreatedDate())
                 .lastUpdated(teatimeBoard.getLastUpdated())
                 .broadcastDate(teatimeBoard.getBroadcastDate())
