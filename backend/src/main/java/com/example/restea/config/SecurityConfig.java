@@ -7,7 +7,9 @@ import com.example.restea.oauth2.jwt.JWTUtil;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.oauth2.service.CustomOAuth2UserService;
 import com.example.restea.user.repository.UserRepository;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,11 +33,22 @@ public class SecurityConfig {
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
 
+    String[] whitelist = {
+            "/",
+            "/login/**",
+            "/api/v1/reissue",
+            "/api/v1/login/oauth2/code/google",
+            "/api/v1/livekit/webhook"
+    };
+
     @Value("${cors.url}")
     private String corsURL;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        String[] allowedOrigins = Arrays.stream(corsURL.split(","))
+                .map(String::trim)
+                .toArray(String[]::new);
 
         // CORS 설정
         http
@@ -43,15 +56,12 @@ public class SecurityConfig {
 
                     CorsConfiguration configuration = new CorsConfiguration();
 
-                    configuration.setAllowedOrigins(
-                            Collections.singletonList(corsURL));
+                    configuration.setAllowedOrigins(List.of(allowedOrigins));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
                     configuration.setMaxAge(3600L);
-
-                    configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                    configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+                    configuration.setExposedHeaders(List.of("Set-Cookie", "Authorization"));
 
                     return configuration;
                 }));
@@ -105,8 +115,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/login/**", "/api/v1/reissue"
-                                , "/api/v1/login/oauth2/code/google")
+                        .requestMatchers(whitelist)
                         .permitAll()
                         .anyRequest().authenticated());
 
