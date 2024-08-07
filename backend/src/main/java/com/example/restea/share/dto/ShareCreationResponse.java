@@ -1,8 +1,10 @@
 package com.example.restea.share.dto;
 
+import com.example.restea.share.entity.ShareBoard;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class ShareCreationResponse {
@@ -20,6 +22,17 @@ public class ShareCreationResponse {
     private final LocalDateTime createdDate;
     private final LocalDateTime endDate;
     private final Integer maxParticipants;
+
+    public static ShareCreationResponse of(@NotNull ShareBoard shareBoard) {
+        return ShareCreationResponse.builder()
+                .boardId(shareBoard.getId())
+                .title(shareBoard.getTitle())
+                .content(shareBoard.getContent())
+                .createdDate(shareBoard.getCreatedDate())
+                .endDate(shareBoard.getEndDate())
+                .maxParticipants(shareBoard.getMaxParticipants())
+                .build();
+    }
 
     @Builder
     public ShareCreationResponse(Integer boardId, String title, String content,

@@ -45,11 +45,7 @@ public class ShareService {
         Long count = calculateCount(sort); // latest, urgent 처리방식에 따라 달라질 수 있음
 
         // pagination info
-        PaginationDTO pagination = PaginationDTO.builder()
-                .total((count.intValue() - 1) / perPage + 1)
-                .page(page)
-                .perPage(perPage)
-                .build();
+        PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
 
         return Map.of("data", data, "pagination", pagination);
     }
@@ -60,37 +56,18 @@ public class ShareService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
         ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(user));
-
-        return ShareCreationResponse.builder() // TODO : refactoring 필요
-                .boardId(result.getId())
-                .title(result.getTitle())
-                .content(result.getContent())
-                .endDate(result.getEndDate())
-                .maxParticipants(result.getMaxParticipants())
-                .build();
+        return ShareCreationResponse.of(result);
     }
-
 
     @Transactional
     public ShareViewResponse getShareBoard(Integer shareBoardId) {
 
         ShareBoard shareBoard = getActivatedBoard(shareBoardId);
+        Integer participants = shareParticipantRepository.countByShareBoard(shareBoard).intValue();
 
         shareBoard.addViewCount();
 
-        return ShareViewResponse.builder() // TODO : refactoring 필요
-                .boardId(shareBoard.getId())
-                .title(shareBoard.getTitle())
-                .content(shareBoard.getContent())
-                .createdDate(shareBoard.getCreatedDate())
-                .lastUpdated(shareBoard.getLastUpdated())
-                .endDate(shareBoard.getEndDate())
-                .maxParticipants(shareBoard.getMaxParticipants())
-                .participants(shareParticipantRepository.countByShareBoard(shareBoard).intValue())
-                .viewCount(shareBoard.getViewCount())
-                .nickname(shareBoard.getUser().getExposedNickname())
-                .userId(shareBoard.getUser().getId())
-                .build();
+        return ShareViewResponse.of(shareBoard, participants);
     }
 
     @Transactional
@@ -104,18 +81,8 @@ public class ShareService {
         // 업데이트
         shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
                 request.getEndDate());
-
-        return ShareUpdateResponse.builder() // TODO : refactoring 필요
-                .boardId(shareBoard.getId())
-                .title(shareBoard.getTitle())
-                .content(shareBoard.getContent())
-                .createdDate(shareBoard.getCreatedDate())
-                .lastUpdated(shareBoard.getLastUpdated())
-                .endDate(shareBoard.getEndDate())
-                .maxParticipants(shareBoard.getMaxParticipants())
-                .participants(shareParticipantRepository.countByShareBoard(shareBoard).intValue())
-                .viewCount(shareBoard.getViewCount())
-                .build();
+        Integer participants = shareParticipantRepository.countByShareBoard(shareBoard).intValue();
+        return ShareUpdateResponse.of(shareBoard, participants);
     }
 
     @Transactional
