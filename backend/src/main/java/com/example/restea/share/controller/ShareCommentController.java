@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +52,17 @@ public class ShareCommentController {
                 .body(ResponseDTO.builder()
                         .data(shareCommentService.createShareComment(request, shareBoardId,
                                 customOAuth2User.getUserId()))
+                        .build());
+    }
+
+    @PatchMapping("/{shareCommentId}")
+    public ResponseEntity<ResponseDTO<?>> deactivateShareBoard(
+            @PathVariable("shareCommentId") Integer shareCommentId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.builder()
+                        .data(shareCommentService.deactivateShareComment(shareCommentId, customOAuth2User.getUserId()))
                         .build());
     }
 }

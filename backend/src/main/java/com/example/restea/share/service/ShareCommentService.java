@@ -3,6 +3,7 @@ package com.example.restea.share.service;
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.share.dto.ShareCommentCreationRequest;
 import com.example.restea.share.dto.ShareCommentCreationResponse;
+import com.example.restea.share.dto.ShareCommentDeleteResponse;
 import com.example.restea.share.dto.ShareCommentListResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
@@ -15,6 +16,7 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -78,6 +80,35 @@ public class ShareCommentService {
                 .content(shareComment.getContent())
                 .createdDate(shareComment.getCreatedDate())
                 .build();
+    }
+
+    @Transactional
+    public ShareCommentDeleteResponse deactivateShareComment(Integer shareCommentId, Integer userId) {
+
+        ShareComment shareComment = getActivatedComment(shareCommentId);
+
+        checkAuthorized(shareComment, userId);
+
+        shareComment.deactivate();
+
+        return ShareCommentDeleteResponse.builder()
+                .shareCommentId(shareCommentId)
+                .build();
+    }
+
+    private @NotNull ShareComment getActivatedComment(Integer shareCommentId) {
+        ShareComment shareComment = shareCommentRepository.findById(shareCommentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareComment not found"));
+        if (!shareComment.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareComment deactivated");
+        }
+        return shareComment;
+    }
+
+    private void checkAuthorized(ShareComment shareComment, Integer userId) {
+        if (!Objects.equals(shareComment.getUser().getId(), userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized");
+        }
     }
 
     private @NotNull Page<ShareComment> getShareComments(ShareBoard shareBoard, Integer page, Integer perPage) {
