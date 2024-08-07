@@ -1,5 +1,11 @@
 package com.example.restea.share.service;
 
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_FOUND;
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_USER_NOT_ACTIVATED;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_ACTIVATED;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_FOUND;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_WRITER;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NO_CONTENT;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.common.dto.PaginationDTO;
@@ -38,7 +44,8 @@ public class ShareCommentService {
     public ResponseDTO<List<ShareCommentListResponse>> getShareCommentList(Integer shareBoardId, Integer page,
                                                                            Integer perPage) {
         ShareBoard shareBoard = shareBoardRepository.findById(shareBoardId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found"));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_BOARD_NOT_FOUND.getMessage()));
 
         // data
         Page<ShareComment> shareComments = getShareComments(shareBoard, page, perPage);
@@ -58,10 +65,11 @@ public class ShareCommentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
 
         ShareBoard shareBoard = shareBoardRepository.findByIdAndActivated(shareBoardId, true)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "ShareBoard not found"));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_NOT_FOUND.getMessage()));
 
         if (!shareBoard.getUser().getActivated()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ShareBoard User not activated");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_USER_NOT_ACTIVATED.getMessage());
         }
 
         ShareComment shareComment = ShareComment.builder()
@@ -89,16 +97,17 @@ public class ShareCommentService {
 
     private @NotNull ShareComment getActivatedComment(Integer shareCommentId) {
         ShareComment shareComment = shareCommentRepository.findById(shareCommentId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareComment not found"));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NOT_FOUND.getMessage()));
         if (!shareComment.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareComment deactivated");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NOT_ACTIVATED.getMessage());
         }
         return shareComment;
     }
 
     private void checkAuthorized(ShareComment shareComment, Integer userId) {
         if (!Objects.equals(shareComment.getUser().getId(), userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, SHARE_COMMENT_NOT_WRITER.getMessage());
         }
     }
 
@@ -107,7 +116,7 @@ public class ShareCommentService {
         Page<ShareComment> shareComments = shareCommentRepository.findAllByShareBoard(shareBoard,
                 PageRequest.of(page - 1, perPage));
         if (shareComments.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoardComment not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NO_CONTENT.getMessage());
         }
         return shareComments;
     }
