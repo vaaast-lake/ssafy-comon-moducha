@@ -86,8 +86,8 @@ const RoomChatting = ({
             {msg.sender !== 'Me' && <strong className='pe-1'>{msg.sender}:</strong>} <span className='bg-white p-2 rounded-xl'>{msg.content}</span>
           </div>
         ))}
+        <div ref={messageEndRef}></div>
       </div>
-      <div ref={messageEndRef}></div>
       <div
         id="chat-footer"
         className="
