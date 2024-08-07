@@ -16,6 +16,6 @@ export interface ArticleDetail {
   endDate: string;
   maxParticipants: number;
   participants: number;
-  nickName: string;
+  nickname: string;
   viewCount: number;
 }
