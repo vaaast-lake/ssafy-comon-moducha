@@ -1,0 +1,14 @@
+//test Jenkinsfile
+pipeline {
+    agent any
+    triggers {
+        pollSCM 'H 9,12,17 * * *'
+    }
+    stages {
+        stage('Print Test') {
+            steps {
+                echo 'test'
+            }
+        }
+    }
+}

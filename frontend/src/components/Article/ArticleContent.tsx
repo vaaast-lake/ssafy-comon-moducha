@@ -1,13 +1,12 @@
-import ArticleCarousel from '../../components/Article/ArticleCarousel';
 import { ShareDetailItem } from '../../types/ShareType';
 import { EVDown, EVDownItem, EVDownMenu } from '../Dropdown/EllipsisDropdown';
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import useAuthStore from '../../stores/authStore';
-import apiAxios from '../../api/axiosInstance';
+import axiosInstance from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { BoardType } from '../../types/BoardType';
 interface ArticleProp extends ShareDetailItem {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   boardType: BoardType;
 }
 const ArticleContent = ({
@@ -18,21 +17,11 @@ const ArticleContent = ({
   content,
   children,
 }: ArticleProp) => {
-  const testImageList = [
-    { url: 'https://picsum.photos/id/10/1600/900' },
-    { url: 'https://picsum.photos/id/11/1600/900' },
-    { url: 'https://picsum.photos/id/12/1600/900' },
-    { url: 'https://picsum.photos/id/13/1600/900' },
-    { url: 'https://picsum.photos/id/14/1600/900' },
-    { url: 'https://picsum.photos/id/15/1600/900' },
-  ];
   const { currentUsername } = useAuthStore();
   const navigate = useNavigate();
   const handleDelete = () => {
-    apiAxios
-      .patch(`/${boardType}/deativated-${boardType}/${boardId}`, {
-        // Authorization: `Bearer <accessToken>`,
-      })
+    axiosInstance
+      .patch(`/${boardType}/deativated-${boardType}/${boardId}`)
       .then(() => {
         navigate(`/${boardType}`);
       });
