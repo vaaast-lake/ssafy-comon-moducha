@@ -22,7 +22,7 @@ pipeline {
             steps {
                 echo 'Cloning...'
                 checkout scm
-                git branch: 'S11P12D202-810-we-멀티-프로필-관리', credentialsId: 'gitlab-repo', url: 'https://lab.ssafy.com/s11-webmobile1-sub2/S11P12D202.git'
+                git branch: 'dev', credentialsId: 'gitlab-repo', url: 'https://lab.ssafy.com/s11-webmobile1-sub2/S11P12D202.git'
                 echo 'Cloning done'
             }
         }
