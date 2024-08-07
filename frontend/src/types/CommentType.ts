@@ -6,7 +6,7 @@ export interface Comment {
   boardId?: number;
   content: string;
   createdDate: string;
-  nickName: string;
+  nickName?: string;
   replyCount?: number;
 }
 
