@@ -83,7 +83,7 @@ const RoomChatting = ({
               ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start'}
             `}
           >
-            {msg.sender !== 'Me' && <strong className='pe-1'>{msg.sender}:</strong>} <span className='bg-white p-2 rounded-xl'>{msg.content}</span>
+            {msg.sender !== 'Me' && <strong className='pe-1'>{msg.sender}:</strong>} <span className='bg-white m-1 p-2 rounded-xl'>{msg.content}</span>
           </div>
         ))}
         <div ref={messageEndRef}></div>
@@ -104,8 +104,7 @@ const RoomChatting = ({
             border border-gray-300 
             h-2/4 w-full 
             rounded-3xl
-            mx-2
-            ps-3
+            mx-2 ps-3
             outline-none
           "
           value={inputMessage}
