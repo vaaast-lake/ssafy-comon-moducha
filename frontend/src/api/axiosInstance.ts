@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosResponse, AxiosInstance } from 'axios';
 import useAuthStore from '../stores/authStore';
 /**
  * axiosInstance.ts
@@ -13,74 +13,82 @@ const axiosInstance = axios.create({
   },
 });
 
-const getAccessToken = (): string | null => {
-  return localStorage.getItem('authorization');
-};
-const setAccessToken = (token: string) => {
-  localStorage.setItem('authorization', token);
-};
-// 리프레시 토큰으로 액세스 토큰을 갱신하는 함수
-const refreshAccessToken = async (): Promise<string> => {
-  try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/reissue`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-    const newAccessToken = response.data.accessToken; // 이거 추적하기
-    if (!newAccessToken) {
-      alert(response.data.accessToken);
-      throw new Error('새 액세스 토큰이 없습니다.'); // 백엔드 response를 분석해서 newAccessToken을 고치면 됩니다.
-    }
-    setAccessToken(newAccessToken);
-    return newAccessToken;
-  } catch (error) {
-    throw new Error('에러: 토큰 갱신 불가');
-  }
-};
-
-// request 인터셉터: 모든 요청에 액세스 토큰을 헤더에 추가합니다.
+// refresh token도 만료되면 로그아웃 시키기
+function logoutLogic(): void {
+  console.log('accessToken reissue에 실패하여 로그아웃합니다');
+  const { setCurrentUsername } = useAuthStore.getState();
+  localStorage.removeItem('authorization');
+  setCurrentUsername('');
+  alert('로그인이 만료되었습니다. 재로그인이 필요합니다.');
+  window.location.href = '/login';
+}
+// request 인터셉터(done) - 작동여부 체크
 axiosInstance.interceptors.request.use(
-  (config) => {
-    const token = getAccessToken();
+  // 액세스 토큰을 헤더에 추가
+  function (config) {
+    const token = localStorage.getItem('authorization');
     if (token) {
-      config.headers.common['Authorization'] = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
     }
     return config;
   },
-  (error: AxiosError) => Promise.reject(error)
-);
-
-// response 인터셉터: 401 오류가 발생하면 액세스 토큰을 갱신하고 요청을 재시도합니다.
-axiosInstance.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & {
-      _retry?: boolean;
-    };
-
-    // 액세스 토큰이 만료되어 401 오류 발생 시
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const newAccessToken = await refreshAccessToken();
-        axiosInstance.defaults.headers.common['Authorization'] =
-          `Bearer ${newAccessToken}`;
-        return axiosInstance(originalRequest);
-      } catch (refreshError) {
-        // 리프레시 토큰 갱신 실패 시 - 로그인 페이지로 리다이렉트 및 로그아웃 처리
-        const { setLoggedIn, setCurrentUsername } = useAuthStore.getState();
-
-        // setLoggedIn(false);
-        // setCurrentUsername(''); // zustand에서 닉네임을 ''으로 설정
-        // window.location.href = '/login';
-        return Promise.reject(refreshError);
-      }
-    }
+  // request error 시 수행할 작업
+  function (error) {
+    console.log('error at request interceptor: ' + error);
     return Promise.reject(error);
   }
 );
+
+// response 인터셉터
+axiosInstance.interceptors.response.use(
+  // status 401일 때 accessToken reissue
+  function (response: AxiosResponse) {
+    // 200대 status 일때 이 함수를 트리거 - 비워두면 됩니다.
+    return response;
+  },
+  async (error: AxiosError) => {
+    // 액세스 토큰이 만료되어 401 오류 발생 시 - #반드시 재요청 고려#
+    if (error.response?.status === 401) {
+      try {
+        await tokenRefresh(axiosInstance); // 정상 작동시 localStorage에 갱신된 accessToken이 저장됩니다
+        // 갱신된 accessToken으로 request 재요청
+        const accessToken = localStorage.getItem('authorization');
+        if (accessToken && error.config) {
+          error.config.headers.Authorization = `Bearer  ${accessToken}`;
+          return axiosInstance(error.config);
+        }
+      } catch (refreshError) {
+        logoutLogic();
+        return Promise.reject(refreshError);
+      }
+      // 401 error response 이후, 토큰 갱신 뒤 재요청
+      return Promise.reject(error);
+    }
+  }
+);
+
+// 리프레시 토큰으로 액세스 토큰을 갱신하는 함수
+const tokenRefresh = async (instance: AxiosInstance) => {
+  try {
+    const response = await instance.post(
+      '/reissue',
+      {},
+      {
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+    const newAccessToken = response.data.accessToken;
+    if (!newAccessToken) {
+      console.log(
+        '리프레시 토큰을 통해 액세스 토큰을 재발급하지 못했습니다. axios interceptor의 문제이거나 재로그인이 필요합니다'
+      );
+      return;
+    }
+    localStorage.setItem('authorization', newAccessToken);
+  } catch (error) {
+    console.error('리프레시 토큰 요청 중 오류 발생:', error);
+    throw error;
+  }
+};
 
 export default axiosInstance;
