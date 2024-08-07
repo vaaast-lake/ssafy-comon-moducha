@@ -92,7 +92,7 @@ public class ShareCommentService {
 
         shareComment.deactivate();
 
-        return ShareCommentDeleteResponse.of(shareCommentId);
+        return ShareCommentDeleteResponse.from(shareCommentId);
     }
 
     private @NotNull ShareComment getActivatedComment(Integer shareCommentId) {
