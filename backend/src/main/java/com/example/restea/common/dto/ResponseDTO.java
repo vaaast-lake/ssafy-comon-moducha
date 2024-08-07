@@ -19,6 +19,12 @@ public class ResponseDTO<T> {
                 .build();
     }
 
+    public static <T> ResponseDTO<T> of(T data) {
+        return ResponseDTO.<T>builder()
+                .data(data)
+                .build();
+    }
+
     @Builder
     public ResponseDTO(T data, PaginationDTO pagination) {
         this.data = data;
