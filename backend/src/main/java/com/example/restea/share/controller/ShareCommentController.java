@@ -5,7 +5,7 @@ import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.share.dto.ShareCommentCreationRequest;
 import com.example.restea.share.dto.ShareCommentCreationResponse;
 import com.example.restea.share.dto.ShareCommentDeleteResponse;
-import com.example.restea.share.dto.ShareCommentListResponse;
+import com.example.restea.share.dto.ShareCommentViewResponse;
 import com.example.restea.share.service.ShareCommentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/shares/{shareBoardId}/comments")
+@RequestMapping("/api/v1/shares/{shareBoardId}")
 public class ShareCommentController {
     private final ShareCommentService shareCommentService;
 
@@ -38,13 +38,13 @@ public class ShareCommentController {
      * @param page         페이지 번호.
      * @return 페이지 정보와 댓글 리스트를 포함하는 ResponseEntity 객체를 반환합니다. 댓글 조회에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
      */
-    @GetMapping
+    @GetMapping("/comments")
     public ResponseEntity<ResponseDTO<?>> getShareCommentList(
             @PathVariable("shareBoardId") Integer shareBoardId,
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
-        ResponseDTO<List<ShareCommentListResponse>> result = shareCommentService.getShareCommentList(shareBoardId, page,
+        ResponseDTO<List<ShareCommentViewResponse>> result = shareCommentService.getShareCommentList(shareBoardId, page,
                 perPage);
 
         return ResponseEntity.status(HttpStatus.OK)
@@ -59,13 +59,13 @@ public class ShareCommentController {
      * @param customOAuth2User 현재 인증된 사용자.
      * @return 작성한 댓글 정보를 포함하는 ResponseEntity 객체를 반환합니다. 댓글 작성에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
      */
-    @PostMapping
-    public ResponseEntity<ResponseDTO<?>> createShareBoard(
+    @PostMapping("/comments")
+    public ResponseEntity<ResponseDTO<?>> createShareComment(
             @PathVariable("shareBoardId") Integer shareBoardId,
             @Valid @RequestBody ShareCommentCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        ShareCommentCreationResponse result = shareCommentService.createShareComment(request, shareBoardId,
+        ShareCommentCreationResponse result = shareCommentService.createShareComment(request.getContent(), shareBoardId,
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -79,12 +79,13 @@ public class ShareCommentController {
      * @param customOAuth2User 현재 인증된 사용자.
      * @return 삭제한 댓글 ID를 포함하는 ResponseEntity 객체를 반환합니다. 댓글 삭제에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
      */
-    @PatchMapping("/{shareCommentId}")
-    public ResponseEntity<ResponseDTO<?>> deactivateShareBoard(
+    @PatchMapping("/deactivated-comments/{shareCommentId}")
+    public ResponseEntity<ResponseDTO<?>> deactivateShareComment(
             @PathVariable("shareCommentId") Integer shareCommentId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        ShareCommentDeleteResponse result = shareCommentService.deactivateShareComment(shareCommentId,
+        ShareCommentDeleteResponse result
+                = shareCommentService.deactivateShareComment(shareCommentId,
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)

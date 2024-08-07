@@ -10,10 +10,9 @@ import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
-import com.example.restea.share.dto.ShareCommentCreationRequest;
 import com.example.restea.share.dto.ShareCommentCreationResponse;
 import com.example.restea.share.dto.ShareCommentDeleteResponse;
-import com.example.restea.share.dto.ShareCommentListResponse;
+import com.example.restea.share.dto.ShareCommentViewResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
 import com.example.restea.share.repository.ShareBoardRepository;
@@ -41,7 +40,7 @@ public class ShareCommentService {
     private final UserRepository userRepository;
     private final ShareReplyRepository shareReplyRepository;
 
-    public ResponseDTO<List<ShareCommentListResponse>> getShareCommentList(Integer shareBoardId, Integer page,
+    public ResponseDTO<List<ShareCommentViewResponse>> getShareCommentList(Integer shareBoardId, Integer page,
                                                                            Integer perPage) {
         ShareBoard shareBoard = shareBoardRepository.findById(shareBoardId)
                 .orElseThrow(
@@ -49,7 +48,7 @@ public class ShareCommentService {
 
         // data
         Page<ShareComment> shareComments = getShareComments(shareBoard, page, perPage);
-        List<ShareCommentListResponse> data = createResponseFormShareComments(shareComments.getContent());
+        List<ShareCommentViewResponse> data = createResponseFormShareComments(shareComments.getContent());
         Long count = shareCommentRepository.countAllByShareBoard(shareBoard);
 
         // pagination info
@@ -59,7 +58,7 @@ public class ShareCommentService {
     }
 
     @Transactional
-    public ShareCommentCreationResponse createShareComment(ShareCommentCreationRequest request, Integer shareBoardId,
+    public ShareCommentCreationResponse createShareComment(String content, Integer shareBoardId,
                                                            Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
@@ -74,7 +73,7 @@ public class ShareCommentService {
 
         ShareComment shareComment = ShareComment.builder()
                 .user(user)
-                .content(request.getContent())
+                .content(content)
                 .shareBoard(shareBoard)
                 .build();
 
@@ -121,12 +120,12 @@ public class ShareCommentService {
         return shareComments;
     }
 
-    private List<ShareCommentListResponse> createResponseFormShareComments(List<ShareComment> shareComments) {
-        List<ShareCommentListResponse> data = new ArrayList<>();
+    private List<ShareCommentViewResponse> createResponseFormShareComments(List<ShareComment> shareComments) {
+        List<ShareCommentViewResponse> data = new ArrayList<>();
 
         shareComments.forEach(shareComment -> {
             Integer replyCount = shareReplyRepository.countByShareComment(shareComment).intValue();
-            data.add(ShareCommentListResponse.of(shareComment, replyCount));
+            data.add(ShareCommentViewResponse.of(shareComment, replyCount));
         });
         return data;
     }
