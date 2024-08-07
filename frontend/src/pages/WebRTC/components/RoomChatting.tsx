@@ -38,6 +38,7 @@ const RoomChatting = ({
         grid
         col-span-3
         grid-rows-12
+        h-[calc(100vh-220px)]
       "
     >
       <div
@@ -45,6 +46,7 @@ const RoomChatting = ({
           chat-header 
           flex justify-center items-center
           row-span-1
+          text-3xl
         "
       >
         {/* <div 
@@ -57,19 +59,25 @@ const RoomChatting = ({
           '
         >
         </div> */}
-        CHAT HEADER
+        Chat header
       </div>
       <div
         id="chat-message-box"
         className="
-          overflow-y-scroll 
+          overflow-y-auto
           row-span-9
           bg-slate-200
         "
       >
         {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.sender}:</strong> {msg.content}
+          <div 
+            key={index} 
+            className={`
+              px-1 w-full my-2 flex items-center
+              ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start'}
+            `}
+          >
+            {msg.sender !== 'Me' && <strong className='pe-1'>{msg.sender}:</strong>} <span className='bg-white p-2 rounded-xl'>{msg.content}</span>
           </div>
         ))}
       </div>
@@ -90,6 +98,8 @@ const RoomChatting = ({
             h-2/4 w-full 
             rounded-3xl
             mx-2
+            ps-3
+            outline-none
           "
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
@@ -104,6 +114,7 @@ const RoomChatting = ({
             text-2xl text-white 
             px-3 py-2 me-2
             rounded-full 
+            transition-colors
           "
           onClick={sendMessage}
         >
