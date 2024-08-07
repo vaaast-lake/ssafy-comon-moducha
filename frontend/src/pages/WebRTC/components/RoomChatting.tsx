@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Room } from 'livekit-client';
 import { Message } from '../../../types/WebRTCType';
 import { RiMailSendLine } from 'react-icons/ri';
@@ -18,6 +18,12 @@ const RoomChatting = ({
   setMessages,
   setInputMessage,
 }: RoomChattingProps) => {
+  const messageEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView();
+  }, [messages])
+
   const sendMessage = () => {
     if (inputMessage.trim() && room) {
       const encoder = new TextEncoder();
@@ -81,6 +87,7 @@ const RoomChatting = ({
           </div>
         ))}
       </div>
+      <div ref={messageEndRef}></div>
       <div
         id="chat-footer"
         className="
