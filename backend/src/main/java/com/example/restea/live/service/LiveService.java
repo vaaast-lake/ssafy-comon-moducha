@@ -1,5 +1,7 @@
 package com.example.restea.live.service;
 
+import static com.example.restea.live.enums.LiveMessage.LIVEKIT_BAD_REQUEST;
+import static com.example.restea.live.enums.LiveMessage.LIVE_NOT_FOUND;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_BEFORE_BROADCAST_DATE;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_BROADCAST_DATE;
@@ -45,8 +47,6 @@ public class LiveService {
     private final LiveRepository liveRepository;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
-
-    private static final String LIVEKIT_BAD_REQUEST = "Livekit error.";
 
     @Value("${livekit.api.key}")
     private String LIVEKIT_API_KEY;
@@ -116,7 +116,7 @@ public class LiveService {
         // 방송 존재 여부 확인
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Live not found."));
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, LIVE_NOT_FOUND.getMessage()));
 
         // AccessToken 발급 및 참가자 토큰 반환
         return createToken(live.getId(), user);
@@ -174,7 +174,7 @@ public class LiveService {
         // 방송 존재 여부 확인
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Live not found."));
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, LIVE_NOT_FOUND.getMessage()));
 
         // 방송에서 강퇴
         try {
@@ -187,7 +187,7 @@ public class LiveService {
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, deleteResponse.errorBody().string());
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST.getMessage());
         }
     }
 
@@ -205,7 +205,7 @@ public class LiveService {
         // 방송 존재 여부 확인
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Live not found."));
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, LIVE_NOT_FOUND.getMessage()));
 
         // trackSid에 해당하는 track 음소거
         try {
@@ -221,7 +221,7 @@ public class LiveService {
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, muteResponse.errorBody().string());
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST.getMessage());
         }
     }
 

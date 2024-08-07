@@ -11,7 +11,7 @@ export const genShareListItems = (n: number) => {
       endDate: '2023-07-10T15:00:00Z',
       maxParticipants: 2 + i,
       participants: 1 + i,
-      nickName: '엄준식',
+      nickname: '엄준식',
       viewCount: i + 10,
     };
     shareItems.push(shareItem);
@@ -41,6 +41,7 @@ export const ShareDetailResponse = {
     endDate: '2023-07-19T23:59:59Z',
     viewCount: 100,
     participants: 30, // 현재 참가자
-    nickName: '홍길동',
+    nickname: '홍길동',
+    userId: '10',
   },
 };

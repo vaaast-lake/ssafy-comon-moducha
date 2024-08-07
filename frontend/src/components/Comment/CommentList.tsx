@@ -18,7 +18,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
     page: 1,
     perPage: 10,
   };
-  
+
   const [hasComments, setHasComments] = useState(true);
   const [commentList, setCommentList] = useState<Comment[]>(
     mockCommentList.data
@@ -29,7 +29,6 @@ const CommentList = ({ boardType, boardId }: Board) => {
   useEffect(() => {
     fetchCommentList(fetchParams)
       .then((res) => {
-        
         setCommentList(res.data.data);
       })
       .catch((err) => {
@@ -45,7 +44,9 @@ const CommentList = ({ boardType, boardId }: Board) => {
         <h1 className="m-2 text-xl font-bold">댓글</h1>
         <hr className="border border-gray-300" />
       </header>
-      <CommentWrite {...{ boardType, boardId, setCommentList }} />
+      <CommentWrite
+        {...{ boardType, boardId, hasComments, setHasComments, setCommentList }}
+      />
       <hr />
       <main>
         {hasComments && (

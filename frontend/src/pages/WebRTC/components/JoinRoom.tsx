@@ -70,7 +70,7 @@ const JoinRoom = ({
 
             return newGroupedTracks;
           });
-          console.log(publication);
+          // console.log(publication);
         }
       )
       .on(
