@@ -183,9 +183,9 @@ class GetTeatimeBoardListTest {
     // TODO : 활성화된 티타임 게시판이 없을 때 (최신 순)
     // TODO : endDate가 지난 티타임 게시판만 있을 때 (최신 순)
 
-    @DisplayName("getShareBoardList : 나눔 게시판 목록 조회 성공 - perPage가 5일 때 (임박 순)")
+    @DisplayName("getTeatimeBoardList : 티타임 게시판 목록 조회 성공 - perPage가 5일 때 (임박 순)")
     @Test
-    public void getShareBoardList_5_urgent_success() throws Exception {
+    public void getTeatimeBoardList_5_urgent_success() throws Exception {
         // given
         User user = userRepository.findByAuthId("authId")
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
@@ -234,11 +234,11 @@ class GetTeatimeBoardListTest {
                     .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
         }
 
-        // TODO : 일부 endDate가 지난 나눔 게시판이 있을 때 (임박 순)
-        // TODO : 나눔 게시판이 1개일 때 (임박 순)
-        // TODO : 아무런 나눔 게시판이 없을 때 (임박 순)
-        // TODO : 활성화된 나눔 게시판이 없을 때 (임박 순)
-        // TODO : endDate가 지난 나눔 게시판만 있을 때 (임박 순)
+        // TODO : 일부 endDate가 지난 티타임 게시판이 있을 때 (임박 순)
+        // TODO : 티타임 게시판이 1개일 때 (임박 순)
+        // TODO : 아무런 티타임 게시판이 없을 때 (임박 순)
+        // TODO : 활성화된 티타임 게시판이 없을 때 (임박 순)
+        // TODO : endDate가 지난 티타임 게시판만 있을 때 (임박 순)
 
         // TODO : sort가 null일 때
         // TODO : sort가 latest 또는 urgent가 아닐 때
