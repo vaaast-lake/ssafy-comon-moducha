@@ -2,15 +2,15 @@ package com.example.restea.live.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
+@Builder
 public class LiveKickResponseDTO {
     private Integer userId;
 
-    @Builder
-    public LiveKickResponseDTO(Integer userId) {
-        this.userId = userId;
+    public static LiveKickResponseDTO from(Integer userId) {
+        return LiveKickResponseDTO.builder()
+                .userId(userId)
+                .build();
     }
 }

@@ -1,17 +1,18 @@
 package com.example.restea.live.dto;
 
+import io.livekit.server.AccessToken;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 // 티타임 방송 생성, 참가 응답 정의하는 클래스
-@NoArgsConstructor
 @Getter
+@Builder
 public class LiveRoomResponseDTO {
     private String token;
 
-    @Builder
-    public LiveRoomResponseDTO(String token) {
-        this.token = token;
+    public static LiveRoomResponseDTO from(AccessToken token) {
+        return LiveRoomResponseDTO.builder()
+                .token(token.toJwt())
+                .build();
     }
 }
