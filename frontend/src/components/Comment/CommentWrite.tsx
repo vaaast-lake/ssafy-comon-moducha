@@ -7,12 +7,16 @@ import useAuthStore from '../../stores/authStore';
 interface CommentWriteType {
   boardType: BoardType;
   boardId: number;
+  hasComments: boolean;
+  setHasComments: Dispatch<SetStateAction<boolean>>;
   setCommentList: Dispatch<SetStateAction<Comment[]>>;
 }
 
 const CommentWrite = ({
   boardType,
   boardId,
+  hasComments,
+  setHasComments,
   setCommentList,
 }: CommentWriteType) => {
   const [content, setContent] = useState('');
@@ -28,6 +32,10 @@ const CommentWrite = ({
       })
       .then((res) => {
         setCommentList((prev) => [...prev, res.data.data]);
+        handleDelete();
+        if (!hasComments) {
+          setHasComments(() => true);
+        }
       })
       .catch((err) => {
         alert('댓글 작성 중 에러가 발생했습니다.');

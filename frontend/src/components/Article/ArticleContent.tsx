@@ -13,11 +13,11 @@ const ArticleContent = ({
   boardType,
   title,
   boardId,
-  nickName,
   content,
   children,
+  userId,
 }: ArticleProp) => {
-  const { currentUsername } = useAuthStore();
+  const currentUserId = useAuthStore((state) => state.currentUserId);
   const navigate = useNavigate();
   const handleDelete = () => {
     axiosInstance
@@ -32,7 +32,7 @@ const ArticleContent = ({
     <div className="p-4 shadow border flex flex-col gap-4">
       <header className="flex  justify-between items-center border rounded p-4 pr-1 shadow-md">
         <h1 className="text-2xl font-semibold text-wood truncate">{title}</h1>
-        {currentUsername === nickName && (
+        {currentUserId === userId && (
           <DropdownMenu
             handleUpdate={handleUpdate}
             handleDelete={handleDelete}

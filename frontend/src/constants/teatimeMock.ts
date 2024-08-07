@@ -39,6 +39,6 @@ export const mockDetail = {
     endDate: '2023-07-19T23:59:59Z',
     viewCount: 100,
     participants: 30,
-    nickName: '홍길동',
+    nickname: '홍길동',
   },
 };

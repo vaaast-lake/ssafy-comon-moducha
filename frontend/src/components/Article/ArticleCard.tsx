@@ -2,7 +2,7 @@ import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 const ArticleCard = ({
   boardType,
-  nickName,
+  nickname,
   createdDate,
   endDate,
   viewCount,
@@ -19,7 +19,7 @@ const ArticleCard = ({
       <div id="card-body">
         <header>
           <div className="flex gap-1">
-            <span>{nickName}</span>|<span>조회 {viewCount}</span>
+            <span>{nickname}</span>|<span>조회 {viewCount}</span>
           </div>
         </header>
         <div className="pl-0 flex flex-col">
