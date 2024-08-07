@@ -178,7 +178,7 @@ const JoinRoom = ({
 
   return (
     <>
-      <div id="join" className='flex justify-center items-center h-screen w-screen'>
+      <div id="join" className='flex justify-center items-center w-screen'>
         <div id="join-dialog" className='grid grid-rows-12 items-center h-5/6 w-10/12 border border-y-tea border-y-2 border-x-0 bg-teabg'>
           <h2 className='text-6xl flex-1 text-center row-span-2'>대기실</h2>
           <div className='pre-join-screen row-start-3 row-span-8 bg-slate-50'>1</div>

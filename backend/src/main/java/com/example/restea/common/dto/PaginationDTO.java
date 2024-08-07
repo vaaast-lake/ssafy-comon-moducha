@@ -15,6 +15,14 @@ public class PaginationDTO {
     private int page;
     private int perPage;
 
+    public static PaginationDTO of(int total, int page, int perPage) {
+        return PaginationDTO.builder()
+                .total((total - 1) / perPage + 1)
+                .page(page)
+                .perPage(perPage)
+                .build();
+    }
+
     @Builder
     public PaginationDTO(int total, int page, int perPage) {
         this.total = total;

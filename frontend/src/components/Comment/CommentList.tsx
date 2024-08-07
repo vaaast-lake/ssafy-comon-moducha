@@ -17,7 +17,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
     page: 1,
     perPage: 10,
   };
-
+  const [hasComments, setHasComments] = useState(true);
   const [commentList, setCommentList] = useState<Comment[]>(
     mockCommentList.data
   );
@@ -25,9 +25,16 @@ const CommentList = ({ boardType, boardId }: Board) => {
   const sentinel = useRef(null);
 
   useEffect(() => {
-    fetchCommentList(fetchParams).then((res) => setCommentList(res.data));
+    fetchCommentList(fetchParams)
+      .then((res) => setCommentList(res.data))
+      .catch((err) => {
+        if (err.response.status === 404) {
+          setHasComments(false);
+        }
+      });
   });
 
+  if (!hasComments) return null;
   return (
     <div>
       <header>

@@ -2,6 +2,7 @@ package com.example.restea.share.repository;
 
 import com.example.restea.share.entity.ShareBoard;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,7 @@ public interface ShareBoardRepository extends JpaRepository<ShareBoard, Integer>
 
     Page<ShareBoard> findAllByActivatedAndEndDateAfter(boolean b, LocalDateTime now, PageRequest endDate);
 
+    Page<ShareBoard> findAllByActivatedAndUserId(boolean b, Integer userId, Pageable pageable);
+
+    Optional<ShareBoard> findByIdAndActivated(Integer id, boolean b);
 }
