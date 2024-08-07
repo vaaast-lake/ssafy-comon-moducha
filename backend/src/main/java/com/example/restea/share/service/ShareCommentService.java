@@ -48,7 +48,7 @@ public class ShareCommentService {
 
         // data
         Page<ShareComment> shareComments = getShareComments(shareBoard, page, perPage);
-        List<ShareCommentViewResponse> data = createResponseFormShareComments(shareComments.getContent());
+        List<ShareCommentViewResponse> data = createResponseFromShareComments(shareComments.getContent());
         Long count = shareCommentRepository.countAllByShareBoard(shareBoard);
 
         // pagination info
@@ -120,7 +120,7 @@ public class ShareCommentService {
         return shareComments;
     }
 
-    private List<ShareCommentViewResponse> createResponseFormShareComments(List<ShareComment> shareComments) {
+    private List<ShareCommentViewResponse> createResponseFromShareComments(List<ShareComment> shareComments) {
         List<ShareCommentViewResponse> data = new ArrayList<>();
 
         shareComments.forEach(shareComment -> {

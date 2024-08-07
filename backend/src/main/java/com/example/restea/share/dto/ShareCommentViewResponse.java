@@ -23,7 +23,7 @@ public class ShareCommentViewResponse {
                 .content(shareComment.getExposedContent())
                 .createdDate(shareComment.getCreatedDate())
                 .userId(shareComment.getUser().getId())
-                .nickname(shareComment.getExposedNickName())
+                .nickname(shareComment.getExposedNickname())
                 .replyCount(replyCount)
                 .build();
     }
