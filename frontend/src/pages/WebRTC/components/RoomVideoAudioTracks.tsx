@@ -34,7 +34,9 @@ const RoomVideoAudioTracks = ({
   const [screenShare, setScreenShare] = useState<ScreenShareTrack>({isScreenShare: false});
 
   useEffect(() => {
-    const screenShareTrack = Object.values(remoteTracks).find((tracks) => tracks?.video?.trackPublication.source === 'screen_share')
+    const screenShareTrack = Object.values(remoteTracks).find(
+      (tracks) => tracks?.video?.trackPublication.source === 'screen_share'
+    )
     
     if (screenShareTrack) {
       setScreenShare({isScreenShare: true, screenShareTrack})
@@ -58,51 +60,39 @@ const RoomVideoAudioTracks = ({
         grid-rows-12
       "
     >
-      {/* screen_share video start */}
-      {screenShare.isScreenShare &&
-        <div className="screen-share-container">
-          <RoomVideo
-            // key={tracks.video.trackPublication.trackSid}
-            key={screenShare.screenShareTrack!.video!.trackPublication.trackSid}
-            track={screenShare.screenShareTrack!.video!.trackPublication.videoTrack!}
-            participantIdentity={screenShare.screenShareTrack!.video!.participantIdentity}
-          />
-        </div>
+      <div className='local-share-container relative row-span-7'>
+        {/* screen_share video start */}
+        {screenShare.isScreenShare &&
+          <div className="screen-share-container w-full h-full">
+            <RoomVideo
+              key={screenShare.screenShareTrack?.video?.trackPublication.trackSid}
+              track={screenShare.screenShareTrack!.video!.trackPublication.videoTrack!}
+              participantIdentity={screenShare.screenShareTrack!.video!.participantIdentity}
+            />
+          </div>
+        }
+        {/* screen_share video end */}
 
-      
-        // Object.entries(remoteTracks).map(([participantIdentity, tracks]) => {
-        // tracks &&
-        // tracks.video &&
-        // tracks.video.trackPublication.source === 'screen_share' && (
-          // <div className="screen-share-container">
-          //   <RoomVideo
-          //     key={tracks.video.trackPublication.trackSid}
-          //     track={tracks.video.trackPublication.videoTrack!}
-          //     participantIdentity={participantIdentity}
-          //   />
-          // </div>
-        // )
-        // })
-      }
-      {/* screen_share video end */}
-
-      {/* local video start */}
-      {localTrack && (
-        <div
-          className={`
-            local-video-container
-            relative  
-            row-span-7
-          `}
-        >
-          <RoomVideo
-            track={localTrack}
-            participantIdentity={participantName}
-            local={true}
-          />
-        </div>
-      )}
-      {/* local video end */}
+        {/* local video start */}
+        {localTrack && (
+          <div
+            className={`
+              local-video-container
+              ${screenShare.isScreenShare ? 
+                'absolute top-0 right-0 w-2/6' : 
+                'w-full h-full'
+              }
+            `}
+          >
+            <RoomVideo
+              track={localTrack}
+              participantIdentity={participantName}
+              local={true}
+            />
+          </div>
+        )}
+        {/* local video end */}
+      </div>
 
       {/* remote video start */}
       <RoomRemoteTrack remoteTracks={remoteTracks} />
