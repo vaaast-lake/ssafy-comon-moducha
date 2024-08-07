@@ -4,11 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class ShareCommentDeleteResponse {
     private final Integer shareCommentId;
 
-    @Builder
-    public ShareCommentDeleteResponse(Integer shareCommentId) {
-        this.shareCommentId = shareCommentId;
+    public static ShareCommentDeleteResponse of(Integer shareCommentId) {
+        return ShareCommentDeleteResponse.builder()
+                .shareCommentId(shareCommentId)
+                .build();
     }
 }
