@@ -1,13 +1,13 @@
 package com.example.restea.share.controller;
 
-import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.share.dto.ShareCommentCreationRequest;
+import com.example.restea.share.dto.ShareCommentListResponse;
 import com.example.restea.share.service.ShareCommentService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import java.util.Map;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
@@ -34,13 +34,11 @@ public class ShareCommentController {
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
-        Map<String, Object> result = shareCommentService.getShareCommentList(shareBoardId, page, perPage);
+        ResponseDTO<List<ShareCommentListResponse>> result = shareCommentService.getShareCommentList(shareBoardId, page,
+                perPage);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseDTO.builder()
-                        .data(result.get("data"))
-                        .pagination((PaginationDTO) result.get("pagination"))
-                        .build());
+                .body(result);
     }
 
     @PostMapping
