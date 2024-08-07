@@ -24,13 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/shares/{share_board_id}/comments")
+@RequestMapping("/api/v1/shares/{shareBoardId}/comments")
 public class ShareCommentController {
     private final ShareCommentService shareCommentService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getShareCommentList(
-            @PathVariable("share_board_id") Integer shareBoardId,
+            @PathVariable("shareBoardId") Integer shareBoardId,
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
@@ -45,7 +45,7 @@ public class ShareCommentController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO<?>> createShareBoard(
-            @PathVariable("share_board_id") Integer shareBoardId,
+            @PathVariable("shareBoardId") Integer shareBoardId,
             @Valid @RequestBody ShareCommentCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         return ResponseEntity.status(HttpStatus.CREATED)
