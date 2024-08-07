@@ -6,6 +6,7 @@ import com.example.restea.oauth2.jwt.JWTFilter;
 import com.example.restea.oauth2.jwt.JWTUtil;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
 import com.example.restea.oauth2.service.CustomOAuth2UserService;
+import com.example.restea.oauth2.util.CookieMethods;
 import com.example.restea.user.repository.UserRepository;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
+    private final CookieMethods cookieMethods;
 
     String[] whitelist = {
             "/",
@@ -102,7 +104,7 @@ public class SecurityConfig {
           SpringSecurity의 LogoutFilter가 작동하기 전에 RefreshToken을 제거하는 필터를 추가하는 것
          */
         http
-                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository, userRepository),
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository, userRepository, cookieMethods),
                         LogoutFilter.class);
 
         // 로그아웃 설정
