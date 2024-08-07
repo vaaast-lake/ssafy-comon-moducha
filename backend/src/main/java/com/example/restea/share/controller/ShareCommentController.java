@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,13 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/shares/{share_board_id}/comments")
+@RequestMapping("/api/v1/shares/{shareBoardId}/comments")
 public class ShareCommentController {
     private final ShareCommentService shareCommentService;
 
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getShareCommentList(
-            @PathVariable("share_board_id") Integer shareBoardId,
+            @PathVariable("shareBoardId") Integer shareBoardId,
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
@@ -44,13 +45,24 @@ public class ShareCommentController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO<?>> createShareBoard(
-            @PathVariable("share_board_id") Integer shareBoardId,
+            @PathVariable("shareBoardId") Integer shareBoardId,
             @Valid @RequestBody ShareCommentCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseDTO.builder()
                         .data(shareCommentService.createShareComment(request, shareBoardId,
                                 customOAuth2User.getUserId()))
+                        .build());
+    }
+
+    @PatchMapping("/{shareCommentId}")
+    public ResponseEntity<ResponseDTO<?>> deactivateShareBoard(
+            @PathVariable("shareCommentId") Integer shareCommentId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.builder()
+                        .data(shareCommentService.deactivateShareComment(shareCommentId, customOAuth2User.getUserId()))
                         .build());
     }
 }

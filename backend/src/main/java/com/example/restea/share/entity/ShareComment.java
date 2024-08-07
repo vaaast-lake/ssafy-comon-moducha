@@ -66,4 +66,8 @@ public class ShareComment extends BaseTimeEntity {
     public String getExposedNickName() {
         return activated ? user.getExposedNickname() : "";
     }
+
+    public void deactivate() {
+        this.activated = false;
+    }
 }
