@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,16 +26,20 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {
 
-    private final JWTUtil jwtUtil;
+    private static final List<Pattern> EXEMPTED_PATTERNS = List.of(
+            Pattern.compile("^\\/api/v1/oauth2(?:\\/.*)?$"),
+            Pattern.compile("^\\/oauth2(?:\\/.*)?$"),
+            Pattern.compile("^\\/api/v1/reissue(?:\\/.*)?$")
+    );
 
-    private static final Pattern LOGIN = Pattern.compile("^\\/api/v1/login(?:\\/.*)?$");
-    private static final Pattern OAUTH2 = Pattern.compile("^\\/oauth2(?:\\/.*)?$");
+    private final JWTUtil jwtUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        if (isExemptedUri(request, response, filterChain)) { // URI 확인
+        if (isExemptedUri(request)) { // URI 확인
+            doFilter(request, response, filterChain);
             return;
         }
 
@@ -79,15 +84,11 @@ public class JWTFilter extends OncePerRequestFilter {
         return header.substring(BEARER.getType().length());
     }
 
-    private boolean isExemptedUri(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
+    private boolean isExemptedUri(HttpServletRequest request) {
         String requestUri = request.getRequestURI();
 
-        if (LOGIN.matcher(requestUri).matches() || OAUTH2.matcher(requestUri).matches()) {
-            filterChain.doFilter(request, response);
-            return true;
-        }
-        return false;
+        return EXEMPTED_PATTERNS.stream()
+                .anyMatch(pattern -> pattern.matcher(requestUri).matches());
     }
 
     private boolean isTokenInvalid(String accessToken, HttpServletResponse response) throws IOException {
