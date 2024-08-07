@@ -8,9 +8,9 @@
     "build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-	  "build:local": "./node_modules/.bin/env-cmd -e local vite build",
-	  "build:dev": "./node_modules/.bin/env-cmd -e dev vite build",
-	  "build:prod": "./node_modules/.bin/env-cmd -e prod vite build"
+    "build:local": "npx env-cmd -e local vite build",
+    "build:dev": "npx env-cmd -e dev vite build",
+    "build:prod": "npx env-cmd -e prod vite build"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^8.0.0",

@@ -57,7 +57,7 @@ public class JWTUtil {
         return Jwts.builder()
                 .claim("category", category) // access, refresh 판단
                 .claim("userId", userId)
-                .claim("username", nickname)
+                .claim("nickname", nickname)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
