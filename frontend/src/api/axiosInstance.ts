@@ -39,33 +39,33 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// response 인터셉터
-axiosInstance.interceptors.response.use(
-  // status 401일 때 accessToken reissue
-  function (response: AxiosResponse) {
-    // 200대 status 일때 이 함수를 트리거 - 비워두면 됩니다.
-    return response;
-  },
-  async (error: AxiosError) => {
-    // 액세스 토큰이 만료되어 401 오류 발생 시 - #반드시 재요청 고려#
-    if (error.response?.status === 401) {
-      try {
-        await tokenRefresh(axiosInstance); // 정상 작동시 localStorage에 갱신된 accessToken이 저장됩니다
-        // 갱신된 accessToken으로 request 재요청
-        const accessToken = localStorage.getItem('authorization');
-        if (accessToken && error.config) {
-          error.config.headers.Authorization = `Bearer  ${accessToken}`;
-          return axiosInstance(error.config);
-        }
-      } catch (refreshError) {
-        logoutLogic();
-        return Promise.reject(refreshError);
-      }
-      // 401 error response 이후, 토큰 갱신 뒤 재요청
-      return Promise.reject(error);
-    }
-  }
-);
+// // response 인터셉터
+// axiosInstance.interceptors.response.use(
+//   // status 401일 때 accessToken reissue
+//   function (response: AxiosResponse) {
+//     // 200대 status 일때 이 함수를 트리거 - 비워두면 됩니다.
+//     return response;
+//   },
+//   async (error: AxiosError) => {
+//     // 액세스 토큰이 만료되어 401 오류 발생 시 - #반드시 재요청 고려#
+//     if (error.response?.status === 401) {
+//       try {
+//         await tokenRefresh(axiosInstance); // 정상 작동시 localStorage에 갱신된 accessToken이 저장됩니다
+//         // 갱신된 accessToken으로 request 재요청
+//         const accessToken = localStorage.getItem('authorization');
+//         if (accessToken && error.config) {
+//           error.config.headers.Authorization = `Bearer  ${accessToken}`;
+//           return axiosInstance(error.config);
+//         }
+//       } catch (refreshError) {
+//         logoutLogic();
+//         return Promise.reject(refreshError);
+//       }
+//       // 401 error response 이후, 토큰 갱신 뒤 재요청
+//       return Promise.reject(error);
+//     }
+//   }
+// );
 
 // 리프레시 토큰으로 액세스 토큰을 갱신하는 함수
 const tokenRefresh = async (instance: AxiosInstance) => {
