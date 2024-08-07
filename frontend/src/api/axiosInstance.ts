@@ -16,10 +16,11 @@ const axiosInstance = axios.create({
 // refresh token도 만료되면 로그아웃 시키기
 function logoutLogic(): void {
   console.log('accessToken reissue에 실패하여 로그아웃합니다');
-  const { setLoggedIn, setCurrentUsername } = useAuthStore.getState();
-  setLoggedIn(false);
+  const { setCurrentUsername } = useAuthStore.getState();
+  localStorage.removeItem('authorization');
   setCurrentUsername('');
-  // window.location.href = '/login';
+  alert('로그인이 만료되었습니다. 재로그인이 필요합니다.');
+  window.location.href = '/login';
 }
 // request 인터셉터(done) - 작동여부 체크
 axiosInstance.interceptors.request.use(
@@ -29,7 +30,6 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }
-    console.log('[dev] request interceptor가 만든 헤더:', config.headers);
     return config;
   },
   // request error 시 수행할 작업
@@ -51,6 +51,7 @@ axiosInstance.interceptors.response.use(
     if (error.response?.status === 401) {
       try {
         await tokenRefresh(axiosInstance); // 정상 작동시 localStorage에 갱신된 accessToken이 저장됩니다
+        // 갱신된 accessToken으로 request 재요청
         const accessToken = localStorage.getItem('authorization');
         if (accessToken && error.config) {
           error.config.headers.Authorization = `Bearer  ${accessToken}`;
