@@ -1,5 +1,5 @@
 import { BoardType } from '../types/BoardType';
-import apiAxios from './axiosInstance';
+import axiosInstance from './axiosInstance';
 
 interface ArticleList {
   boardType: BoardType;
@@ -14,7 +14,7 @@ export const fetchArticleList = ({
   page,
   perPage,
 }: ArticleList) => {
-  return apiAxios.get(`/${boardType}`, {
+  return axiosInstance.get(`/${boardType}`, {
     params: { sort, page, perPage },
   });
 };
@@ -26,5 +26,5 @@ export const fetchArticleDetail = ({
   boardType: BoardType;
   boardId: string;
 }) => {
-  return apiAxios.get(`/${boardType}/${boardId}`);
+  return axiosInstance.get(`/${boardType}/${boardId}`);
 };

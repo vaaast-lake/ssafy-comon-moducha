@@ -11,6 +11,7 @@ import ShareDetail from './pages/Share/ShareDetail';
 import TeatimeDetail from './pages/Teatime/TeatimeDetail';
 import ShareWrite from './pages/Share/ShareWrite';
 import AccessPage from './pages/Login/AccessPage';
+import TeatimeWrite from './pages/Teatime/TeatimeWrite';
 
 // Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
 // 새로운 컴포넌트를 추가하려면 children에 등록해 주세요
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: 'teatimes',
         element: <Teatime />,
+      },
+      {
+        path: 'teatimes/write',
+        element: <TeatimeWrite />,
       },
       {
         path: 'teatimes/:boardId',
