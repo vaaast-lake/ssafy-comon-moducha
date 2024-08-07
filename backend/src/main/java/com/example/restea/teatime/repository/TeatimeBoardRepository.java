@@ -15,9 +15,7 @@ public interface TeatimeBoardRepository extends JpaRepository<TeatimeBoard, Inte
 
     Page<TeatimeBoard> findAllByActivatedAndUserId(boolean b, Integer userId, Pageable pageable);
 
-    Page<TeatimeBoard> findAllByActivated(boolean b, Pageable pageable);
-
     Long countByActivatedAndEndDateAfter(boolean b, Object o);
 
-    Page<TeatimeBoard> findAllByActivatedAndEndDateAfter(boolean b, LocalDateTime now, PageRequest endDate);
+    Page<TeatimeBoard> findAllByActivatedAndEndDateAfter(boolean b, LocalDateTime now, PageRequest date);
 }

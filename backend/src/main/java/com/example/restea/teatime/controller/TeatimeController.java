@@ -29,7 +29,9 @@ public class TeatimeController {
      */
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getTeatimeBoardList(@Valid @ModelAttribute PaginationAndSortingDto dto) {
-        ResponseDTO<List<TeatimeListResponse>> result = teatimeService.getTeatimeBoardList(dto.getSort(), dto.getPage(),
+        ResponseDTO<List<TeatimeListResponse>> result = teatimeService.getTeatimeBoardList(
+                dto.getSort(),
+                dto.getPage(),
                 dto.getPerPage());
 
         return ResponseEntity.status(HttpStatus.OK).body(result);

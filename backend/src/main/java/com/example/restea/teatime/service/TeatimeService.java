@@ -27,7 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class TeatimeService {
 
-    private TeatimeBoardRepository teatimeBoardRepository;
+    private final TeatimeBoardRepository teatimeBoardRepository;
     private final UserRepository userRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
 
@@ -35,7 +35,7 @@ public class TeatimeService {
     public ResponseDTO<List<TeatimeListResponse>> getTeatimeBoardList(String sort, Integer page, Integer perPage) {
         Page<TeatimeBoard> teatimeBoards = getTeatimeBoards(sort, page, perPage); // 마감 기간이 지나지 않고 활성화된 게시글
         List<TeatimeListResponse> data = createResponseFormTeatimeBoards(teatimeBoards.getContent());
-        Long count = calculateCount(sort);
+        Long count = teatimeBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
 
         PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
 
@@ -45,7 +45,7 @@ public class TeatimeService {
     private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {
 
         Page<TeatimeBoard> teatimeBoards = switch (sort) {
-            case "latest" -> teatimeBoardRepository.findAllByActivated(true,
+            case "latest" -> teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
                     PageRequest.of(page - 1, perPage, Sort.by("createdDate").descending()));
             case "urgent" -> teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
                     PageRequest.of(page - 1, perPage, Sort.by("endDate").ascending()));
@@ -66,13 +66,5 @@ public class TeatimeService {
             data.add(TeatimeListResponse.of(teatimeBoard, participants));
         });
         return data;
-    }
-
-    private Long calculateCount(String sort) {
-        return switch (sort) {
-            case "latest" -> teatimeBoardRepository.countByActivated(true);
-            case "urgent" -> teatimeBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
-        };
     }
 }
