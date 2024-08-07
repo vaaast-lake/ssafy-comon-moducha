@@ -1,28 +1,35 @@
 import axios from 'axios';
-import { GroupedTracks } from '../../../types/WebRTCType';
+import { GroupedTracks, TrackInfo } from '../../../types/WebRTCType';
 import RoomAudio from './RoomAudio';
 import RoomVideo from './RoomVideo';
 import useConfigureUrls from '../../../hooks/useConfigureUrls';
 import { GoUnmute } from 'react-icons/go';
 import { IoVideocamOutline } from 'react-icons/io5';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface RoomRemoteTrackProps {
   remoteTracks: GroupedTracks;
 }
 
-export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) {
+type RemoteGroup = [string, {
+  video?: TrackInfo | undefined;
+  audio?: TrackInfo | undefined;
+} | null]
+
+export default function RoomRemoteTrack({
+  remoteTracks,
+}: RoomRemoteTrackProps) {
   const [showFirstGroup, setShowFirstGroup] = useState<boolean>(true);
+  const [currentGroup, setCurrentGroup] = useState<RemoteGroup[]>([]);
   const { APPLICATION_SERVER_URL } = useConfigureUrls();
 
-  const remoteTrackArray = useMemo(
-    () => Object.entries(remoteTracks),
-    [remoteTracks]
-  );
-  const firstGroup = remoteTrackArray.slice(0, 3);
-  const secondGroup = remoteTrackArray.slice(-3);
-  const currentGroup = showFirstGroup ? firstGroup : secondGroup;
+  useEffect(() => {
+    const remoteTrackArray = Object.entries(remoteTracks);
+    const firstGroup = remoteTrackArray.slice(0, 3);
+    const secondGroup = remoteTrackArray.slice(-3);
+    setCurrentGroup(showFirstGroup ? firstGroup : secondGroup);
+  }, [remoteTracks, showFirstGroup]);
 
   const handleMuteAudioRemoteUser = (
     participantIdentity: string,
@@ -89,7 +96,7 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
 
   const toggleGroup = (isFirst: boolean) => {
     setShowFirstGroup(() => isFirst);
-  }
+  };
 
   return (
     <div
@@ -198,4 +205,4 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
       </div>
     </div>
   );
-};
+}

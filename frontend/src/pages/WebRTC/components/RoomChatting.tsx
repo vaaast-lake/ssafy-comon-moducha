@@ -44,7 +44,7 @@ const RoomChatting = ({
         grid
         col-span-3
         grid-rows-12
-        h-[calc(100vh-220px)]
+        h-[calc(100vh-200px)]
       "
     >
       <div
