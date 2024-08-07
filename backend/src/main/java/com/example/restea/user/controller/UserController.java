@@ -82,4 +82,19 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(teatimeBoardList);
     }
+
+    @GetMapping("/mypage/participated-shares")
+    public ResponseEntity<ResponseDTO<?>> getParticipatedShareBoardList(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        ResponseDTO<List<ShareListResponse>> shareBoardList =
+                userMyPageShareService.getParticipatedShareBoardList(customOAuth2User.getUserId(),
+                        dto.getSort(),
+                        dto.getPage(),
+                        dto.getPerPage());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(shareBoardList);
+    }
 }
