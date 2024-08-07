@@ -6,12 +6,12 @@ import static com.example.restea.oauth2.enums.ReissueStatus.REFRESH_NULL;
 import static com.example.restea.oauth2.enums.TokenType.ACCESS;
 import static com.example.restea.oauth2.enums.TokenType.BEARER;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
-import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.oauth2.jwt.JWTUtil;
-import com.example.restea.user.entity.User;
-import com.example.restea.user.repository.UserRepository;
+import com.example.restea.oauth2.repository.RefreshTokenRepository;
+import com.example.restea.oauth2.util.CookieMethods;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class ReissueService {
 
-    private final JWTUtil jwtUtil;
-    private final UserRepository userRepository;
-
     private static final Long MS_TO_S = 1000L;
+    private final JWTUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final CookieMethods cookieMethods;
 
-    public void validateToken(String refreshToken) {
+    public void validateToken(String refreshToken, HttpServletResponse response) {
         // 토큰 존재 여부 확인
         if (isTokenNull(refreshToken)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, REFRESH_NULL.getMessage());
@@ -34,6 +34,8 @@ public class ReissueService {
 
         // 토큰 만료 여부 확인
         if (isTokenExpired(refreshToken)) {
+            refreshTokenRepository.revokeByValue(refreshToken); // Refresh Token revoke 처리
+            cookieMethods.clearRefreshTokenCookie(response); // 쿠키에서 Refresh Token 삭제
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, REFRESH_EXPIRED.getMessage());
         }
 
@@ -75,11 +77,10 @@ public class ReissueService {
     }
 
     // RefreshToken이 존재하는지 확인
-    public void checkRefresh(Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+    public void checkRefresh(String refreshToken) {
+        boolean isExist = refreshTokenRepository.existsByValue(refreshToken);
 
-        if (user.getRefreshToken() == null) { // User의 RefreshToken이 없으면 예외 발생
+        if (!isExist) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, REFRESH_INVALID.getMessage());
         }
     }

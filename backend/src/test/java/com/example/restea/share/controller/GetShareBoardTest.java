@@ -107,6 +107,7 @@ public class GetShareBoardTest {
                 .andExpect(jsonPath("$.data.title").value(createdShareBoard.getTitle()))
                 .andExpect(jsonPath("$.data.content").value(createdShareBoard.getContent()))
                 .andExpect(jsonPath("$.data.maxParticipants").value(createdShareBoard.getMaxParticipants()))
+                .andExpect(jsonPath("$.data.userId").value(user.getId()))
 //        저장하면서 형식이 약간 수정해서 완벽하게 일치하기 어렵다.
 //        .andExpect(jsonPath("$.data.endDate").value(createdShareBoard.getEndDate().toString().substring(0, 26)))
                 .andExpect(jsonPath("$.data.viewCount").value(1))
@@ -145,6 +146,7 @@ public class GetShareBoardTest {
                 .andExpect(jsonPath("$.data.title").value(createdShareBoard.getTitle()))
                 .andExpect(jsonPath("$.data.content").value(createdShareBoard.getContent()))
                 .andExpect(jsonPath("$.data.maxParticipants").value(createdShareBoard.getMaxParticipants()))
+                .andExpect(jsonPath("$.data.userId").value(user.getId()))
 //        저장하면서 형식이 약간 수정해서 완벽하게 일치하기 어렵다.
 //        .andExpect(jsonPath("$.data.endDate").value(createdShareBoard.getEndDate().toString().substring(0, 26)))
                 .andExpect(jsonPath("$.data.viewCount").value(1))

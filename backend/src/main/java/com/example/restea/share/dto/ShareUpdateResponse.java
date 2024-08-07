@@ -1,5 +1,6 @@
 package com.example.restea.share.dto;
 
+import com.example.restea.share.entity.ShareBoard;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,20 @@ public class ShareUpdateResponse {
     private final Integer maxParticipants;
     private final Integer participants;
     private final Integer viewCount;
+
+    public static ShareUpdateResponse of(ShareBoard shareBoard, Integer participants) {
+        return ShareUpdateResponse.builder()
+                .boardId(shareBoard.getId())
+                .title(shareBoard.getTitle())
+                .content(shareBoard.getContent())
+                .createdDate(shareBoard.getCreatedDate())
+                .lastUpdated(shareBoard.getLastUpdated())
+                .endDate(shareBoard.getEndDate())
+                .maxParticipants(shareBoard.getMaxParticipants())
+                .participants(participants)
+                .viewCount(shareBoard.getViewCount())
+                .build();
+    }
 
     @Builder
     public ShareUpdateResponse(Integer boardId, String title, String content,

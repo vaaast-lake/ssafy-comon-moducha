@@ -2,10 +2,10 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import TextEditor from '../../utils/TextEditor/TextEditor';
-import testImageList from '../../constants/uploadImageTest';
+// import testImageList from '../../constants/uploadImageTest';
 // import ArticleImageUpload from './ArticleImageUpload';
-import { ImageList } from '../../types/ArticleType';
-import apiAxios from '../../api/axiosInstance';
+// import { ImageList } from '../../types/ArticleType';
+import axiosInstance from '../../api/axiosInstance';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import { BoardType } from '../../types/BoardType';
 
@@ -13,7 +13,8 @@ const dayJsNow = (time?: string) => dayjs(time).format('YYYY-MM-DDTHH:mm');
 
 const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
   const [pickedDate, setPickedDate] = useState<string>(dayJsNow());
-  const [imageList, setImageList] = useState<ImageList>(testImageList());
+  const [broadcastDate, setBroadcastDate] = useState<string>(dayJsNow());
+  // const [imageList, setImageList] = useState<ImageList>(testImageList());
   const [content, setContent] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -26,14 +27,17 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
     }
     const formData = new FormData(event.currentTarget);
     const inputData = {
-      title: formData.get('title') as string,
-      endDate: (formData.get('endDate') as string) + 'Z',
-      maxParticipants: formData.get('maxParticipants') as string,
+      title: formData.get('title'),
+      endDate: formData.get('endDate') + 'Z',
+      maxParticipants: formData.get('maxParticipants'),
+      ...(boardType === 'teatimes' && {
+        broadcastDate: formData.get('broadcastDate') + 'Z',
+      }),
       content,
     };
 
     try {
-      const response = await apiAxios.post(`/${boardType}`, inputData);
+      const response = await axiosInstance.post(`/${boardType}`, inputData);
       const boardId = response.data.data.boardId;
       navigate(`/${boardType}/${boardId}`);
     } catch (error) {
@@ -47,6 +51,12 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
       <Header />
       {/* <ArticleImageUpload imageList={imageList} /> */}
       <DateInput pickedDate={pickedDate} setPickedDate={setPickedDate} />
+      {boardType === 'teatimes' && (
+        <BroadcastInput
+          broadcastDate={broadcastDate}
+          setBroadcastDate={setBroadcastDate}
+        />
+      )}
       <ParticipantsInput />
       <TextEditor setInput={setContent} />
     </form>
@@ -101,6 +111,30 @@ const DateInput = ({ pickedDate, setPickedDate }: DateInputProps) => (
   </label>
 );
 
+type BroadcastProps = {
+  broadcastDate: string;
+  setBroadcastDate: (date: string) => void;
+};
+
+const BroadcastInput = ({
+  broadcastDate,
+  setBroadcastDate,
+}: BroadcastProps) => (
+  <label className="input input-bordered w-full md:w-1/2 flex items-center gap-2">
+    <span className="pr-2 border-r-2">방송</span>
+    <input
+      className="grow w-4"
+      type="datetime-local"
+      name="broadcastDate"
+      value={broadcastDate}
+      onChange={(e) => setBroadcastDate(e.target.value)}
+      min={dayJsNow()}
+      step={1}
+      required
+    />
+  </label>
+);
+
 const ParticipantsInput = () => (
   <label className="input input-bordered w-full md:w-1/2 flex items-center gap-2">
     <span className="pr-2 border-r-2">인원</span>
@@ -109,6 +143,7 @@ const ParticipantsInput = () => (
       type="number"
       name="maxParticipants"
       min={1}
+      max={100}
       required
     />
   </label>

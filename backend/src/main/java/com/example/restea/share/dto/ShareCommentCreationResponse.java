@@ -7,24 +7,18 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ShareCommentListResponse {
+public class ShareCommentCreationResponse {
     private final Integer commentId;
     private final Integer boardId;
     private final String content;
     private final LocalDateTime createdDate;
-    private final Integer userId;
-    private final String nickname;
-    private final Integer replyCount;
 
-    public static ShareCommentListResponse of(ShareComment shareComment, Integer replyCount) {
-        return ShareCommentListResponse.builder()
+    public static ShareCommentCreationResponse of(ShareComment shareComment) {
+        return ShareCommentCreationResponse.builder()
                 .commentId(shareComment.getId())
                 .boardId(shareComment.getShareBoard().getId())
-                .content(shareComment.getExposedContent())
+                .content(shareComment.getContent())
                 .createdDate(shareComment.getCreatedDate())
-                .userId(shareComment.getUser().getId())
-                .nickname(shareComment.getExposedNickName())
-                .replyCount(replyCount)
                 .build();
     }
 }

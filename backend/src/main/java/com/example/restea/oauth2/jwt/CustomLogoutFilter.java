@@ -3,6 +3,7 @@ package com.example.restea.oauth2.jwt;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
+import com.example.restea.oauth2.util.CookieMethods;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -29,6 +30,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
     private final JWTUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
+    private final CookieMethods cookieMethods;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -97,7 +99,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         refreshTokenRepository.revokeByValue(refreshToken); // refresh Token revoke 처리
 
         // 쿠키 삭제
-        clearRefreshTokenCookie(response);
+        cookieMethods.clearRefreshTokenCookie(response);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
@@ -116,13 +118,5 @@ public class CustomLogoutFilter extends GenericFilterBean {
         }
 
         return optionalUser.get();
-    }
-
-    private void clearRefreshTokenCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(REFRESH.getType(), null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        response.addCookie(cookie);
     }
 }

@@ -11,7 +11,7 @@ const TeatimeWrite = () => {
             <span className="text-disabled">티타임 글쓰기</span>
           </TitleCard>
           <hr />
-          <ArticleWrite boardType="shares" />
+          <ArticleWrite boardType="teatimes" />
         </main>
         <aside className="hidden lg:flex col-span-3"></aside>
       </div>

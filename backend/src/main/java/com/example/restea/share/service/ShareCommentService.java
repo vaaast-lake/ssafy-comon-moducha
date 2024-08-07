@@ -1,16 +1,30 @@
 package com.example.restea.share.service;
 
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_FOUND;
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_USER_NOT_ACTIVATED;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_ACTIVATED;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_FOUND;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_WRITER;
+import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NO_CONTENT;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
+
 import com.example.restea.common.dto.PaginationDTO;
+import com.example.restea.common.dto.ResponseDTO;
+import com.example.restea.share.dto.ShareCommentCreationRequest;
+import com.example.restea.share.dto.ShareCommentCreationResponse;
+import com.example.restea.share.dto.ShareCommentDeleteResponse;
 import com.example.restea.share.dto.ShareCommentListResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
 import com.example.restea.share.repository.ShareBoardRepository;
 import com.example.restea.share.repository.ShareCommentRepository;
 import com.example.restea.share.repository.ShareReplyRepository;
+import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -27,9 +41,11 @@ public class ShareCommentService {
     private final UserRepository userRepository;
     private final ShareReplyRepository shareReplyRepository;
 
-    public Map<String, Object> getShareCommentList(Integer shareBoardId, Integer page, Integer perPage) {
+    public ResponseDTO<List<ShareCommentListResponse>> getShareCommentList(Integer shareBoardId, Integer page,
+                                                                           Integer perPage) {
         ShareBoard shareBoard = shareBoardRepository.findById(shareBoardId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found"));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_BOARD_NOT_FOUND.getMessage()));
 
         // data
         Page<ShareComment> shareComments = getShareComments(shareBoard, page, perPage);
@@ -37,13 +53,62 @@ public class ShareCommentService {
         Long count = shareCommentRepository.countAllByShareBoard(shareBoard);
 
         // pagination info
-        PaginationDTO pagination = PaginationDTO.builder()
-                .total((count.intValue() - 1) / perPage + 1)
-                .page(page)
-                .perPage(perPage)
+        PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
+
+        return ResponseDTO.of(data, pagination);
+    }
+
+    @Transactional
+    public ShareCommentCreationResponse createShareComment(ShareCommentCreationRequest request, Integer shareBoardId,
+                                                           Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+
+        ShareBoard shareBoard = shareBoardRepository.findByIdAndActivated(shareBoardId, true)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_NOT_FOUND.getMessage()));
+
+        if (!shareBoard.getUser().getActivated()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_USER_NOT_ACTIVATED.getMessage());
+        }
+
+        ShareComment shareComment = ShareComment.builder()
+                .user(user)
+                .content(request.getContent())
+                .shareBoard(shareBoard)
                 .build();
 
-        return Map.of("data", data, "pagination", pagination);
+        shareCommentRepository.save(shareComment);
+
+        return ShareCommentCreationResponse.of(shareComment);
+    }
+
+    @Transactional
+    public ShareCommentDeleteResponse deactivateShareComment(Integer shareCommentId, Integer userId) {
+
+        ShareComment shareComment = getActivatedComment(shareCommentId);
+
+        checkAuthorized(shareComment, userId);
+
+        shareComment.deactivate();
+
+        return ShareCommentDeleteResponse.from(shareCommentId);
+    }
+
+    private @NotNull ShareComment getActivatedComment(Integer shareCommentId) {
+        ShareComment shareComment = shareCommentRepository.findById(shareCommentId)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NOT_FOUND.getMessage()));
+        if (!shareComment.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NOT_ACTIVATED.getMessage());
+        }
+        return shareComment;
+    }
+
+    private void checkAuthorized(ShareComment shareComment, Integer userId) {
+        if (!Objects.equals(shareComment.getUser().getId(), userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, SHARE_COMMENT_NOT_WRITER.getMessage());
+        }
     }
 
     private @NotNull Page<ShareComment> getShareComments(ShareBoard shareBoard, Integer page, Integer perPage) {
@@ -51,24 +116,18 @@ public class ShareCommentService {
         Page<ShareComment> shareComments = shareCommentRepository.findAllByShareBoard(shareBoard,
                 PageRequest.of(page - 1, perPage));
         if (shareComments.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoardComment not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NO_CONTENT.getMessage());
         }
         return shareComments;
     }
 
     private List<ShareCommentListResponse> createResponseFormShareComments(List<ShareComment> shareComments) {
         List<ShareCommentListResponse> data = new ArrayList<>();
-        for (ShareComment shareComment : shareComments) {
-            data.add(ShareCommentListResponse.builder()
-                    .commentId(shareComment.getId())
-                    .boardId(shareComment.getShareBoard().getId())
-                    .content(shareComment.getExposedContent())
-                    .createdDate(shareComment.getCreatedDate())
-                    .userId(shareComment.getUser().getId())
-                    .nickname(shareComment.getExposedNickName())
-                    .replyCount(shareReplyRepository.countByShareComment(shareComment).intValue())
-                    .build());
-        }
+
+        shareComments.forEach(shareComment -> {
+            Integer replyCount = shareReplyRepository.countByShareComment(shareComment).intValue();
+            data.add(ShareCommentListResponse.of(shareComment, replyCount));
+        });
         return data;
     }
 }
