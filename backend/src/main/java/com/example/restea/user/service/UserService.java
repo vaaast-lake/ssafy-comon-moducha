@@ -46,9 +46,18 @@ public class UserService {
     private final JWTUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
     private final CookieMethods cookieMethods;
+    private final RestTemplate restTemplate;
 
     @Transactional
-    public void withdrawUser(Integer userId) {
+    public String withdrawUser(Integer userId) {
+        User user = findActiveUser(userId);
+        String authToken = user.getAuthToken().getValue();
+        performUserDeactivation(user); // 삭제, 비활성화, revoke
+
+        return authToken;
+    }
+
+    private @NotNull User findActiveUser(Integer userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
 
@@ -56,8 +65,11 @@ public class UserService {
         if (!user.getActivated()) {
             throw new IllegalArgumentException(USER_ALREADY_WITHDRAWN.getMessage());
         }
+        return user;
+    }
 
-        deleteRecords(user);
+    private void performUserDeactivation(User user) {
+        deleteRecords(user); // 기록 삭제
         deleteParticipants(user); // 참여기록 clear 및 삭제
         revokeRefreshToken(user); // RefreshToken를 지운 후 Revoke 처리
         deleteAuthToken(user); // AuthToken을 지운 후 삭제

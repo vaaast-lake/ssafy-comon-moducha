@@ -46,8 +46,9 @@ public class UserController {
      */
     @PatchMapping("/withdraw")
     public ResponseEntity<Void> withdraw(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
-        userService.withdrawUser(customOAuth2User.getUserId());
-
+        String authToken = userService.withdrawUser(customOAuth2User.getUserId());
+        userService.revokeGoogleAuth(authToken);
+        
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
