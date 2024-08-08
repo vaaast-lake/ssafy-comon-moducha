@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { Comment } from '../../types/CommentType';
 import CommentListItem from './CommentListItem';
 import { fetchCommentList } from '../../api/fetchComment';
-import mockCommentList from '../../constants/shareCommentResponseTest.json';
 import { BoardType } from '../../types/BoardType';
 import CommentWrite from './CommentWrite';
+import useAuthStore from '../../stores/authStore';
 
 interface Board {
   boardType: BoardType;
@@ -12,19 +12,15 @@ interface Board {
 }
 
 const CommentList = ({ boardType, boardId }: Board) => {
-  const defaultParams = {
+  const [commentList, setCommentList] = useState<Comment[]>([]);
+  const [fetchParams, setFetchParams] = useState({
     boardType,
     boardId,
     page: 1,
     perPage: 10,
-  };
-
-  const [hasComments, setHasComments] = useState(true);
-  const [commentList, setCommentList] = useState<Comment[]>(
-    mockCommentList.data
-  );
-  const [fetchParams, setFetchParams] = useState(defaultParams);
+  });
   const sentinel = useRef(null);
+  const currentUserId = useAuthStore((state) => state.currentUserId);
 
   useEffect(() => {
     fetchCommentList(fetchParams)
@@ -32,9 +28,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
         setCommentList(res.data.data);
       })
       .catch((err) => {
-        if (err.response.status === 404) {
-          setHasComments(false);
-        }
+        console.log(err.message);
       });
   }, [fetchParams]);
 
@@ -44,18 +38,15 @@ const CommentList = ({ boardType, boardId }: Board) => {
         <h1 className="m-2 text-xl font-bold">댓글</h1>
         <hr className="border border-gray-300" />
       </header>
-      <CommentWrite
-        {...{ boardType, boardId, hasComments, setHasComments, setCommentList }}
-      />
+      <CommentWrite {...{ boardType, boardId, setCommentList }} />
       <hr />
       <main>
-        {hasComments && (
+        {!!commentList.length && (
           <ul>
             {commentList.map((el: Comment) => (
               <CommentListItem
                 key={el.commentId}
-                boardType={boardType}
-                commentItem={el}
+                {...{ ...el, type: 'comment', boardType, currentUserId, setCommentList }}
               />
             ))}
           </ul>

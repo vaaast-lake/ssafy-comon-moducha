@@ -21,7 +21,7 @@ const ArticleContent = ({
   const navigate = useNavigate();
   const handleDelete = () => {
     axiosInstance
-      .patch(`/${boardType}/deativated-${boardType}/${boardId}`)
+      .patch(`/${boardType}/deactivated-${boardType}/${boardId}`)
       .then(() => {
         navigate(`/${boardType}`);
       });

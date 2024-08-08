@@ -66,9 +66,8 @@ axiosInstance.interceptors.response.use(
         logoutLogic();
         return Promise.reject(refreshError);
       }
-      // 401 error response 이후, 토큰 갱신 뒤 재요청
-      return Promise.reject(error);
     }
+    return Promise.reject(error);
   }
 );
 

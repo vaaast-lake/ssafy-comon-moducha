@@ -4,27 +4,28 @@ import CommentListItem from './CommentListItem';
 import { fetchReplyList } from '../../api/fetchComment';
 import { BoardType } from '../../types/BoardType';
 
-interface CommentInfo {
+interface ReplyType {
+  boardType: BoardType;
   boardId?: number;
   commentId: number;
   replyCount?: number;
+  currentUserId: string;
 }
 
-const CommentReply = (prop: {
-  boardType: BoardType;
-  commentInfo: CommentInfo;
-}) => {
-  const { boardId, commentId } = prop.commentInfo;
-  const defaultParams = {
-    boardType: prop.boardType,
+const CommentReply = ({
+  boardType,
+  commentId,
+  boardId,
+  currentUserId,
+}: ReplyType) => {
+  const [replyList, setReplyList] = useState(mockReply.data);
+  const [fetchParams, setFetchParams] = useState({
+    boardType: boardType,
     boardId,
     commentId,
     page: 1,
     perPage: 10,
-  };
-
-  const [fetchParams, setFetchParams] = useState(defaultParams);
-  const [replyList, setReplyList] = useState(mockReply.data);
+  });
   useEffect(() => {
     // 재귀호출된 경우 fetch 방지
     fetchReplyList(fetchParams).then((res) => setReplyList(res.data));
@@ -39,7 +40,9 @@ const CommentReply = (prop: {
             </div>
             <div className="col-span-11">
               <hr />
-              <CommentListItem boardType={prop.boardType} commentItem={el} />
+              <CommentListItem
+                {...{ ...el, type: 'reply', boardType, currentUserId }}
+              />
             </div>
           </ul>
         ))}
