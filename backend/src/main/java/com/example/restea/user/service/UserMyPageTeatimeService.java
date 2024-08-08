@@ -6,6 +6,7 @@ import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
 import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.teatime.repository.TeatimeParticipantRepository;
+import com.example.restea.user.repository.ParticipatedTeatimeBoardRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class UserMyPageTeatimeService {
 
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
+    private final ParticipatedTeatimeBoardRepository participatedTeatimeBoardRepository;
 
     /**
      * 내가 작성한 TeatimeBoardList를 최신순으로 불러오는 메소드
@@ -87,5 +89,60 @@ public class UserMyPageTeatimeService {
      */
     private Long calculateCount() {
         return teatimeBoardRepository.countByActivated(true);
+    }
+
+    @Transactional
+    public ResponseDTO<List<TeatimeListResponse>> getParticipatedTeatimeBoardList(Integer userId, String sort,
+                                                                                  Integer page, Integer perPage) {
+        if (isInvalidSort(sort)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
+        }
+
+        List<TeatimeBoard> teatimeBoards = fetchActiveParticipatedTeatimeBoards(userId, sort, page, perPage);
+
+        // teatimeboard를 teatimelistresponse로
+        List<TeatimeListResponse> data = createResponseFormTeatimeBoards(teatimeBoards);
+        Long count = calculateParticipatedCount(userId, sort); // 조건에 해당하는 전체 teatimeboard의 개수
+
+        PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
+
+        return ResponseDTO.of(data, pagination);
+    }
+
+    /**
+     * @param userId  userId
+     * @param sort    정렬 정보
+     * @param page    몇번쨰 페이지인지?
+     * @param perPage 넘겨줄 데이터 개수
+     * @return TeatimeBoard List
+     */
+    private @NotNull List<TeatimeBoard> fetchActiveParticipatedTeatimeBoards(Integer userId, String sort, Integer page,
+                                                                             Integer perPage) {
+        List<TeatimeBoard> teatimeBoards = participatedTeatimeBoardRepository.findParticipatedTeatimeBoardsBySort(
+                userId, sort, page, perPage, true);
+
+        if (teatimeBoards.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+        return teatimeBoards;
+    }
+
+    /**
+     * ongoing, before이 아닐 경우 true 반환
+     *
+     * @param sort 정렬 정보
+     * @return boolean
+     */
+    private boolean isInvalidSort(String sort) {
+        return !"ongoing".equals(sort) && !"before".equals(sort);
+    }
+
+    /**
+     * @param userId userId
+     * @param sort   정렬 정보
+     * @return 참여 teatimeboard 개수
+     */
+    private Long calculateParticipatedCount(Integer userId, String sort) {
+        return participatedTeatimeBoardRepository.countParticipatedTeatimeBoardsBySort(userId, sort, true);
     }
 }
