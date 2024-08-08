@@ -1,10 +1,9 @@
 import { ShareDetailItem } from '../../types/ShareType';
-import { EVDown, EVDownItem, EVDownMenu } from '../Dropdown/EllipsisDropdown';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import useAuthStore from '../../stores/authStore';
 import axiosInstance from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { BoardType } from '../../types/BoardType';
+import DropdownMenu from './ArticleContentDropdown';
 interface ArticleProp extends ShareDetailItem {
   children?: React.ReactNode;
   boardType: BoardType;
@@ -26,7 +25,9 @@ const ArticleContent = ({
         navigate(`/${boardType}`);
       });
   };
-  const handleUpdate = () => {};
+  const handleUpdate = () => {
+    navigate(`update`);
+  };
 
   return (
     <div className="p-4 shadow border flex flex-col gap-4">
@@ -40,7 +41,6 @@ const ArticleContent = ({
         )}
       </header>
       <article>
-        {/* <ArticleCarousel banners={testImageList} /> */}
         {/* content -> HTML 태그로 렌더링 */}
         <p dangerouslySetInnerHTML={{ __html: content }} className="my-4"></p>
         <hr />
@@ -49,25 +49,5 @@ const ArticleContent = ({
     </div>
   );
 };
-
-interface Dropdown {
-  handleDelete: () => void;
-  handleUpdate: () => void;
-}
-
-const DropdownMenu = ({ handleDelete, handleUpdate }: Dropdown) => (
-  <EVDown>
-    <EVDownMenu className="w-24">
-      <EVDownItem onClick={handleUpdate} className="p-2">
-        <PencilIcon className="size-5" />
-        <span>수정</span>
-      </EVDownItem>
-      <EVDownItem onClick={handleDelete} className="p-2">
-        <TrashIcon className="size-5" />
-        삭제
-      </EVDownItem>
-    </EVDownMenu>
-  </EVDown>
-);
 
 export default ArticleContent;

@@ -54,7 +54,7 @@ const MyTeatimeCarousel = ({ myTeatimeList }: MyTeatimeCarouselProps) => {
           <ChevronRightIcon className="rounded-full bg-gray-200 size-12 p-3 text-gray-400" />
         </button>
       </div>
-      <div className="carousel w-full transition" ref={carouselRef}>
+      <div className="carousel w-full transition gap-4" ref={carouselRef}>
         {chunks.map((chunk, chunkIndex) => (
           <div
             key={chunkIndex}
