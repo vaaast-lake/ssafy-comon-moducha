@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   LocalVideoTrack,
+  Participant,
   ParticipantEvent,
   RemoteParticipant,
   RemoteTrack,
@@ -8,9 +9,10 @@ import {
   Room,
   RoomEvent,
   Track,
+  TrackPublication,
 } from 'livekit-client';
 import getOpenViduToken from '../../../api/getOpenViduToken';
-import { GroupedTracks, Message, trackKind } from '../../../types/WebRTCType';
+import { GroupedTracks, Message, TrackKind } from '../../../types/WebRTCType';
 
 interface JoinRoomProps {
   APPLICATION_SERVER_URL: string;
@@ -61,11 +63,12 @@ const JoinRoom = ({
             if (!newGroupedTracks[participant.identity])
               newGroupedTracks[participant.identity] = {};
 
-            newGroupedTracks[participant.identity]![
-              publication.kind as trackKind
+            newGroupedTracks[participant.identity][
+              publication.kind as TrackKind
             ] = {
               participantIdentity: participant.identity,
               trackPublication: publication,
+              isMute: publication.isMuted,
             };
 
             return newGroupedTracks;
@@ -106,11 +109,6 @@ const JoinRoom = ({
           if (publication.track?.source === Track.Source.ScreenShare) {
             setIsScreenSharing(true);
           }
-          // console.log('-----------------------');
-          // console.log('-----------------------');
-          // console.log(publication);
-          // console.log('-----------------------');
-          // console.log('-----------------------');
         }
       )
       .on(RoomEvent.LocalTrackUnpublished, (publication) => {
@@ -118,21 +116,22 @@ const JoinRoom = ({
           setIsScreenSharing(false);
         }
       })
-      .on(RoomEvent.TrackMuted, (publication, participant) => {
-        console.log('------Mute info------');
-        console.log('------Mute info------');
-        console.log(publication);
-        console.log(participant);
-        console.log('------Mute info------');
-        console.log('------Mute info------');
+      .on(
+        RoomEvent.TrackMuted, 
+        (
+          publication: TrackPublication, 
+          participant: Participant,
+        ) => {
+        if (participantName !== participant.identity) setRemoteTracks((remoteTracks) => setMuteInfo(remoteTracks, participant, publication))
       })
-      .on(RoomEvent.TrackUnmuted, (publication, participant) => {
-        console.log('------Mute info------');
-        console.log('------Mute info------');
-        console.log(publication);
-        console.log(participant);
-        console.log('------Mute info------');
-        console.log('------Mute info------');
+      .on(
+        RoomEvent.TrackUnmuted, 
+        (
+          publication: TrackPublication, 
+          participant: Participant,
+        ) => {
+        if (participantName !== participant.identity) setRemoteTracks((remoteTracks) => setMuteInfo(remoteTracks, participant, publication))
+        
       });
     // .on(ParticipantEvent, () => {
 
@@ -162,11 +161,6 @@ const JoinRoom = ({
           .videoTrack
       );
 
-      // console.log('-----------------');
-      // console.log('-----------------');
-      // console.log(room.localParticipant);
-      // console.log('-----------------');
-      // console.log('-----------------');
     } catch (error) {
       console.log(
         'There was an error connecting to the room:',
@@ -228,3 +222,17 @@ const JoinRoom = ({
 };
 
 export default JoinRoom;
+
+
+function setMuteInfo (
+  remoteTracks: GroupedTracks, 
+  participant: Participant, 
+  publication: TrackPublication,
+): GroupedTracks {
+  const newGroupedTracks = { ...remoteTracks }
+  newGroupedTracks[participant.identity][publication.kind as TrackKind] = {
+    ...newGroupedTracks[participant.identity][publication.kind as TrackKind],
+    isMute: publication.isMuted  
+  }
+  return newGroupedTracks;
+}
