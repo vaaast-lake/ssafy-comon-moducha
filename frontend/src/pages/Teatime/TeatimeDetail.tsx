@@ -2,16 +2,16 @@ import { useEffect, useState } from 'react';
 import { fetchArticleDetail } from '../../api/fetchArticle';
 import { useParams } from 'react-router-dom';
 import { TeatimeDetailItem } from '../../types/TeatimeType';
-import { mockDetail } from '../../constants/teatimeMock';
 import ArticleCard from '../../components/Article/ArticleCard';
 import ArticleContent from '../../components/Article/ArticleContent';
 import CommentList from '../../components/Comment/CommentList';
 import SideLayout from '../../components/Layout/SideLayout';
+import ArticleLoading from '../../components/Loading/ArticleLoading';
 
 const TeatimeDetail = () => {
   const { boardId } = useParams();
-  const [teatimeDetail, setsTeatimeDetail] = useState<TeatimeDetailItem>(
-    mockDetail.data
+  const [teatimeDetail, setsTeatimeDetail] = useState<TeatimeDetailItem | null>(
+    null
   );
 
   useEffect(() => {
@@ -23,6 +23,7 @@ const TeatimeDetail = () => {
   }, [boardId]);
   // router 파라미터가 누락된 경우
   if (!boardId) return null;
+  if (!teatimeDetail) return <ArticleLoading />;
   return (
     <div className="grid grid-cols-10">
       <SideLayout></SideLayout>
