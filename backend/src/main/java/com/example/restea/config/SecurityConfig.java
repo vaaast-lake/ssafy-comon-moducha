@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -35,12 +36,16 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final CookieMethods cookieMethods;
 
-    String[] whitelist = {
+    String[] whitelist_post = {
+            "/api/v1/reissue",
+            "/api/v1/livekit/webhook"
+    };
+    String[] whitelist_get = {
             "/",
             "/login/**",
-            "/api/v1/reissue",
             "/api/v1/login/oauth2/code/google",
-            "/api/v1/livekit/webhook"
+            "/api/v1/shares/**",
+            "/api/v1/teatimes/**"
     };
 
     @Value("${cors.url}")
@@ -117,8 +122,8 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(whitelist)
-                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, whitelist_post).permitAll()
+                        .requestMatchers(HttpMethod.GET, whitelist_get).permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
