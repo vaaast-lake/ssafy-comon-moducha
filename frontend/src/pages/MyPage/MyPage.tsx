@@ -8,7 +8,7 @@ import TitleCard from '../../components/Title/TitleCard';
 import { Navigate } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';
 
-const ProfilePage = () => {
+const MyPage = () => {
   const { isLoggedIn, currentUsername } = useAuthStore();
   if (!isLoggedIn) {
     return <Navigate to="/" />;
@@ -46,4 +46,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default MyPage;
