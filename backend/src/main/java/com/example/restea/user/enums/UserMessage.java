@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum UserMessage {
 
     USER_NOT_FOUND("유저 정보가 없습니다."),
-    USER_ALREADY_WITHDRAWN("이미 탈퇴한 유저입니다.");
+    USER_ALREADY_WITHDRAWN("이미 탈퇴한 유저입니다."),
+    USER_NOT_ACTIVATED("User not activated.");
 
     private final String message;
 }

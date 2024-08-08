@@ -2,7 +2,10 @@ package com.example.restea.teatime.service;
 
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_WRITER;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_INVALID_SORT;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_ACTIVATED;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.common.dto.PaginationDTO;
@@ -10,6 +13,8 @@ import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.teatime.dto.TeatimeCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCreationResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
+import com.example.restea.teatime.dto.TeatimeUpdateRequest;
+import com.example.restea.teatime.dto.TeatimeUpdateResponse;
 import com.example.restea.teatime.dto.TeatimeViewResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
 import com.example.restea.teatime.repository.TeatimeBoardRepository;
@@ -20,6 +25,7 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -68,6 +74,29 @@ public class TeatimeService {
         return TeatimeViewResponse.of(teatimeBoard, participants);
     }
 
+    @Transactional
+    public TeatimeUpdateResponse updateTeatimeBoard(Integer teatimeBoardId, TeatimeUpdateRequest request,
+                                                    Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
+
+        if (!user.getActivated()) {
+            throw new IllegalArgumentException(USER_NOT_ACTIVATED.getMessage());
+        }
+
+        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+
+        checkAuthorized(teatimeBoard, userId);
+
+        Integer participants = teatimeParticipantRepository.countByTeatimeBoard(teatimeBoard).intValue();
+        checkLessThanCurrentParticipants(request, participants);
+
+        // 업데이트
+        teatimeBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
+                request.getEndDate(), request.getBroadcastDate());
+        return TeatimeUpdateResponse.of(teatimeBoard, participants);
+    }
+
     private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {
 
         Page<TeatimeBoard> teatimeBoards = switch (sort) {
@@ -111,5 +140,20 @@ public class TeatimeService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_ACTIVATED.getMessage());
         }
         return teatimeBoard;
+    }
+
+    private void checkAuthorized(TeatimeBoard teatimeBoard, Integer userId) {
+        if (!Objects.equals(teatimeBoard.getUser().getId(), userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_NOT_WRITER.getMessage());
+        }
+    }
+
+    private void checkLessThanCurrentParticipants(TeatimeUpdateRequest request, Integer participants) {
+        boolean isLessThanCurrentParticipants =
+                request.getMaxParticipants() < participants;
+        if (isLessThanCurrentParticipants) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS.getMessage());
+        }
     }
 }
