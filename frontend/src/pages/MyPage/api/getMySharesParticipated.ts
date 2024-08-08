@@ -1,3 +1,4 @@
+//getMySharesParticipated.ts
 import axiosInstance from '../../../api/axiosInstance';
 import axios from 'axios';
 import useAuthStore from '../../../stores/authStore';
@@ -90,3 +91,5 @@ export const getParticipatedShares = async (
     throw error; // 다시 throw하여 호출하는 쪽에서 에러를 처리할 수 있게 함
   }
 };
+
+export default getParticipatedShares;
