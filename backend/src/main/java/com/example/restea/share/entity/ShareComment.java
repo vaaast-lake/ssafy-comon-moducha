@@ -63,7 +63,7 @@ public class ShareComment extends BaseTimeEntity {
     }
 
     // 보여질 닉네임을 반환하는 메소드
-    public String getExposedNickName() {
+    public String getExposedNickname() {
         return activated ? user.getExposedNickname() : "";
     }
 

@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ShareCommentDeleteResponse {
-    private final Integer shareCommentId;
+    private final Integer commentId;
 
-    public static ShareCommentDeleteResponse from(Integer shareCommentId) {
+    public static ShareCommentDeleteResponse from(Integer commentId) {
         return ShareCommentDeleteResponse.builder()
-                .shareCommentId(shareCommentId)
+                .commentId(commentId)
                 .build();
     }
 }

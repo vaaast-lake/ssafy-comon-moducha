@@ -35,7 +35,7 @@ public class TeatimeService {
     public ResponseDTO<List<TeatimeListResponse>> getTeatimeBoardList(String sort, Integer page, Integer perPage) {
         Page<TeatimeBoard> teatimeBoards = getTeatimeBoards(sort, page, perPage); // 마감 기간이 지나지 않고 활성화된 게시글
         List<TeatimeListResponse> data = createResponseFormTeatimeBoards(teatimeBoards.getContent());
-        Long count = teatimeBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
+        Long count = calculateCount(sort);
 
         PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
 
@@ -45,7 +45,7 @@ public class TeatimeService {
     private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {
 
         Page<TeatimeBoard> teatimeBoards = switch (sort) {
-            case "latest" -> teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
+            case "latest" -> teatimeBoardRepository.findAllByActivated(true,
                     PageRequest.of(page - 1, perPage, Sort.by("createdDate").descending()));
             case "urgent" -> teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
                     PageRequest.of(page - 1, perPage, Sort.by("endDate").ascending()));
@@ -66,5 +66,14 @@ public class TeatimeService {
             data.add(TeatimeListResponse.of(teatimeBoard, participants));
         });
         return data;
+    }
+
+    private Long calculateCount(String sort) {
+        return switch (sort) {
+            case "latest" -> teatimeBoardRepository.countByActivated(true);
+            case "urgent" -> teatimeBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
+            default ->
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_INVALID_SORT.getMessage());
+        };
     }
 }

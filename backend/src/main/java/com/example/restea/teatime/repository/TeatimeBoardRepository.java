@@ -11,11 +11,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TeatimeBoardRepository extends JpaRepository<TeatimeBoard, Integer> {
 
+    // sort = latest
     Long countByActivated(boolean b);
 
-    Page<TeatimeBoard> findAllByActivatedAndUserId(boolean b, Integer userId, Pageable pageable);
+    Page<TeatimeBoard> findAllByActivated(boolean b, Pageable pageable);
 
+    // sort = urgent
     Long countByActivatedAndEndDateAfter(boolean b, Object o);
 
-    Page<TeatimeBoard> findAllByActivatedAndEndDateAfter(boolean b, LocalDateTime now, PageRequest date);
+    Page<TeatimeBoard> findAllByActivatedAndEndDateAfter(boolean b, LocalDateTime now, PageRequest endDate);
+
+    Page<TeatimeBoard> findAllByActivatedAndUserId(boolean b, Integer userId, Pageable pageable);
 }

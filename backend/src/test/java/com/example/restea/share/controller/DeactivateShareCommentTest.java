@@ -105,7 +105,7 @@ public class DeactivateShareCommentTest {
                 .user(user)
                 .build());
 
-        final String url = "/api/v1/shares/" + shareBoard.getId() + "/comments/" + shareComment.getId();
+        final String url = "/api/v1/shares/" + shareBoard.getId() + "/deactivated-comments/" + shareComment.getId();
 
         // when
         ResultActions result = mockMvc.perform(patch(url)
@@ -124,7 +124,7 @@ public class DeactivateShareCommentTest {
     public void deactivateShareComment_NotFound_Fail() throws Exception {
 
         // given
-        String url = "/api/v1/shares/1/comments/999";
+        String url = "/api/v1/shares/1/deactivated-comments/999";
 
         // when
         ResultActions result = mockMvc.perform(patch(url)
@@ -163,7 +163,7 @@ public class DeactivateShareCommentTest {
         deactivatedShareComment.deactivate();
         shareCommentRepository.save(deactivatedShareComment);
 
-        final String url = "/api/v1/shares/" + shareBoard.getId() + "/comments/" + shareComment.getId();
+        final String url = "/api/v1/shares/" + shareBoard.getId() + "/deactivated-comments/" + shareComment.getId();
 
         // when
         ResultActions result = mockMvc.perform(patch(url)
@@ -197,7 +197,7 @@ public class DeactivateShareCommentTest {
                 .user(user)
                 .build());
 
-        final String url = "/api/v1/shares/" + shareBoard.getId() + "/comments/" + shareComment.getId();
+        final String url = "/api/v1/shares/" + shareBoard.getId() + "/deactivated-comments/" + shareComment.getId();
 
         // when
         ResultActions result = mockMvc.perform(patch(url)

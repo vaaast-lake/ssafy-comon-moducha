@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ShareCommentListResponse {
+public class ShareCommentViewResponse {
     private final Integer commentId;
     private final Integer boardId;
     private final String content;
@@ -16,14 +16,14 @@ public class ShareCommentListResponse {
     private final String nickname;
     private final Integer replyCount;
 
-    public static ShareCommentListResponse of(ShareComment shareComment, Integer replyCount) {
-        return ShareCommentListResponse.builder()
+    public static ShareCommentViewResponse of(ShareComment shareComment, Integer replyCount) {
+        return ShareCommentViewResponse.builder()
                 .commentId(shareComment.getId())
                 .boardId(shareComment.getShareBoard().getId())
                 .content(shareComment.getExposedContent())
                 .createdDate(shareComment.getCreatedDate())
                 .userId(shareComment.getUser().getId())
-                .nickname(shareComment.getExposedNickName())
+                .nickname(shareComment.getExposedNickname())
                 .replyCount(replyCount)
                 .build();
     }
