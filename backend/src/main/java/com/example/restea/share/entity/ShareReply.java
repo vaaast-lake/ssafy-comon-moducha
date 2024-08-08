@@ -50,4 +50,16 @@ public class ShareReply extends BaseTimeEntity {
         this.shareComment = shareComment;
         this.user = user;
     }
+
+    public String getExposedContent() {
+        return activated ? content : "삭제된 댓글입니다.";
+    }
+
+    public String getExposedNickname() {
+        return activated ? user.getExposedNickname() : "";
+    }
+
+    public void deactivate() {
+        this.activated = false;
+    }
 }
