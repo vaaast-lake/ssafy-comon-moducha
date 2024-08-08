@@ -43,6 +43,13 @@ public class TeatimeController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    /**
+     * 티타임 게시글 작성
+     *
+     * @param request          title, content, endDate, broadcastDate, maxParticipants
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @return 작성한 글 정보를 포함하는 ResponseEntity 객체를 반환합니다. 티타임 게시글 작성에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
+     */
     @PostMapping
     public ResponseEntity<ResponseDTO<?>> createTeatimeBoard(
             @Valid @RequestBody TeatimeCreationRequest request,
