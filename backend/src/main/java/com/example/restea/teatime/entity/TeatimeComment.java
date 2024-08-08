@@ -56,8 +56,7 @@ public class TeatimeComment extends BaseTimeEntity {
         this.user = user;
     }
 
-    public void deactivateWithReplies() {
+    public void deactivate() {
         this.activated = false;
-        this.teatimeReplies.forEach(TeatimeReply::deactivate);
     }
 }

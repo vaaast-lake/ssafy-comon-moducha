@@ -18,6 +18,8 @@ import com.example.restea.teatime.dto.TeatimeUpdateRequest;
 import com.example.restea.teatime.dto.TeatimeUpdateResponse;
 import com.example.restea.teatime.dto.TeatimeViewResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
+import com.example.restea.teatime.entity.TeatimeComment;
+import com.example.restea.teatime.entity.TeatimeReply;
 import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.teatime.repository.TeatimeParticipantRepository;
 import com.example.restea.user.entity.User;
@@ -111,6 +113,16 @@ public class TeatimeService {
         TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
 
         checkAuthorized(teatimeBoard, userId);
+
+        List<TeatimeComment> teatimeComments = teatimeBoard.getTeatimeComments();
+        teatimeComments.forEach(teatimeComment -> {
+            if (teatimeComment.getActivated()) {
+                teatimeComment.deactivate();
+            }
+
+            List<TeatimeReply> teatimeReplies = teatimeComment.getTeatimeReplies();
+            teatimeReplies.forEach(TeatimeReply::deactivate);
+        });
 
         teatimeBoard.deactivate();
 
