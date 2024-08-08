@@ -29,7 +29,7 @@ public class TeatimeViewResponse {
                 .createdDate(teatimeBoard.getCreatedDate())
                 .lastUpdated(teatimeBoard.getLastUpdated())
                 .endDate(teatimeBoard.getEndDate())
-                .endDate(teatimeBoard.getBroadcastDate())
+                .broadcastDate(teatimeBoard.getBroadcastDate())
                 .maxParticipants(teatimeBoard.getMaxParticipants())
                 .participants(participants)
                 .viewCount(teatimeBoard.getViewCount())
