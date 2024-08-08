@@ -283,4 +283,8 @@ public class CreateShareCommentTest {
         assertThat(shareComments.size()).isEqualTo(0);
     }
 
+    // TODO : 댓글 생성 실패 - shareboard가 존재하지 않음
+    // TODO : 댓글 생성 실패 - 댓글 작성자가 탈퇴함
+    // TODO : 댓글 생성 실패 - 내용이 100자 초과
+
 }

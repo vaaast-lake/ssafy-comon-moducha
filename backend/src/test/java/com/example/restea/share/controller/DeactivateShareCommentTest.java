@@ -115,7 +115,7 @@ public class DeactivateShareCommentTest {
         // then
         result.andExpect(status().isOk());
         ShareComment deactivatedShareComment = shareCommentRepository.findById(shareComment.getId())
-                .orElseThrow(() -> new RuntimeException("테스트를 위한 게시글 생성 실패"));
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 댓글 생성 실패"));
         assertThat(deactivatedShareComment.getActivated()).isFalse();
     }
 
