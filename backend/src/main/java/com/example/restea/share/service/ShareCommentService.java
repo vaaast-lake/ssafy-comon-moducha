@@ -6,6 +6,7 @@ import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_N
 import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_FOUND;
 import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_WRITER;
 import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NO_CONTENT;
+import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.common.dto.PaginationDTO;
@@ -61,7 +62,11 @@ public class ShareCommentService {
     public ShareCommentCreationResponse createShareComment(String content, Integer shareBoardId,
                                                            Integer userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_NOT_FOUND.getMessage()));
+
+        if (!user.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_ALREADY_WITHDRAWN.getMessage());
+        }
 
         ShareBoard shareBoard = shareBoardRepository.findByIdAndActivated(shareBoardId, true)
                 .orElseThrow(
@@ -105,6 +110,11 @@ public class ShareCommentService {
     }
 
     private void checkAuthorized(ShareComment shareComment, Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+        if (!user.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_ALREADY_WITHDRAWN.getMessage());
+        }
         if (!Objects.equals(shareComment.getUser().getId(), userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, SHARE_COMMENT_NOT_WRITER.getMessage());
         }
