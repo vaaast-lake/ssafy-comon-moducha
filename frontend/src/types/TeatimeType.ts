@@ -1,7 +1,7 @@
 import { PaginationDTO } from './PaginationType';
 
 export interface TeatimeListItem {
-  userId: number;
+  userId: string;
   boardId: number;
   title: string;
   content: string;
