@@ -72,7 +72,7 @@ const RoomChatting = ({
         className="
           overflow-y-auto
           row-span-9
-          bg-slate-200
+          bg-gray-200
         "
       >
         {messages.map((msg, index) => (
@@ -80,7 +80,7 @@ const RoomChatting = ({
             key={index} 
             className={`
               px-1 w-full my-2 flex items-center
-              ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start'}
+              ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}
             `}
           >
             {msg.sender !== 'Me' && <strong className='pe-1'>{msg.sender}:</strong>} <span className='bg-white m-1 p-2 rounded-xl'>{msg.content}</span>

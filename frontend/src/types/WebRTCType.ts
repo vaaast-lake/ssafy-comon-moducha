@@ -1,10 +1,11 @@
 import { RemoteTrackPublication } from 'livekit-client';
 
-export type trackKind = 'video' | 'audio';
+export type TrackKind = 'video' | 'audio';
 
 export interface TrackInfo {
   participantIdentity: string;
   trackPublication: RemoteTrackPublication;
+  isMute: boolean;
 };
 
 export type Message = {
@@ -14,6 +15,6 @@ export type Message = {
 
 export interface GroupedTracks {
   [participantIdentity: string]: {
-    [key in trackKind]?: TrackInfo;
-  } | null;
+    [key in TrackKind]?: TrackInfo;
+  };
 };
