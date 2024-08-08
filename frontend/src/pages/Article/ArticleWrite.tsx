@@ -10,10 +10,15 @@ import dayJsNow from '../../utils/dayJsNow';
 import InputBroadcastDate from '../../components/Form/InputBroadcastDate';
 import InputParticipants from '../../components/Form/InputParticipants';
 import InputError from '../../components/Form/InputError';
+import dayjs from 'dayjs';
 
 const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
-  const [pickedDate, setPickedDate] = useState<string>(dayJsNow());
-  const [broadcastDate, setBroadcastDate] = useState<string>(dayJsNow());
+  const [pickedDate, setPickedDate] = useState<string>(
+    dayJsNow(dayjs().add(1, 'day').toString())
+  );
+  const [broadcastDate, setBroadcastDate] = useState<string>(
+    dayJsNow(dayjs().add(1, 'day').toString())
+  );
   const [content, setContent] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();

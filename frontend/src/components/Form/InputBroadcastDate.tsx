@@ -1,4 +1,5 @@
 import dayJsNow from '../../utils/dayJsNow';
+import dayjs from 'dayjs';
 
 type BroadcastProps = {
   broadcastDate: string;
@@ -17,7 +18,7 @@ const InputBroadcastDate = ({
       name="broadcastDate"
       value={broadcastDate}
       onChange={(e) => setBroadcastDate(e.target.value)}
-      min={dayJsNow()}
+      min={dayJsNow(dayjs().add(1, 'day').toString())}
       step={1}
       required
     />

@@ -1,3 +1,4 @@
+import useAuthStore from '../../stores/authStore';
 import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 const ArticleCard = ({
@@ -11,6 +12,7 @@ const ArticleCard = ({
 }: ArticleDetail) => {
   const shareHandler = () => {};
   const teatimeHandler = () => {};
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
       <figure
@@ -32,12 +34,14 @@ const ArticleCard = ({
           )}
         </div>
       </div>
-      <button
-        onClick={boardType === 'shares' ? shareHandler : teatimeHandler}
-        className="btn rounded bg-tea hover:bg-rose-400 text-white"
-      >
-        {boardType === 'shares' ? '나눔 참여하기' : '티타임 참여하기'}
-      </button>
+      {isLoggedIn && (
+        <button
+          onClick={boardType === 'shares' ? shareHandler : teatimeHandler}
+          className="btn rounded bg-tea hover:bg-rose-400 text-white"
+        >
+          {boardType === 'shares' ? '나눔 참여하기' : '티타임 참여하기'}
+        </button>
+      )}
     </div>
   );
 };
