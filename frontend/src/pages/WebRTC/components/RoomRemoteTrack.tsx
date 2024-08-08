@@ -17,11 +17,18 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
   const { APPLICATION_SERVER_URL } = useConfigureUrls();
 
   const remoteTrackArray = useMemo(
-    () => Object.entries(remoteTracks),
+    () => Object.entries(remoteTracks).filter(el => el[1]?.video?.trackPublication.source !== 'screen_share'),
     [remoteTracks]
   );
-  const firstGroup = remoteTrackArray.slice(0, 3);
-  const secondGroup = remoteTrackArray.slice(-3);
+
+  const { firstGroup, secondGroup } = useMemo(() => {
+    const first = remoteTrackArray.slice(0, 3);
+    const second = remoteTrackArray.slice(-3);
+    return { firstGroup: first, secondGroup: second };
+  }, [remoteTrackArray]);
+
+  // const firstGroup = remoteTrackArray.slice(0, 3);
+  // const secondGroup = remoteTrackArray.length > 3 ? remoteTrackArray.slice(-3) : [];
   const currentGroup = showFirstGroup ? firstGroup : secondGroup;
 
   const handleMuteAudioRemoteUser = (
@@ -109,7 +116,7 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
 
           return (
             <>
-              {tracks && (
+              {tracks  && (
                 <div
                   key={participantIdentity}
                   className="
