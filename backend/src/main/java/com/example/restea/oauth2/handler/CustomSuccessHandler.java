@@ -3,11 +3,14 @@ package com.example.restea.oauth2.handler;
 
 import static com.example.restea.oauth2.enums.TokenType.ACCESS;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.oauth2.jwt.JWTUtil;
 import com.example.restea.oauth2.service.RefreshTokenService;
 import com.example.restea.oauth2.util.CookieMethods;
+import com.example.restea.user.entity.User;
+import com.example.restea.user.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,16 +23,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 @RequiredArgsConstructor
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+    private static final Long MS_TO_S = 1000L;
     private final JWTUtil jwtUtil;
     private final CookieMethods cookieMethods;
     private final RefreshTokenService refreshTokenService;
-
-    private static final Long MS_TO_S = 1000L;
+    private final UserRepository userRepository;
 
     @Value("${app.redirect.uri}")
     private String appRedirectUri;
@@ -68,7 +72,10 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     }
 
     private void saveRefreshToken(Integer userId, String refreshToken) {
-        refreshTokenService.addRefreshToken(userId, refreshToken, REFRESH.getExpiration() * MS_TO_S);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+
+        refreshTokenService.addRefreshToken(user, refreshToken, REFRESH.getExpiration() * MS_TO_S);
     }
 
     private void addRefreshTokenToResponse(HttpServletResponse response, String refreshToken) {
