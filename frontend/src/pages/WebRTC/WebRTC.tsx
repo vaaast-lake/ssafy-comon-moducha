@@ -13,7 +13,7 @@ export default function WebRTC() {
   const [roomName, setRoomName] = useState('Test Room');
   const [participantName, setParticipantName] = useState(
     // 'Participant' + Math.floor(Math.random() * 100)
-    Math.ceil(Math.random() * 7).toString()
+    Math.ceil(Math.random() * 8).toString()
   );
   const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
     undefined
