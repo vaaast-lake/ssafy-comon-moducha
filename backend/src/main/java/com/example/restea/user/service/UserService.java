@@ -22,17 +22,20 @@ import com.example.restea.user.repository.UserRepository;
 import jakarta.persistence.LockModeType;
 import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private static final Long MS_TO_S = 1000L;
+    private static final String GOOGLE_REVOKE_URL = "https://accounts.google.com/o/oauth2/revoke?token=";
 
     private final UserRepository userRepository;
     private final ShareParticipantRepository shareParticipantRepository;
@@ -59,7 +62,12 @@ public class UserService {
         revokeRefreshToken(user); // RefreshToken를 지운 후 Revoke 처리
         deleteAuthToken(user); // AuthToken을 지운 후 삭제
         user.deactivate(); // 유저 비활성화
-        userRepository.save(user);
+    }
+
+    // 구글 OAuth2 해제
+    public void revokeGoogleAuth(String value) {
+        String googleRevokeUrl = GOOGLE_REVOKE_URL + value;
+        restTemplate.getForObject(googleRevokeUrl, String.class);
     }
 
     /**
