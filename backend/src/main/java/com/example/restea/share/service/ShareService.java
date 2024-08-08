@@ -125,17 +125,8 @@ public class ShareService {
     private List<ShareListResponse> createResponseFormShareBoards(List<ShareBoard> shareBoards) {
         List<ShareListResponse> data = new ArrayList<>();
         for (ShareBoard shareBoard : shareBoards) {
-            data.add(ShareListResponse.builder()
-                    .boardId(shareBoard.getId())
-                    .title(shareBoard.getTitle())
-                    .createdDate(shareBoard.getCreatedDate())
-                    .lastUpdated(shareBoard.getLastUpdated())
-                    .endDate(shareBoard.getEndDate())
-                    .maxParticipants(shareBoard.getMaxParticipants())
-                    .participants(shareParticipantRepository.countByShareBoard(shareBoard).intValue())
-                    .nickname(shareBoard.getUser().getExposedNickname())
-                    .viewCount(shareBoard.getViewCount())
-                    .build());
+            Integer participant = shareParticipantRepository.countByShareBoard(shareBoard).intValue();
+            data.add(ShareListResponse.of(shareBoard, participant));
         }
         return data;
     }
