@@ -12,6 +12,7 @@ import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.teatime.dto.TeatimeCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCreationResponse;
+import com.example.restea.teatime.dto.TeatimeDeleteResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.teatime.dto.TeatimeUpdateRequest;
 import com.example.restea.teatime.dto.TeatimeUpdateResponse;
@@ -95,6 +96,25 @@ public class TeatimeService {
         teatimeBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
                 request.getEndDate(), request.getBroadcastDate());
         return TeatimeUpdateResponse.of(teatimeBoard, participants);
+    }
+
+    @Transactional
+    public TeatimeDeleteResponse deactivateTeatimeBoard(Integer teatimeBoardId, Integer userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
+
+        if (!user.getActivated()) {
+            throw new IllegalArgumentException(USER_NOT_ACTIVATED.getMessage());
+        }
+
+        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+
+        checkAuthorized(teatimeBoard, userId);
+
+        teatimeBoard.deactivate();
+
+        return TeatimeDeleteResponse.from(teatimeBoardId);
     }
 
     private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {

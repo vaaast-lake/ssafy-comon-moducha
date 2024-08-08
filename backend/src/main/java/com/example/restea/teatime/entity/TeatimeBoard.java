@@ -83,6 +83,7 @@ public class TeatimeBoard extends BaseTimeEntity {
 
     public void deactivate() {
         this.activated = false;
+        this.teatimeComments.forEach(TeatimeComment::deactivateWithReplies);
     }
 
     public void update(String title, String content, Integer maxParticipants, LocalDateTime endDate,

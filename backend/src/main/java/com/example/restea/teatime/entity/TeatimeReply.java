@@ -50,4 +50,8 @@ public class TeatimeReply extends BaseTimeEntity {
         this.teatimeComment = teatimeComment;
         this.user = user;
     }
+
+    public void deactivate() {
+        this.activated = false;
+    }
 }

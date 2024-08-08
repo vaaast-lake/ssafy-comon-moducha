@@ -5,6 +5,7 @@ import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.teatime.dto.TeatimeCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCreationResponse;
+import com.example.restea.teatime.dto.TeatimeDeleteResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.teatime.dto.TeatimeUpdateRequest;
 import com.example.restea.teatime.dto.TeatimeUpdateResponse;
@@ -97,6 +98,18 @@ public class TeatimeController {
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         TeatimeUpdateResponse result = teatimeService.updateTeatimeBoard(teatimeBoardId, request,
+                customOAuth2User.getUserId());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.from(result));
+    }
+
+    @PatchMapping("/deactivated-teatimes/{teatimeBoardId}")
+    public ResponseEntity<ResponseDTO<?>> deactivateTeatimeBoard(
+            @PathVariable("teatimeBoardId") Integer teatimeBoardId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        TeatimeDeleteResponse result = teatimeService.deactivateTeatimeBoard(teatimeBoardId,
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
