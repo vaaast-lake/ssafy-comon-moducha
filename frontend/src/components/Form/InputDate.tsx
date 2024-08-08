@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import dayJsNow from '../../utils/dayJsNow';
 
 type DateInputProps = {
@@ -14,7 +15,7 @@ const InputDate = ({ pickedDate, setPickedDate }: DateInputProps) => (
       name="endDate"
       value={pickedDate}
       onChange={(e) => setPickedDate(e.target.value)}
-      min={dayJsNow()}
+      min={dayJsNow(dayjs().add(1, 'day').toString())}
       step={1}
       required
     />
