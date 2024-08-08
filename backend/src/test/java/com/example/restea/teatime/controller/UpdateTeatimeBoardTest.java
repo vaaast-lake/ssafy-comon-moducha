@@ -260,7 +260,7 @@ public class UpdateTeatimeBoardTest {
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("testParameter")
-    @DisplayName("[NotFound] updateTeatime : 티타임 게시판 글 수정 - 권한이 없는 사용자")
+    @DisplayName("[Forbidden] updateTeatime : 티타임 게시판 글 수정 - 권한이 없는 사용자")
     public void updateShare_Unauthorized_Fail(String testName, String title, String content, LocalDateTime endDate,
                                               LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
 
