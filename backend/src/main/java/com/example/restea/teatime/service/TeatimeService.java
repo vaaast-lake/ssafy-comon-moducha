@@ -1,5 +1,6 @@
 package com.example.restea.teatime.service;
 
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_FOUND;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_INVALID_SORT;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
@@ -9,6 +10,7 @@ import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.teatime.dto.TeatimeCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCreationResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
+import com.example.restea.teatime.dto.TeatimeViewResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
 import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.teatime.repository.TeatimeParticipantRepository;
@@ -55,6 +57,17 @@ public class TeatimeService {
         return TeatimeCreationResponse.of(result);
     }
 
+    @Transactional
+    public TeatimeViewResponse getTeatimeBoard(Integer teatimeBoardId) {
+
+        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+        Integer participants = teatimeParticipantRepository.countByTeatimeBoard(teatimeBoard).intValue();
+
+        teatimeBoard.addViewCount();
+
+        return TeatimeViewResponse.of(teatimeBoard, participants);
+    }
+
     private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {
 
         Page<TeatimeBoard> teatimeBoards = switch (sort) {
@@ -88,5 +101,15 @@ public class TeatimeService {
             default ->
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_INVALID_SORT.getMessage());
         };
+    }
+
+    private @NotNull TeatimeBoard getActivatedBoard(Integer teatimeBoardId) {
+        TeatimeBoard teatimeBoard = teatimeBoardRepository.findById(teatimeBoardId)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_FOUND.getMessage()));
+        if (!teatimeBoard.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_ACTIVATED.getMessage());
+        }
+        return teatimeBoard;
     }
 }
