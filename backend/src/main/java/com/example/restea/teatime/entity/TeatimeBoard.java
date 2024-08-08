@@ -84,4 +84,13 @@ public class TeatimeBoard extends BaseTimeEntity {
     public void deactivate() {
         this.activated = false;
     }
+
+    public void update(String title, String content, Integer maxParticipants, LocalDateTime endDate,
+                       LocalDateTime broadcastDate) {
+        this.title = title;
+        this.content = content;
+        this.maxParticipants = maxParticipants;
+        this.endDate = endDate;
+        this.broadcastDate = broadcastDate;
+    }
 }
