@@ -127,6 +127,7 @@ public class GetShareBoardListTest {
         for (int i = 0; i < 10; i++) {
             resultActions.andExpect(jsonPath("$.data[" + i + "].boardId").value(shareBoards.get(9 - i).getId()))
                     .andExpect(jsonPath("$.data[" + i + "].title").value(shareBoards.get(9 - i).getTitle()))
+                    .andExpect(jsonPath("$.data[" + i + "].content").value(shareBoards.get(9 - i).getContent()))
 //                    .andExpect(jsonPath("$.data[" + i + "].endDate").value(shareBoards.get(9 - i).getEndDate()))
                     .andExpect(jsonPath("$.data[" + i + "].maxParticipants").value(
                             shareBoards.get(9 - i).getMaxParticipants()))
@@ -177,6 +178,7 @@ public class GetShareBoardListTest {
         for (int i = 0; i < 5; i++) {
             resultActions.andExpect(jsonPath("$.data[" + i + "].boardId").value(shareBoards.get(9 - i).getId()))
                     .andExpect(jsonPath("$.data[" + i + "].title").value(shareBoards.get(9 - i).getTitle()))
+                    .andExpect(jsonPath("$.data[" + i + "].content").value(shareBoards.get(9 - i).getContent()))
 //                    .andExpect(jsonPath("$.data[" + i + "].endDate").value(shareBoards.get(9 - i).getEndDate()))
                     .andExpect(jsonPath("$.data[" + i + "].maxParticipants").value(
                             shareBoards.get(9 - i).getMaxParticipants()))
@@ -231,6 +233,7 @@ public class GetShareBoardListTest {
         for (int i = 0; i < 5; i++) {
             resultActions.andExpect(jsonPath("$.data[" + i + "].boardId").value(shareBoards.get(i).getId()))
                     .andExpect(jsonPath("$.data[" + i + "].title").value(shareBoards.get(i).getTitle()))
+                    .andExpect(jsonPath("$.data[" + i + "].content").value(shareBoards.get(i).getContent()))
 //                    .andExpect(jsonPath("$.data[" + i + "].endDate").value(shareBoards.get(i).getEndDate()))
                     .andExpect(jsonPath("$.data[" + i + "].maxParticipants").value(
                             shareBoards.get(i).getMaxParticipants()))

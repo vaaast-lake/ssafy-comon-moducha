@@ -11,6 +11,7 @@ public class ShareListResponse {
 
     private final Integer boardId;
     private final String title;
+    private final String content;
     private final LocalDateTime createdDate;
     private final LocalDateTime lastUpdated;
     private final LocalDateTime endDate;
@@ -23,6 +24,7 @@ public class ShareListResponse {
         return ShareListResponse.builder()
                 .boardId(shareBoard.getId())
                 .title(shareBoard.getTitle())
+                .content(shareBoard.getContent())
                 .createdDate(shareBoard.getCreatedDate())
                 .lastUpdated(shareBoard.getLastUpdated())
                 .endDate(shareBoard.getEndDate())
@@ -35,12 +37,13 @@ public class ShareListResponse {
 
     @Builder
     public ShareListResponse(
-            Integer boardId, String title, LocalDateTime createdDate,
+            Integer boardId, String title, String content, LocalDateTime createdDate,
             LocalDateTime lastUpdated, LocalDateTime endDate,
             Integer maxParticipants, Integer participants,
             Integer viewCount, String nickname) {
         this.boardId = boardId;
         this.title = title;
+        this.content = content;
         this.createdDate = createdDate;
         this.lastUpdated = lastUpdated;
         this.endDate = endDate;

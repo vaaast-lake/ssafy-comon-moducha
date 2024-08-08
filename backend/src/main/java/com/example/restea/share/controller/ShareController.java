@@ -87,6 +87,4 @@ public class ShareController {
                         .build());
     }
 
-    // TODO: 나눔 게시판 목록 조회
-
 }
