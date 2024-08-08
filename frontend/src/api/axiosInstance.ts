@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse, AxiosInstance } from 'axios';
-import useAuthStore from '../stores/authStore';
 import { handleLogout } from './logout';
+import useAuthStore from '../stores/authStore';
 /**
  * axiosInstance.ts
  *  axios 인스턴스를 생성하고, 액세스 토큰이 만료된 경우 리프레시 토큰으로 새 액세스 토큰을 발급받는 로직을 처리합니다.
@@ -15,11 +15,12 @@ const axiosInstance = axios.create({
 });
 
 // refresh token도 만료되면 로그아웃 시키기
-function logoutLogic(): void {
+function logoutLogic() {
   console.log('accessToken reissue에 실패하여 로그아웃합니다');
   localStorage.removeItem('authorization');
   alert('로그인이 만료되었습니다. 재로그인이 필요합니다.');
-  handleLogout;
+  const { setLoggedIn, setCurrentUsername } = useAuthStore.getState();
+  handleLogout(setLoggedIn, setCurrentUsername);
 }
 // request 인터셉터(done) - 작동여부 체크
 axiosInstance.interceptors.request.use(
