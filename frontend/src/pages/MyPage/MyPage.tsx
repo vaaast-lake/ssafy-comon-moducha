@@ -1,5 +1,5 @@
 import Records from './components/MyRecords';
-import Shares from './components/MyShares';
+import MyShares from './components/MyShares';
 import Teatimes from './components/MyTeatimes';
 import AccountDeactivation from './components/AccountDeactivation';
 import MainLayout from '../../components/Layout/MainLayout';
@@ -19,7 +19,7 @@ const MyPage = () => {
       {/* 좌측 사이드바 영역 */}
       <SideLayout></SideLayout>
       <MainLayout className="gap-4">
-        <header>
+        {/* <header>
           <TitleCard>
             <div className="flex justify-between items-center">
               <span className="text-disabled">마이페이지</span>
@@ -35,8 +35,8 @@ const MyPage = () => {
         <Records />
         <div className="divider"></div>
         <Teatimes />
-        <div className="divider"></div>
-        <Shares />
+        <div className="divider"></div> */}
+        <MyShares />
         <div className="divider"></div>
         <AccountDeactivation />
       </MainLayout>
