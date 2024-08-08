@@ -103,19 +103,19 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
 
+    @Builder
+    public User(String nickname, String authId, AuthToken authToken) {
+        this.nickname = nickname;
+        this.authId = authId;
+        this.authToken = authToken;
+    }
+
     public void addRefreshToken(RefreshToken refreshToken) {
         this.refreshToken = refreshToken;
     }
 
     public void deleteRefreshToken() {
         this.refreshToken = null;
-    }
-
-    @Builder
-    public User(String nickname, String authId, AuthToken authToken) {
-        this.nickname = nickname;
-        this.authId = authId;
-        this.authToken = authToken;
     }
 
     // 보여질 닉네임을 반환하는 메소드
@@ -138,5 +138,9 @@ public class User extends BaseTimeEntity {
 
     public void deleteAuthToken() {
         this.authToken = null;
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

@@ -1,31 +1,48 @@
 package com.example.restea.user.service;
 
+import static com.example.restea.oauth2.enums.TokenType.ACCESS;
+import static com.example.restea.oauth2.enums.TokenType.BEARER;
+import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
+import static com.example.restea.user.enums.UserMessage.USER_INVALID;
+import static com.example.restea.user.enums.UserMessage.USER_NICKNAME_EXISTS;
+import static com.example.restea.user.enums.UserMessage.USER_NICKNAME_SAME;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
+import com.example.restea.oauth2.jwt.JWTUtil;
 import com.example.restea.oauth2.repository.AuthTokenRepository;
 import com.example.restea.oauth2.repository.RefreshTokenRepository;
+import com.example.restea.oauth2.service.RefreshTokenService;
+import com.example.restea.oauth2.util.CookieMethods;
 import com.example.restea.record.repository.RecordRepository;
 import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.teatime.repository.TeatimeParticipantRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Lock;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+    private static final Long MS_TO_S = 1000L;
+
     private final UserRepository userRepository;
     private final ShareParticipantRepository shareParticipantRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthTokenRepository authTokenRepository;
     private final RecordRepository recordRepository;
-
-    private final EntityManager em;
+    private final JWTUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
+    private final CookieMethods cookieMethods;
 
     @Transactional
     public void withdrawUser(Integer userId) {
@@ -112,5 +129,82 @@ public class UserService {
         }
 
         return user;
+    }
+
+    /**
+     * @param user     checkValidUser에서 검증된 유저
+     * @param nickname 변경할 닉네임
+     */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void changeNickname(User user, String nickname) {
+        if (user.getNickname().equals(nickname)) { // 바꿀 닉네임이 현재 닉네임과 동일한 경우
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NICKNAME_SAME.getMessage());
+        }
+
+        if (checkExistingNickname(nickname)) { // 바꿀 닉네임이 이미 선점된 경우
+            throw new ResponseStatusException(HttpStatus.CONFLICT, USER_NICKNAME_EXISTS.getMessage());
+        }
+
+        changeUserNickname(user, nickname);
+    }
+
+    /**
+     * @param nickname 바꿀 닉네임
+     * @return 닉네임이 선점되었는지
+     */
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    private boolean checkExistingNickname(String nickname) {
+        return userRepository.existsByNickname(nickname);
+    }
+
+    /**
+     * 닉네임을 변경한다.
+     *
+     * @param user     사용자
+     * @param nickname 바꿀 닉네임
+     */
+    private void changeUserNickname(User user, String nickname) {
+        user.changeNickname(nickname);
+        userRepository.save(user);
+    }
+
+    /**
+     * AccessToken을 반환하는 메소드
+     *
+     * @param user 사용자
+     * @return AccessToken
+     */
+    public String getAccessToken(User user) {
+        Integer userId = user.getId();
+        String nickname = user.getNickname();
+        String role = user.getRole().name();
+
+        return createAccessToken(userId, nickname, role);
+    }
+
+    private String createAccessToken(Integer userId, String nickname, String role) {
+        return BEARER.getType() + jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role,
+                ACCESS.getExpiration() * MS_TO_S);
+    }
+
+    /**
+     * Cookie형태의 RefreshToken을 반환하는 메소드
+     *
+     * @param user 사용자
+     * @return RefreshToken
+     */
+    public Cookie getRefreshToken(User user) {
+        Integer userId = user.getId();
+        String nickname = user.getNickname();
+        String role = user.getRole().name();
+
+        String refreshToken = createRefreshToken(userId, nickname, role);
+        refreshTokenService.addRefreshToken(user, refreshToken, REFRESH.getExpiration() * MS_TO_S);
+
+        return cookieMethods.createCookie(REFRESH.getType(), refreshToken);
+    }
+
+    private String createRefreshToken(Integer userId, String nickname, String role) {
+        return jwtUtil.createJwt(REFRESH.getType(), userId, nickname, role, REFRESH.getExpiration() * MS_TO_S);
     }
 }

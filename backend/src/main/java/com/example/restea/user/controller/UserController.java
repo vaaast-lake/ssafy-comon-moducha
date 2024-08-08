@@ -1,13 +1,21 @@
 package com.example.restea.user.controller;
 
+import static com.example.restea.oauth2.enums.TokenType.ACCESS;
+
 import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.ResponseDTO;
+import com.example.restea.common.util.Trim;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.share.dto.ShareListResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
+import com.example.restea.user.dto.NicknameUpdateRequest;
+import com.example.restea.user.dto.NicknameUpdateResponse;
+import com.example.restea.user.entity.User;
 import com.example.restea.user.service.UserMyPageShareService;
 import com.example.restea.user.service.UserMyPageTeatimeService;
 import com.example.restea.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +25,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +49,48 @@ public class UserController {
         userService.withdrawUser(customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 닉네임 변경 메소드.
+     *
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @param userId           userId
+     * @param dto              nickname이 담긴  RequestBody
+     * @param response         HttpResponse
+     * @return 성공 시 200 OK
+     */
+    @PatchMapping("/{user_Id}/nicknames")
+    public ResponseEntity<ResponseDTO<NicknameUpdateResponse>> changeNickname(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable("user_Id") Integer userId,
+            @Trim @Valid @RequestBody NicknameUpdateRequest dto,
+            HttpServletResponse response) {
+
+        // 1. User의 타당성 체크
+        User user = validateUser(customOAuth2User, userId);
+
+        // 2. 닉네임을 변경하고 토큰을 갱신
+        String nickname = dto.getNickname();
+        updateNicknameAndTokens(user, nickname, response);
+
+        // 3. 응답 생성
+
+        NicknameUpdateResponse result = NicknameUpdateResponse.from(nickname);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.from(result));
+    }
+
+
+    // 닉네임 변경 및 토큰 갱신을 별도 메소드로 분리
+    private void updateNicknameAndTokens(User user, String newNickname, HttpServletResponse response) {
+        userService.changeNickname(user, newNickname);
+
+        String accessToken = userService.getAccessToken(user);
+        response.setHeader(ACCESS.getType(), accessToken);
+
+        Cookie refreshToken = userService.getRefreshToken(user);
+        response.addCookie(refreshToken);
     }
 
     /**
