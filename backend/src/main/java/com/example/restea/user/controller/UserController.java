@@ -83,6 +83,13 @@ public class UserController {
                 .body(teatimeBoardList);
     }
 
+    /**
+     * 내가 참여 신청한 ShareBoardList를 불러오는 API
+     *
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @param dto              sort, page, perPage query Parameter
+     * @return ResponseEntity
+     */
     @GetMapping("/mypage/participated-shares")
     public ResponseEntity<ResponseDTO<?>> getParticipatedShareBoardList(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
@@ -96,5 +103,27 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(shareBoardList);
+    }
+
+    /**
+     * 내가 참여 신청한 TeatimeBoardList를 불러오는 API
+     *
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @param dto              sort, page, perPage query Parameter
+     * @return ResponseEntity
+     */
+    @GetMapping("/mypage/participated-teatimes")
+    public ResponseEntity<ResponseDTO<?>> getParticipatedTeatimeBoardList(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        ResponseDTO<List<TeatimeListResponse>> teatimeBoardList =
+                userMyPageTeatimeService.getParticipatedTeatimeBoardList(customOAuth2User.getUserId(),
+                        dto.getSort(),
+                        dto.getPage(),
+                        dto.getPerPage());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(teatimeBoardList);
     }
 }
