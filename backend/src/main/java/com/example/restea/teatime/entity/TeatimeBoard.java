@@ -76,4 +76,12 @@ public class TeatimeBoard extends BaseTimeEntity {
         this.endDate = endDate;
         this.user = user;
     }
+
+    public void addViewCount() {
+        this.viewCount++;
+    }
+
+    public void deactivate() {
+        this.activated = false;
+    }
 }
