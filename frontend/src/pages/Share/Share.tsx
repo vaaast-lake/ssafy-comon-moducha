@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SideLayout from '../../components/Layout/SideLayout';
 import MainLayout from '../../components/Layout/MainLayout';
-import NoArticle from '../../components/Article/NoArticle';
+import ArticleNotFound from '../../components/Article/ArticleNotFound';
 
 const Share = () => {
   const [shareList, setShareList] = useState([]);
@@ -46,7 +46,7 @@ const Share = () => {
         </header>
 
         {!shareList.length ? (
-          <NoArticle />
+          <ArticleNotFound />
         ) : (
           <>
             <div className="flex justify-between">
