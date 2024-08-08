@@ -34,12 +34,13 @@ public class ShareReplyController {
     // GET /api/v1/shares/{share_board_id}/comments/{share_comment_id}/replies
     @GetMapping("/replies")
     public ResponseEntity<ResponseDTO<?>> getShareReplyList(
+            @PathVariable("shareBoardId") Integer shareBoardId,
             @PathVariable("shareCommentId") Integer shareCommentId,
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
         ResponseDTO<List<ShareReplyViewResponse>> result
-                = shareReplyService.getShareReplyList(shareCommentId, page, perPage);
+                = shareReplyService.getShareReplyList(shareBoardId, shareCommentId, page, perPage);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
@@ -48,12 +49,13 @@ public class ShareReplyController {
     // POST /api/v1/shares/{share_board_id}/comments/{share_comment_id}/replies
     @PostMapping("/replies")
     public ResponseEntity<ResponseDTO<?>> createShareReply(
+            @PathVariable("shareBoardId") Integer shareBoardId,
             @PathVariable("shareCommentId") Integer shareCommentId,
             @Valid @RequestBody ShareReplyCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         ShareReplyCreationResponse result
-                = shareReplyService.createShareReply(request.getContent(), shareCommentId,
+                = shareReplyService.createShareReply(shareBoardId, request.getContent(), shareCommentId,
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -63,11 +65,14 @@ public class ShareReplyController {
     // PATCH /api/v1/shares/{share_board_id}/comments/{share_comment_id}/deactivated-replies/{share_reply_id}
     @PatchMapping("/deactivated-replies/{shareReplyId}")
     public ResponseEntity<ResponseDTO<?>> deactivateShareReply(
+            @PathVariable("shareBoardId") Integer shareBoardId,
+            @PathVariable("shareCommentId") Integer shareCommentId,
             @PathVariable("shareReplyId") Integer shareReplyId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         ShareReplyDeleteResponse result =
-                shareReplyService.deactivateShareReply(shareReplyId, customOAuth2User.getUserId());
+                shareReplyService.deactivateShareReply(shareBoardId, shareCommentId, shareReplyId,
+                        customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.from(result));
