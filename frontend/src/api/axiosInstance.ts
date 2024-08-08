@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosResponse, AxiosInstance } from 'axios';
+import { handleLogout } from './logout';
 import useAuthStore from '../stores/authStore';
 /**
  * axiosInstance.ts
@@ -14,13 +15,12 @@ const axiosInstance = axios.create({
 });
 
 // refresh token도 만료되면 로그아웃 시키기
-function logoutLogic(): void {
+function logoutLogic() {
   console.log('accessToken reissue에 실패하여 로그아웃합니다');
-  const { setCurrentUsername } = useAuthStore.getState();
   localStorage.removeItem('authorization');
-  setCurrentUsername('');
   alert('로그인이 만료되었습니다. 재로그인이 필요합니다.');
-  window.location.href = '/login';
+  const { setLoggedIn, setCurrentUsername } = useAuthStore.getState();
+  handleLogout(setLoggedIn, setCurrentUsername);
 }
 // request 인터셉터(done) - 작동여부 체크
 axiosInstance.interceptors.request.use(
@@ -39,33 +39,38 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// // response 인터셉터
-// axiosInstance.interceptors.response.use(
-//   // status 401일 때 accessToken reissue
-//   function (response: AxiosResponse) {
-//     // 200대 status 일때 이 함수를 트리거 - 비워두면 됩니다.
-//     return response;
-//   },
-//   async (error: AxiosError) => {
-//     // 액세스 토큰이 만료되어 401 오류 발생 시 - #반드시 재요청 고려#
-//     if (error.response?.status === 401) {
-//       try {
-//         await tokenRefresh(axiosInstance); // 정상 작동시 localStorage에 갱신된 accessToken이 저장됩니다
-//         // 갱신된 accessToken으로 request 재요청
-//         const accessToken = localStorage.getItem('authorization');
-//         if (accessToken && error.config) {
-//           error.config.headers.Authorization = `Bearer  ${accessToken}`;
-//           return axiosInstance(error.config);
-//         }
-//       } catch (refreshError) {
-//         logoutLogic();
-//         return Promise.reject(refreshError);
-//       }
-//       // 401 error response 이후, 토큰 갱신 뒤 재요청
-//       return Promise.reject(error);
-//     }
-//   }
-// );
+// response 인터셉터
+axiosInstance.interceptors.response.use(
+  // status 401일 때 accessToken reissue
+  function (response: AxiosResponse) {
+    // 200대 status 일때 이 함수를 트리거 - 비워두면 됩니다.
+    return response;
+  },
+  async (error: AxiosError) => {
+    // 액세스 토큰이 만료되어 401 오류 발생 시 - #반드시 재요청 고려#
+    if (error.response?.status === 401) {
+      try {
+        await tokenRefresh(axiosInstance); // 정상 작동시 localStorage에 갱신된 accessToken이 저장됩니다
+        // 갱신된 accessToken으로 request 재요청
+        const accessToken = localStorage.getItem('authorization');
+        if (accessToken && error.config) {
+          console.log(
+            'axios interceptor가 새로운 accessToken을 받아옴',
+            error.config
+          );
+          error.config.headers.Authorization = `Bearer ${accessToken}`;
+          console.log(error.config.headers.Authorization);
+          return axiosInstance(error.config);
+        }
+      } catch (refreshError) {
+        logoutLogic();
+        return Promise.reject(refreshError);
+      }
+      // 401 error response 이후, 토큰 갱신 뒤 재요청
+      return Promise.reject(error);
+    }
+  }
+);
 
 // 리프레시 토큰으로 액세스 토큰을 갱신하는 함수
 const tokenRefresh = async (instance: AxiosInstance) => {
@@ -77,7 +82,11 @@ const tokenRefresh = async (instance: AxiosInstance) => {
         headers: { 'Content-Type': 'application/json' },
       }
     );
-    const newAccessToken = response.data.accessToken;
+    const newAccessToken = response.headers.authorization.replace(
+      /^Bearer\s+/,
+      ''
+    );
+    console.log(newAccessToken);
     if (!newAccessToken) {
       console.log(
         '리프레시 토큰을 통해 액세스 토큰을 재발급하지 못했습니다. axios interceptor의 문제이거나 재로그인이 필요합니다'

@@ -17,7 +17,7 @@ export default function useConfigureUrls(): configureUrls {
 
   // LOCAL TEST URL
   let APPLICATION_SERVER_URL = '';
-  let LIVEKIT_URL = '';
+  let LIVEKIT_URL = ''; 
 
   // If APPLICATION_SERVER_URL is not configured, use default value from local development
   if (!APPLICATION_SERVER_URL) {

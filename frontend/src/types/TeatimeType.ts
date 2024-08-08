@@ -22,7 +22,7 @@ export interface TeatimeDetailItem extends TeatimeListItem {
   endDate: string;
   viewCount: number;
   participants: number;
-  nickName: string;
+  nickname: string;
   title: string;
 }
 

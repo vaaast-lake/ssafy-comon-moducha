@@ -23,4 +23,6 @@ public interface ShareBoardRepository extends JpaRepository<ShareBoard, Integer>
     Page<ShareBoard> findAllByActivatedAndUserId(boolean b, Integer userId, Pageable pageable);
 
     Optional<ShareBoard> findByIdAndActivated(Integer id, boolean b);
+
+    Long countByActivatedAndUserId(boolean b, Integer userId);
 }

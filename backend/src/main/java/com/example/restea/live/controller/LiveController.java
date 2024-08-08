@@ -4,10 +4,10 @@ import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.live.dto.LiveIsOpenResponseDTO;
 import com.example.restea.live.dto.LiveKickResponseDTO;
 import com.example.restea.live.dto.LiveMuteRequestDTO;
+import com.example.restea.live.dto.LiveMuteResponseDTO;
 import com.example.restea.live.dto.LiveRoomResponseDTO;
 import com.example.restea.live.service.LiveService;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
-import io.livekit.server.AccessToken;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,17 +39,10 @@ public class LiveController {
             @PathVariable("teatimeBoardId") int teatimeBoardId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        boolean isOpen = liveService.isLiveOpen(teatimeBoardId, customOAuth2User.getUserId());
+        LiveIsOpenResponseDTO result = LiveIsOpenResponseDTO.from(
+                liveService.isLiveOpen(teatimeBoardId, customOAuth2User.getUserId()));
 
-        LiveIsOpenResponseDTO result = LiveIsOpenResponseDTO.builder()
-                .isOpen(isOpen)
-                .build();
-
-        ResponseDTO<LiveIsOpenResponseDTO> response = ResponseDTO.<LiveIsOpenResponseDTO>builder()
-                .data(result)
-                .build();
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.from(result));
     }
 
     /**
@@ -65,17 +58,10 @@ public class LiveController {
             @PathVariable("teatimeBoardId") int teatimeBoardId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        AccessToken sessionInfo = liveService.createLive(teatimeBoardId, customOAuth2User.getUserId());
+        LiveRoomResponseDTO result = LiveRoomResponseDTO.from(
+                liveService.createLive(teatimeBoardId, customOAuth2User.getUserId()));
 
-        LiveRoomResponseDTO result = LiveRoomResponseDTO.builder()
-                .token(sessionInfo.toJwt())
-                .build();
-
-        ResponseDTO<LiveRoomResponseDTO> response = ResponseDTO.<LiveRoomResponseDTO>builder()
-                .data(result)
-                .build();
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ResponseDTO.from(result));
     }
 
     /**
@@ -91,17 +77,10 @@ public class LiveController {
             @PathVariable("teatimeBoardId") int teatimeBoardId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        AccessToken sessionInfo = liveService.liveJoin(teatimeBoardId, customOAuth2User.getUserId());
+        LiveRoomResponseDTO result = LiveRoomResponseDTO.from(
+                liveService.liveJoin(teatimeBoardId, customOAuth2User.getUserId()));
 
-        LiveRoomResponseDTO result = LiveRoomResponseDTO.builder()
-                .token(sessionInfo.toJwt())
-                .build();
-
-        ResponseDTO<LiveRoomResponseDTO> response = ResponseDTO.<LiveRoomResponseDTO>builder()
-                .data(result)
-                .build();
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.from(result));
     }
 
     /**
@@ -119,15 +98,9 @@ public class LiveController {
 
         liveService.liveKick(teatimeBoardId, kickUserId, customOAuth2User.getUserId());
 
-        LiveKickResponseDTO result = LiveKickResponseDTO.builder()
-                .userId(kickUserId)
-                .build();
+        LiveKickResponseDTO result = LiveKickResponseDTO.from(kickUserId);
 
-        ResponseDTO<LiveKickResponseDTO> response = ResponseDTO.<LiveKickResponseDTO>builder()
-                .data(result)
-                .build();
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.from(result));
     }
 
     /**
@@ -138,16 +111,14 @@ public class LiveController {
      * @return 내용이 빈 ResponseEntity 객체를 반환합니다. 음소거에 실패하면 에러 메시지를 담은 ResponseEntity를 반환합니다.
      */
     @PostMapping("/mute")
-    public ResponseEntity<ResponseDTO<LiveMuteRequestDTO>> liveMute(
+    public ResponseEntity<ResponseDTO<LiveMuteResponseDTO>> liveMute(
             @PathVariable("teatimeBoardId") int teatimeBoardId, @Valid @RequestBody LiveMuteRequestDTO request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         liveService.liveMute(teatimeBoardId, request, customOAuth2User.getUserId());
 
-        ResponseDTO<LiveMuteRequestDTO> response = ResponseDTO.<LiveMuteRequestDTO>builder()
-                .data(request)
-                .build();
+        LiveMuteResponseDTO result = LiveMuteResponseDTO.of(request);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.from(result));
     }
 }
