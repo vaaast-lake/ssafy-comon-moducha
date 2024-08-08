@@ -1,4 +1,4 @@
-const NoArticle = () => (
+const ArticleNotFound = () => (
   <div className="flex justify-center">
     <div className="mt-20 flex flex-col text-gray-400 gap-2">
       <p className="text-4xl ">아직 글이 없어요.</p>
@@ -7,4 +7,4 @@ const NoArticle = () => (
   </div>
 );
 
-export default NoArticle;
+export default ArticleNotFound;

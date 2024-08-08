@@ -1,6 +1,6 @@
 import { LocalVideoTrack, Room } from 'livekit-client';
 import RoomVideo from './RoomVideo';
-import { GroupedTracks, TrackInfo, trackKind } from '../../../types/WebRTCType';
+import { GroupedTracks, TrackInfo, TrackKind } from '../../../types/WebRTCType';
 import { useEffect, useState } from 'react';
 import RoomSharingButton from './RoomSharingButton';
 import { GoUnmute, GoMute } from 'react-icons/go';
@@ -18,7 +18,7 @@ interface RoomVideoAudioProps {
 interface ScreenShareTrack {
   isScreenShare: boolean;
   screenShareTrack?: {
-    [key in trackKind]?: TrackInfo | undefined;
+    [key in TrackKind]?: TrackInfo | undefined;
   };
 }
 
@@ -30,7 +30,8 @@ const RoomVideoAudioTracks = ({
   isScreenSharing,
   leaveRoom,
 }: RoomVideoAudioProps) => {
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isAudioMuted, setIsAudioMuted] = useState<boolean>(false);
+  const [isVideoMuted, setIsVideoMuted] = useState<boolean>(false);
   const [screenShare, setScreenShare] = useState<ScreenShareTrack>({isScreenShare: false});
 
   useEffect(() => {
@@ -47,9 +48,14 @@ const RoomVideoAudioTracks = ({
   }, [remoteTracks])
 
   const handleLocalAudio = () => {
-    setIsMuted((prev) => !prev);
-    room.localParticipant.setMicrophoneEnabled(isMuted);
+    setIsAudioMuted((prev) => !prev);
+    room.localParticipant.setMicrophoneEnabled(isAudioMuted);
   };
+
+  const handleLocalVideo = () => {
+    setIsVideoMuted((prev) => !prev);
+    room.localParticipant.setCameraEnabled(isVideoMuted);
+  }
 
   return (
     <div
@@ -58,47 +64,50 @@ const RoomVideoAudioTracks = ({
         col-span-9
         grid
         grid-rows-12
+        border-e-2 border-e-gray-300
       "
     >
-      <div className='local-share-container relative row-span-7'>
-        {/* screen_share video start */}
-        {screenShare.isScreenShare &&
-          <div className="screen-share-container w-full h-full">
-            <RoomVideo
-              key={screenShare.screenShareTrack?.video?.trackPublication.trackSid}
-              track={screenShare.screenShareTrack!.video!.trackPublication.videoTrack!}
-              participantIdentity={screenShare.screenShareTrack!.video!.participantIdentity}
-            />
-          </div>
-        }
-        {/* screen_share video end */}
+      <div className='local-share-bg row-span-10 bg-gray-200 grid grid-row-10 p-5'>
+        <div className='local-share-container relative row-span-7 rounded-2xl overflow-hidden'>
+          {/* screen_share video start */}
+          {screenShare.isScreenShare &&
+            <div className="screen-share-container w-full h-full">
+              <RoomVideo
+                key={screenShare.screenShareTrack?.video?.trackPublication.trackSid}
+                track={screenShare.screenShareTrack!.video!.trackPublication.videoTrack!}
+                participantIdentity={screenShare.screenShareTrack!.video!.participantIdentity}
+              />
+            </div>
+          }
+          {/* screen_share video end */}
 
-        {/* local video start */}
-        {localTrack && (
-          <div
-            className={`
-              local-video-container
-              ${screenShare.isScreenShare ? 
-                'absolute top-0 right-0 w-2/6' : 
-                'w-full h-full'
-              }
-            `}
-          >
-            <RoomVideo
-              track={localTrack}
-              participantIdentity={participantName}
-              local={true}
-            />
-          </div>
-        )}
-        {/* local video end */}
+          {/* local video start */}
+          {localTrack && (
+            <div
+              className={`
+                local-video-container
+                ${screenShare.isScreenShare ? 
+                  'absolute top-0 right-0 w-2/6' : 
+                  'w-full h-full'
+                }
+              `}
+            >
+              <RoomVideo
+                track={localTrack}
+                participantIdentity={participantName}
+                local={true}
+              />
+            </div>
+          )}
+          {/* local video end */}
+        </div>
+
+        {/* remote video start */}
+        <RoomRemoteTrack remoteTracks={remoteTracks} />
+        {/* remote video end */}
       </div>
 
-      {/* remote video start */}
-      <RoomRemoteTrack remoteTracks={remoteTracks} />
-      {/* remote video end */}
-
-      <div className="room-controller row-span-2 flex justify-center items-center relative border-e-2">
+      <div className="room-controller row-span-2 flex justify-center items-center relative">
         <div
           className="
               local-contoller 
@@ -109,7 +118,7 @@ const RoomVideoAudioTracks = ({
             onClick={handleLocalAudio}
             className={`
                 ${
-                  !isMuted
+                  !isAudioMuted
                     ? 'bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600'
                     : 'bg-red-500 text-white px-4 py-1 rounded ml-2 hover:bg-red-600'
                 }
@@ -117,7 +126,7 @@ const RoomVideoAudioTracks = ({
                 text-3xl
               `}
           >
-            {!isMuted ? <GoUnmute /> : <GoMute />}
+            {!isAudioMuted ? <GoUnmute /> : <GoMute />}
           </button>
           <RoomSharingButton room={room} isScreenSharing={isScreenSharing} />
         </div>

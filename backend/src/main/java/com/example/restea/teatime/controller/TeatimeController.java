@@ -6,6 +6,9 @@ import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.teatime.dto.TeatimeCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCreationResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
+import com.example.restea.teatime.dto.TeatimeUpdateRequest;
+import com.example.restea.teatime.dto.TeatimeUpdateResponse;
+import com.example.restea.teatime.dto.TeatimeViewResponse;
 import com.example.restea.teatime.service.TeatimeService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -15,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +48,13 @@ public class TeatimeController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    /**
+     * 티타임 게시글 작성
+     *
+     * @param request          title, content, endDate, broadcastDate, maxParticipants
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @return 작성한 글 정보를 포함하는 ResponseEntity 객체를 반환합니다. 티타임 게시글 작성에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
+     */
     @PostMapping
     public ResponseEntity<ResponseDTO<?>> createTeatimeBoard(
             @Valid @RequestBody TeatimeCreationRequest request,
@@ -51,6 +63,43 @@ public class TeatimeController {
         TeatimeCreationResponse result = teatimeService.createTeatimeBoard(request, customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResponseDTO.from(result));
+    }
+
+    /**
+     * 주어진 티타임 게시글 조회
+     *
+     * @param teatimeBoardId 티타임게시판 ID
+     * @return 티타임 게시글 정보를 포함하는 ResponseEntity 객체를 반환합니다. 티타임 게시글 조회에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
+     */
+    @GetMapping("/{teatimeBoardId}")
+    public ResponseEntity<ResponseDTO<?>> getTeatimeBoard(
+            @PathVariable("teatimeBoardId") Integer teatimeBoardId) {
+
+        TeatimeViewResponse result = teatimeService.getTeatimeBoard(teatimeBoardId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.from(result));
+    }
+
+    /**
+     * 주어진 티타임 게시글 수정
+     *
+     * @param teatimeBoardId   티타임게시판 ID
+     * @param request          title, content, endDate, broadcastDate, maxParticipants
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @return 수정한 티타임 게시글 정보를 포함하는 ResponseEntity 객체를 반환합니다. 티타임 게시글 수정에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
+     */
+    @PatchMapping("/{teatimeBoardId}")
+    public ResponseEntity<ResponseDTO<?>> updateTeatimeBoard(
+            @PathVariable("teatimeBoardId") Integer teatimeBoardId,
+            @Valid @RequestBody TeatimeUpdateRequest request,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        TeatimeUpdateResponse result = teatimeService.updateTeatimeBoard(teatimeBoardId, request,
+                customOAuth2User.getUserId());
+
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.from(result));
     }
 }

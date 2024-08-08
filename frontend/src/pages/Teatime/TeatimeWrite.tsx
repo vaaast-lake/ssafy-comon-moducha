@@ -1,4 +1,4 @@
-import ArticleWrite from '../../components/Article/ArticleWrite';
+import ArticleWrite from '../Article/ArticleWrite';
 import TitleCard from '../../components/Title/TitleCard';
 
 const TeatimeWrite = () => {

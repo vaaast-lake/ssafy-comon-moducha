@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SideLayout from '../../components/Layout/SideLayout';
 import MainLayout from '../../components/Layout/MainLayout';
-import NoArticle from '../../components/Article/NoArticle';
+import ArticleNotFound from '../../components/Article/ArticleNotFound';
 
 const Teatime = () => {
   const [teatimeList, setTeatimeList] = useState([]);
@@ -46,7 +46,7 @@ const Teatime = () => {
 
         {/* 빈 배열일 경우 */}
         {!teatimeList.length ? (
-          <NoArticle />
+          <ArticleNotFound />
         ) : (
           <>
             <div className="flex justify-between">
