@@ -17,18 +17,11 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
   const { APPLICATION_SERVER_URL } = useConfigureUrls();
 
   const remoteTrackArray = useMemo(
-    () => Object.entries(remoteTracks).filter(el => el[1]?.video?.trackPublication.source !== 'screen_share'),
+    () => Object.entries(remoteTracks),
     [remoteTracks]
   );
-
-  const { firstGroup, secondGroup } = useMemo(() => {
-    const first = remoteTrackArray.slice(0, 3);
-    const second = remoteTrackArray.slice(-3);
-    return { firstGroup: first, secondGroup: second };
-  }, [remoteTrackArray]);
-
-  // const firstGroup = remoteTrackArray.slice(0, 3);
-  // const secondGroup = remoteTrackArray.length > 3 ? remoteTrackArray.slice(-3) : [];
+  const firstGroup = remoteTrackArray.slice(0, 3);
+  const secondGroup = remoteTrackArray.slice(-3);
   const currentGroup = showFirstGroup ? firstGroup : secondGroup;
 
   const handleMuteAudioRemoteUser = (
@@ -116,7 +109,7 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
 
           return (
             <>
-              {tracks  && (
+              {tracks && (
                 <div
                   key={participantIdentity}
                   className="
@@ -147,38 +140,49 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                     <div
                       className="
                           participant-controller 
-                          absolute bottom-2 end-2
+                          absolute top-0 left-0
+                          w-full h-full 
+                          hover:bg-black hover:bg-opacity-40 transition-all
                           text-xl
                         "
                     >
-                      <button
-                        className="bg-yellow-500 text-white px-4 py-1 rounded ml-2 hover:bg-yellow-600"
-                        onClick={() =>
-                          handleMuteAudioRemoteUser(
-                            participantIdentity,
-                            audioTrackSid
-                          )
-                        }
+                      <div 
+                        className='
+                          button-container 
+                          flex justify-center items-center
+                          opacity-0 hover:opacity-100 transition-all
+                          w-full h-full 
+                        '
                       >
-                        <GoUnmute />
-                      </button>
-                      <button
-                        className="bg-yellow-500 text-white px-4 py-1 rounded ml-2 hover:bg-yellow-600"
-                        onClick={() =>
-                          handleMuteScreenRemoteUser(
-                            participantIdentity,
-                            videoTrackSid
-                          )
-                        }
-                      >
-                        <IoVideocamOutline />
-                      </button>
-                      <button
-                        className="bg-gray-500 text-white px-4 py-1 rounded ml-2 hover:bg-gray-600"
-                        onClick={() => handleKickUser(participantIdentity)}
-                      >
-                        <RiLogoutBoxRLine />
-                      </button>
+                        <button
+                          className="bg-yellow-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-yellow-600"
+                          onClick={() =>
+                            handleMuteAudioRemoteUser(
+                              participantIdentity,
+                              audioTrackSid
+                            )
+                          }
+                        >
+                          <GoUnmute />
+                        </button>
+                        <button
+                          className="bg-yellow-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-yellow-600"
+                          onClick={() =>
+                            handleMuteScreenRemoteUser(
+                              participantIdentity,
+                              videoTrackSid
+                            )
+                          }
+                        >
+                          <IoVideocamOutline />
+                        </button>
+                        <button
+                          className="bg-gray-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-gray-600"
+                          onClick={() => handleKickUser(participantIdentity)}
+                        >
+                          <RiLogoutBoxRLine />
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
