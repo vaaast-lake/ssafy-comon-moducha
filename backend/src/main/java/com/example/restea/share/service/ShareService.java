@@ -9,6 +9,7 @@ import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.dto.ShareUpdateResponse;
 import com.example.restea.share.dto.ShareViewResponse;
 import com.example.restea.share.entity.ShareBoard;
+import com.example.restea.share.entity.ShareReply;
 import com.example.restea.share.repository.ShareBoardRepository;
 import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.user.entity.User;
@@ -93,6 +94,12 @@ public class ShareService {
         checkAuthorized(shareBoard, userId);
 
         shareBoard.deactivate();
+
+        shareBoard.getShareComments().forEach((comment) -> {
+            comment.getShareReplies().forEach(ShareReply::deactivate);
+            comment.deactivate();
+        });
+        shareParticipantRepository.deleteAll(shareBoard.getShareParticipants());
 
         return ShareDeleteResponse.builder()
                 .boardId(shareBoardId)
