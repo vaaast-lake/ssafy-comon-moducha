@@ -323,15 +323,11 @@ public class GetMyPageParticipatedShareBoardTest {
         userRepository.save(otherUser);
 
         for (int i = 0; i < contentsCount; i++) {
-            final String title = "Other Title" + i;
-            final String content = "Other Content" + i;
-            final Integer maxParticipants = 10 + i;
-            final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L + i);
             shareBoardRepository.save(ShareBoard.builder()
-                    .title(title)
-                    .content(content)
-                    .maxParticipants(maxParticipants)
-                    .endDate(endDate)
+                    .title("Other Title" + i)
+                    .content("Other Content" + i)
+                    .maxParticipants(10 + i)
+                    .endDate(LocalDateTime.now().plusWeeks(1L + i))
                     .user(otherUser)
                     .build());
             try {
