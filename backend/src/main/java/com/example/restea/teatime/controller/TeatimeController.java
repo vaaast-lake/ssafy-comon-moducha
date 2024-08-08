@@ -2,6 +2,9 @@ package com.example.restea.teatime.controller;
 
 import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.ResponseDTO;
+import com.example.restea.oauth2.dto.CustomOAuth2User;
+import com.example.restea.teatime.dto.TeatimeCreationRequest;
+import com.example.restea.teatime.dto.TeatimeCreationResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.teatime.service.TeatimeService;
 import jakarta.validation.Valid;
@@ -9,8 +12,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,5 +41,16 @@ public class TeatimeController {
                 dto.getPerPage());
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PostMapping
+    public ResponseEntity<ResponseDTO<?>> createTeatimeBoard(
+            @Valid @RequestBody TeatimeCreationRequest request,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        TeatimeCreationResponse result = teatimeService.createTeatimeBoard(request, customOAuth2User.getUserId());
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResponseDTO.from(result));
     }
 }

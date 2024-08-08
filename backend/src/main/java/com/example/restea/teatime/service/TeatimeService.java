@@ -2,13 +2,17 @@ package com.example.restea.teatime.service;
 
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_FOUND;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_INVALID_SORT;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
+import com.example.restea.teatime.dto.TeatimeCreationRequest;
+import com.example.restea.teatime.dto.TeatimeCreationResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
 import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.teatime.repository.TeatimeParticipantRepository;
+import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -40,6 +44,15 @@ public class TeatimeService {
         PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
 
         return ResponseDTO.of(data, pagination);
+    }
+
+    @Transactional
+    public TeatimeCreationResponse createTeatimeBoard(TeatimeCreationRequest request, Integer userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+        TeatimeBoard result = teatimeBoardRepository.save(request.toEntity(user));
+        return TeatimeCreationResponse.of(result);
     }
 
     private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {
