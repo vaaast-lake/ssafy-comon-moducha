@@ -91,4 +91,26 @@ public class UserService {
             authTokenRepository.deleteById(authTokenId);
         }
     }
+
+    /**
+     * 올바른 유저인지 확인하는 메소드
+     *
+     * @param userId       userId
+     * @param targetUserId 토큰에서 얻은 userId
+     * @return User 객체
+     */
+    public User checkValidUser(Integer userId, Integer targetUserId) {
+        if (!userId.equals(targetUserId)) { // 유저의 user_id가 일치하지 않으면
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_INVALID.getMessage());
+        }
+
+        User user = userRepository.findById(userId) // 해당 userId를 가진 User가 없으면
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+
+        if (!user.getActivated()) { // 탈퇴된 유저라면
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_ALREADY_WITHDRAWN.getMessage());
+        }
+
+        return user;
+    }
 }

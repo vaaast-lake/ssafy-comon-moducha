@@ -48,10 +48,13 @@ public class UserController {
      * @param dto              sort, page, perPage query Parameter
      * @return ResponseEntity
      */
-    @GetMapping("/mypage/shares")
+    @GetMapping("/{user_id}/mypage/shares")
     public ResponseEntity<ResponseDTO<?>> getShareBoardList(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable("user_id") Integer userId,
             @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        validateUser(customOAuth2User, userId);
 
         ResponseDTO<List<ShareListResponse>> shareBoardList =
                 userMyPageShareService.getShareBoardList(customOAuth2User.getUserId(),
@@ -69,10 +72,13 @@ public class UserController {
      * @param dto              sort, page, perPage query Parameter
      * @return ResponseEntity
      */
-    @GetMapping("/mypage/teatimes")
+    @GetMapping("/{user_id}/mypage/teatimes")
     public ResponseEntity<ResponseDTO<?>> getTeatimeBoardList(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable("user_id") Integer userId,
             @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        validateUser(customOAuth2User, userId);
 
         ResponseDTO<List<TeatimeListResponse>> teatimeBoardList =
                 userMyPageTeatimeService.getTeatimeBoardList(customOAuth2User.getUserId(),
@@ -90,10 +96,13 @@ public class UserController {
      * @param dto              sort, page, perPage query Parameter
      * @return ResponseEntity
      */
-    @GetMapping("/mypage/participated-shares")
+    @GetMapping("/{user_id}/mypage/participated-shares")
     public ResponseEntity<ResponseDTO<?>> getParticipatedShareBoardList(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable("user_id") Integer userId,
             @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        validateUser(customOAuth2User, userId);
 
         ResponseDTO<List<ShareListResponse>> shareBoardList =
                 userMyPageShareService.getParticipatedShareBoardList(customOAuth2User.getUserId(),
@@ -112,10 +121,13 @@ public class UserController {
      * @param dto              sort, page, perPage query Parameter
      * @return ResponseEntity
      */
-    @GetMapping("/mypage/participated-teatimes")
+    @GetMapping("/{user_id}/mypage/participated-teatimes")
     public ResponseEntity<ResponseDTO<?>> getParticipatedTeatimeBoardList(
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable("user_id") Integer userId,
             @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        validateUser(customOAuth2User, userId);
 
         ResponseDTO<List<TeatimeListResponse>> teatimeBoardList =
                 userMyPageTeatimeService.getParticipatedTeatimeBoardList(customOAuth2User.getUserId(),
@@ -125,5 +137,10 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(teatimeBoardList);
+    }
+
+    // 사용자 검증을 별도 메소드로 분리
+    private User validateUser(CustomOAuth2User customOAuth2User, Integer userId) {
+        return userService.checkValidUser(customOAuth2User.getUserId(), userId);
     }
 }
