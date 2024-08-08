@@ -82,7 +82,7 @@ const JoinRoom = ({
         ) => {
           setRemoteTracks((prev) => {
             const newGroupedTracks = { ...prev };
-            newGroupedTracks[participant.identity] = null;
+            delete newGroupedTracks[participant.identity];
             return newGroupedTracks;
           });
         }
