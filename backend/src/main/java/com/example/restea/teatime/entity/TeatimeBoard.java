@@ -80,4 +80,8 @@ public class TeatimeBoard extends BaseTimeEntity {
     public void addViewCount() {
         this.viewCount++;
     }
+
+    public void deactivate() {
+        this.activated = false;
+    }
 }
