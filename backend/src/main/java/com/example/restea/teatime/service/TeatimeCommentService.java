@@ -1,18 +1,23 @@
 package com.example.restea.teatime.service;
 
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_ACTIVATED;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_FOUND;
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_USER_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeCommentMessage.TEATIME_COMMENT_NO_CONTENT;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_ACTIVATED;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
+import com.example.restea.teatime.dto.TeatimeCommentCreationResponse;
 import com.example.restea.teatime.dto.TeatimeCommentViewResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
 import com.example.restea.teatime.entity.TeatimeComment;
 import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.teatime.repository.TeatimeCommentRepository;
 import com.example.restea.teatime.repository.TeatimeReplyRepository;
+import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -46,14 +51,32 @@ public class TeatimeCommentService {
         return ResponseDTO.of(data, pagination);
     }
 
-    private @NotNull TeatimeBoard getActivatedBoard(Integer teatimeBoardId) {
-        TeatimeBoard teatimeBoard = teatimeBoardRepository.findById(teatimeBoardId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_FOUND.getMessage()));
-        if (!teatimeBoard.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_ACTIVATED.getMessage());
+    @Transactional
+    public TeatimeCommentCreationResponse createTeatimeComment(String content, Integer teatimeBoardId, Integer userId) {
+
+        User user = validateUser(userId);
+
+        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+
+        if (!teatimeBoard.getUser().getActivated()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_USER_NOT_ACTIVATED.getMessage());
         }
-        return teatimeBoard;
+
+        TeatimeComment teatimeComment = TeatimeComment.builder()
+                .user(user)
+                .content(content)
+                .teatimeBoard(teatimeBoard)
+                .build();
+
+        teatimeCommentRepository.save(teatimeComment);
+
+        return TeatimeCommentCreationResponse.of(teatimeComment);
+    }
+
+    private @NotNull TeatimeBoard getActivatedBoard(Integer teatimeBoardId) {
+        return teatimeBoardRepository.findByIdAndActivated(teatimeBoardId, true)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_NOT_FOUND.getMessage()));
     }
 
     private @NotNull Page<TeatimeComment> getTeatimeComments(TeatimeBoard teatimeBoard, Integer page, Integer perPage) {
@@ -75,4 +98,17 @@ public class TeatimeCommentService {
         });
         return data;
     }
+
+    private User validateUser(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+
+        if (!user.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_ACTIVATED.getMessage());
+        }
+
+        return user;
+    }
+
+
 }
