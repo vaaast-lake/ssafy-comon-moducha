@@ -12,11 +12,14 @@ import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.teatime.dto.TeatimeCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCreationResponse;
+import com.example.restea.teatime.dto.TeatimeDeleteResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.teatime.dto.TeatimeUpdateRequest;
 import com.example.restea.teatime.dto.TeatimeUpdateResponse;
 import com.example.restea.teatime.dto.TeatimeViewResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
+import com.example.restea.teatime.entity.TeatimeComment;
+import com.example.restea.teatime.entity.TeatimeReply;
 import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.teatime.repository.TeatimeParticipantRepository;
 import com.example.restea.user.entity.User;
@@ -95,6 +98,35 @@ public class TeatimeService {
         teatimeBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
                 request.getEndDate(), request.getBroadcastDate());
         return TeatimeUpdateResponse.of(teatimeBoard, participants);
+    }
+
+    @Transactional
+    public TeatimeDeleteResponse deactivateTeatimeBoard(Integer teatimeBoardId, Integer userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
+
+        if (!user.getActivated()) {
+            throw new IllegalArgumentException(USER_NOT_ACTIVATED.getMessage());
+        }
+
+        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+
+        checkAuthorized(teatimeBoard, userId);
+
+        List<TeatimeComment> teatimeComments = teatimeBoard.getTeatimeComments();
+        teatimeComments.forEach(teatimeComment -> {
+            if (teatimeComment.getActivated()) {
+                teatimeComment.deactivate();
+            }
+
+            List<TeatimeReply> teatimeReplies = teatimeComment.getTeatimeReplies();
+            teatimeReplies.forEach(TeatimeReply::deactivate);
+        });
+
+        teatimeBoard.deactivate();
+
+        return TeatimeDeleteResponse.from(teatimeBoardId);
     }
 
     private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {

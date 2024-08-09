@@ -56,6 +56,10 @@ public class TeatimeComment extends BaseTimeEntity {
         this.user = user;
     }
 
+    public void deactivate() {
+        this.activated = false;
+    }
+
     // 보여질 댓글 내용을 반환하는 메소드
     public String getExposedContent() {
         return activated ? content : "삭제된 댓글입니다.";
@@ -65,5 +69,4 @@ public class TeatimeComment extends BaseTimeEntity {
     public String getExposedNickname() {
         return activated ? user.getExposedNickname() : "";
     }
-
 }
