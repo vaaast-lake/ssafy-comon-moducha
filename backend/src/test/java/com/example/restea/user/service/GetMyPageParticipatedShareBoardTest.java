@@ -158,7 +158,7 @@ public class GetMyPageParticipatedShareBoardTest {
         writeUserShareBoard(myTotalShareBoards, testUser, contentsCount, sort);
         writeOtherUserShareBoard(contentsCount);
 
-        final String url = "/api/v1/users/mypage/participated-shares";
+        final String url = "/api/v1/users/" + testUser.getId() + "/mypage/participated-shares";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -229,7 +229,7 @@ public class GetMyPageParticipatedShareBoardTest {
     void NoContent_getMyPageShareBoard_테스트(String testName, Integer page, Integer perPage, String sort)
             throws Exception {
         // given
-        final String url = "/api/v1/users/mypage/participated-shares";
+        final String url = "/api/v1/users/" + testUser.getId() + "/mypage/participated-shares";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -248,7 +248,7 @@ public class GetMyPageParticipatedShareBoardTest {
     void invalid_getMyPageShareBoard_테스트(String testName, String page, String perPage, String sort)
             throws Exception {
         // given
-        final String url = "/api/v1/users/mypage/participated-shares";
+        final String url = "/api/v1/users/" + testUser.getId() + "/mypage/participated-shares";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
