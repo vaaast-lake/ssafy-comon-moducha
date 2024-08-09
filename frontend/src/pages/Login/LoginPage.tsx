@@ -3,9 +3,8 @@ import LoginModal from './LoginModal';
 import LoginImg from '/LoginImg.png';
 import useAuthStore from '../../stores/authStore';
 import { Navigate } from 'react-router-dom';
-import { Button } from '@headlessui/react';
 const LoginPage = () => {
-  const { isLoggedIn, setLoggedIn } = useAuthStore();
+  const { isLoggedIn } = useAuthStore();
   if (isLoggedIn) {
     return <Navigate to="/mypage" />;
   }
