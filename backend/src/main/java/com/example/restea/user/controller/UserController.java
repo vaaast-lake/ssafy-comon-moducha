@@ -6,11 +6,13 @@ import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.common.util.Trim;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
+import com.example.restea.record.dto.RecordListResponse;
 import com.example.restea.share.dto.ShareListResponse;
 import com.example.restea.teatime.dto.TeatimeListResponse;
 import com.example.restea.user.dto.NicknameUpdateRequest;
 import com.example.restea.user.dto.NicknameUpdateResponse;
 import com.example.restea.user.entity.User;
+import com.example.restea.user.service.UserMyPageRecordService;
 import com.example.restea.user.service.UserMyPageShareService;
 import com.example.restea.user.service.UserMyPageTeatimeService;
 import com.example.restea.user.service.UserService;
@@ -37,6 +39,7 @@ public class UserController {
     private final UserService userService;
     private final UserMyPageShareService userMyPageShareService;
     private final UserMyPageTeatimeService userMyPageTeatimeService;
+    private final UserMyPageRecordService userMyPageRecordService;
 
     /**
      * 유저를 비활성화하는 메소드. 회원이 탈퇴버튼을 누를 경우 작동
@@ -48,7 +51,7 @@ public class UserController {
     public ResponseEntity<Void> withdraw(@AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
         String authToken = userService.withdrawUser(customOAuth2User.getUserId());
         userService.revokeGoogleAuth(authToken);
-        
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -190,6 +193,23 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(teatimeBoardList);
+    }
+
+    @GetMapping("/{user_id}/mypage/records")
+    public ResponseEntity<ResponseDTO<?>> getRecords(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable("user_id") Integer userId,
+            @Valid @ModelAttribute PaginationAndSortingDto dto) {
+
+        validateUser(customOAuth2User, userId);
+
+        ResponseDTO<List<RecordListResponse>> recordList =
+                userMyPageRecordService.getRecordList(customOAuth2User.getUserId(),
+                        dto.getPage(),
+                        dto.getPerPage());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(recordList);
     }
 
     // 사용자 검증을 별도 메소드로 분리
