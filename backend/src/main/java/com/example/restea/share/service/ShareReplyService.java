@@ -3,7 +3,6 @@ package com.example.restea.share.service;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_FOUND;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_USER_NOT_ACTIVATED;
 import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_FOUND;
-import static com.example.restea.share.enums.ShareReplyMessage.SHARE_REPLY_NOT_ACTIVATED;
 import static com.example.restea.share.enums.ShareReplyMessage.SHARE_REPLY_NOT_FOUND;
 import static com.example.restea.share.enums.ShareReplyMessage.SHARE_REPLY_NOT_WRITER;
 import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
@@ -105,7 +104,7 @@ public class ShareReplyService {
     public ShareReplyDeleteResponse deactivateShareReply(Integer shareBoardId, Integer shareCommentId,
                                                          Integer shareReplyId, Integer userId) {
 
-        ShareComment shareComment = shareCommentRepository.findByIdAndActivated(shareCommentId, true)
+        ShareComment shareComment = shareCommentRepository.findById(shareCommentId)
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NOT_FOUND.getMessage()));
 
@@ -121,16 +120,6 @@ public class ShareReplyService {
         shareReply.deactivate();
 
         return ShareReplyDeleteResponse.from(shareReply);
-    }
-
-    private ShareReply getActivatedShareReply(Integer shareReplyId) {
-        ShareReply shareReply = shareReplyRepository.findById(shareReplyId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_REPLY_NOT_FOUND.getMessage()));
-        if (!shareReply.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_REPLY_NOT_ACTIVATED.getMessage());
-        }
-        return shareReply;
     }
 
     private void checkAuthorized(ShareReply shareReply, Integer userId) {
