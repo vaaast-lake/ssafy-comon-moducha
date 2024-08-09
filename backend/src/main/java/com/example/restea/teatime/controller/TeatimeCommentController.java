@@ -4,6 +4,7 @@ import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.teatime.dto.TeatimeCommentCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCommentCreationResponse;
+import com.example.restea.teatime.dto.TeatimeCommentDeleteResponse;
 import com.example.restea.teatime.dto.TeatimeCommentViewResponse;
 import com.example.restea.teatime.service.TeatimeCommentService;
 import jakarta.validation.Valid;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,6 +70,28 @@ public class TeatimeCommentController {
                 teatimeBoardId, customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResponseDTO.from(result));
+    }
+
+    /**
+     * 주어진 티타임 게시글에 댓글 삭제(activate를 false로 변경)
+     *
+     * @param teatimeBoardId   티타임 게시글 ID
+     * @param teatimeCommentId 티타임 댓글 ID
+     * @param customOAuth2User 현재 인증된 사용자.
+     * @return 삭제한 댓글 ID를 포함하는 ResponseEntity 객체를 반환합니다. 댓글 삭제에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
+     */
+    @PatchMapping("/deactivated-comments/{teatimeCommentId}")
+    public ResponseEntity<ResponseDTO<?>> deactivateShareComment(
+            @PathVariable("teatimeBoardId") Integer teatimeBoardId,
+            @PathVariable("teatimeCommentId") Integer teatimeCommentId,
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        TeatimeCommentDeleteResponse result
+                = teatimeCommentService.deactivateTeatimeComment(teatimeBoardId, teatimeCommentId,
+                customOAuth2User.getUserId());
+
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.from(result));
     }
 }
