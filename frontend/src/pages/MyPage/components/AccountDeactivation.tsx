@@ -8,6 +8,15 @@ const AccountDeactivation = () => {
 
   // 회원탈퇴 API
   const handleDeactivate = async () => {
+    // 탈퇴 확인 메시지
+    const isConfirmed = window.confirm(
+      '정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.'
+    );
+    if (!isConfirmed) {
+      // 사용자가 취소한 경우
+      return;
+    }
+
     try {
       const response = await axiosInstance.patch('/users/withdraw');
 
