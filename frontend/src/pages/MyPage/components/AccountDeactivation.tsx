@@ -1,10 +1,9 @@
 import useAuthStore from '../../../stores/authStore';
-import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../../api/axiosInstance';
+import { handleLogout } from '../../../api/logout';
 
 const AccountDeactivation = () => {
-  const { setLoggedIn } = useAuthStore();
-  const navigate = useNavigate();
+  const { setLoggedIn, setCurrentUsername } = useAuthStore.getState();
 
   // 회원탈퇴 API
   const handleDeactivate = async () => {
@@ -23,8 +22,7 @@ const AccountDeactivation = () => {
       if (response.status === 204) {
         localStorage.removeItem('authorization'); // Access token 제거
         alert('모두차를 이용해 주셔서 감사합니다');
-        setLoggedIn(false); // 프론트에서 로그아웃
-        navigate('/login'); // 로그인 페이지로 리다이렉트
+        handleLogout(setLoggedIn, setCurrentUsername);
       } else {
         // 비정상적인 상태 코드가 응답으로 오면
         console.error('Unexpected response status: ', response.status);
