@@ -29,7 +29,7 @@ public class TeatimeCommentController {
     private final TeatimeCommentService teatimeCommentService;
 
     /**
-     * 주어진 나눔 게시글 댓글 조회
+     * 주어진 티타임 게시글 댓글 조회
      *
      * @param teatimeBoardId 티타임 게시글 ID.
      * @param perPage        페이지 당 항목 수.
