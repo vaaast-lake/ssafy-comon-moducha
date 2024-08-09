@@ -36,7 +36,7 @@ export const getMypageRecords = async (
 ): Promise<MypageRecordListResponse> => {
   try {
     const response = await axiosInstance.get<MypageRecordListResponse>(
-      `/users/${currentUserId}/records`,
+      `/users/${currentUserId}/mypage/records`,
       { params }
     );
     return response.data;
