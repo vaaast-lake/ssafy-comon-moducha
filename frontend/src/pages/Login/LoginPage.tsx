@@ -26,21 +26,7 @@ const LoginPage = () => {
             ) : (
               <div>
                 <LoginModal />
-                <div className="test-login-button">
-                  <Button
-                    onClick={() => {
-                      console.log('test login');
-                      setLoggedIn(true);
-                      localStorage.setItem(
-                        'authorization',
-                        'eyJhbGciOiJIUzI1NiJ9.eyJjYXRlZ29yeSI6IkF1dGhvcml6YXRpb24iLCJ1c2VySWQiOjEsInVzZXJuYW1lIjoi66ek64GE65-96rKMIO2DgeyblO2VnCDrp53slYTsp4A2NCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzIyNDk2NjcyLCJleHAiOjE3MjI0OTcyNzJ9.8qMlZ5gT2VzChz7r66rbrVoVqBGcfOpUT7LtfteibIU'
-                      ); // for dev only
-                      return window.location.reload();
-                    }}
-                  >
-                    Test Login
-                  </Button>
-                </div>
+                <div className="test-login-button"></div>
               </div>
             )}
           </div>
