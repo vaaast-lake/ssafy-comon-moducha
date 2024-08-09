@@ -13,6 +13,7 @@ public enum TeatimeBoardMessage {
     TEATIMEBOARD_BEFORE_BROADCAST_DATE("Before the broadcast date."),
     TEATIME_BOARD_INVALID_SORT("Invalid sort."),
     TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS("Less than current participants."),
+    TEATIME_BOARD_USER_NOT_ACTIVATED("TeatimeBoard User not activated"),
     ;
 
     private final String message;

@@ -48,7 +48,7 @@ public class UserMyPageTeatimeService {
     }
 
     /**
-     * 최신순 내림차순으로 나눔 글 조회
+     * 최신순 내림차순으로 티타임 글 조회
      *
      * @param page    페이지
      * @param perPage 페이지 당 컨텐츠 개수
@@ -70,7 +70,7 @@ public class UserMyPageTeatimeService {
     /**
      * 내가 쓴 티타임 글 Page 객체 생성
      *
-     * @param teatimeBoards 나눔 글
+     * @param teatimeBoards 티타임 글
      * @return 티타임 글 Response List
      */
     private List<TeatimeListResponse> createResponseFormTeatimeBoards(List<TeatimeBoard> teatimeBoards) {
