@@ -1,5 +1,9 @@
 package com.example.restea.share.service;
 
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_WRITER;
+import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
+
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.dto.ShareCreationResponse;
@@ -9,6 +13,7 @@ import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.dto.ShareUpdateResponse;
 import com.example.restea.share.dto.ShareViewResponse;
 import com.example.restea.share.entity.ShareBoard;
+import com.example.restea.share.entity.ShareReply;
 import com.example.restea.share.repository.ShareBoardRepository;
 import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.user.entity.User;
@@ -55,6 +60,9 @@ public class ShareService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+        if (!user.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_ALREADY_WITHDRAWN.getMessage());
+        }
         ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(user));
         return ShareCreationResponse.of(result);
     }
@@ -93,6 +101,12 @@ public class ShareService {
         checkAuthorized(shareBoard, userId);
 
         shareBoard.deactivate();
+
+        shareBoard.getShareComments().forEach((comment) -> {
+            comment.getShareReplies().forEach(ShareReply::deactivate);
+            comment.deactivate();
+        });
+        shareParticipantRepository.deleteAll(shareBoard.getShareParticipants());
 
         return ShareDeleteResponse.builder()
                 .boardId(shareBoardId)
@@ -141,8 +155,13 @@ public class ShareService {
     }
 
     private void checkAuthorized(ShareBoard shareBoard, Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+        if (!user.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_ALREADY_WITHDRAWN.getMessage());
+        }
         if (!Objects.equals(shareBoard.getUser().getId(), userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not authorized");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, SHARE_BOARD_NOT_WRITER.getMessage());
         }
     }
 

@@ -1,6 +1,7 @@
 package com.example.restea.share.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class ShareReplyCreationRequest {
+
     @NotBlank(message = "empty content.")
+    @Size(max = 100, message = "content is too long.")
     private String content;
 }
