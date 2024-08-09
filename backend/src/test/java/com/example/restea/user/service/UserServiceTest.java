@@ -177,9 +177,9 @@ class UserServiceTest {
         Record record = Record.builder()
                 .title("testTitle")
                 .content("testContent")
+                .user(user)
                 .build();
 
-        record.addUser(user);
         recordRepository.save(record);
         em.flush();
         em.clear();

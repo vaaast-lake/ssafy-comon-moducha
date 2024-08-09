@@ -42,12 +42,9 @@ public class Record extends BaseTimeEntity {
     private User user;
 
     @Builder
-    public Record(String title, String content) {
+    public Record(String title, String content, User user) {
         this.title = title;
         this.content = content;
-    }
-
-    public void addUser(User user) {
         this.user = user;
     }
 }
