@@ -30,7 +30,6 @@ export default function RoomVideo({
     <div 
       id={'camera-' + participantIdentity} 
       className={`
-        border-4 border-indigo-500/50
         relative
         h-full w-full
         overflow-hidden

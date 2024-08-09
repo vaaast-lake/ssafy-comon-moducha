@@ -1,3 +1,4 @@
+import useAuthStore from '../../stores/authStore';
 import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 const ArticleCard = ({
@@ -5,33 +6,42 @@ const ArticleCard = ({
   nickname,
   createdDate,
   endDate,
-  viewCount,
   broadcastDate,
   participants,
   maxParticipants,
 }: ArticleDetail) => {
+  const shareHandler = () => {};
+  const teatimeHandler = () => {};
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   return (
-    <div className="md:sticky md:top-2 flex flex-col p-2 overflow-clip rounded-lg shadow gap-4">
+    <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
       <figure
         className="bg-contain bg-center bg-no-repeat h-48"
         style={{ backgroundImage: `url(/logo.png)` }}
       />
-      <div id="card-body">
+      <div id="card-body" className="text-disabled">
         <header>
           <div className="flex gap-1">
-            <span>{nickname}</span>|<span>조회 {viewCount}</span>
+            <span>{nickname}</span>
           </div>
         </header>
         <div className="pl-0 flex flex-col">
           <span>작성 : {dateParser(createdDate)}</span>
-          <span>신청 : {participants + ' / ' + maxParticipants}</span>
           <span>마감 : {dateParser(endDate)}</span>
-          {broadcastDate && <span>예정 : {dateParser(broadcastDate)}</span>}
+          <span>참여 : {participants + ' / ' + maxParticipants}</span>
+          {boardType === 'teatimes' && (
+            <span>예정 : {dateParser(broadcastDate)}</span>
+          )}
         </div>
       </div>
-      <button className="btn bg-success hover:bg-rose-500 text-white">
-        나눔 참여하기
-      </button>
+      {isLoggedIn && (
+        <button
+          onClick={boardType === 'shares' ? shareHandler : teatimeHandler}
+          className="btn rounded bg-tea hover:bg-rose-400 text-white"
+        >
+          {boardType === 'shares' ? '나눔 참여하기' : '티타임 참여하기'}
+        </button>
+      )}
     </div>
   );
 };

@@ -4,24 +4,24 @@ import { BoardType } from '../../types/BoardType';
 import { Comment } from '../../types/CommentType';
 import useAuthStore from '../../stores/authStore';
 
-interface CommentWriteType {
+interface CommentWriteProp {
   boardType: BoardType;
   boardId: number;
-  hasComments: boolean;
-  setHasComments: Dispatch<SetStateAction<boolean>>;
   setCommentList: Dispatch<SetStateAction<Comment[]>>;
 }
 
 const CommentWrite = ({
   boardType,
   boardId,
-  hasComments,
-  setHasComments,
   setCommentList,
-}: CommentWriteType) => {
+}: CommentWriteProp) => {
   const [content, setContent] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const { isLoggedIn, userId, nickname } = useAuthStore((state) => ({
+    isLoggedIn: state.isLoggedIn,
+    userId: state.currentUserId,
+    nickname: state.currentUsername,
+  }));
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -31,11 +31,17 @@ const CommentWrite = ({
         content,
       })
       .then((res) => {
-        setCommentList((prev) => [...prev, res.data.data]);
-        handleDelete();
-        if (!hasComments) {
-          setHasComments(() => true);
-        }
+        // creationResponse에 현재 유저 정보 삽입
+        setCommentList((prev) => [
+          ...prev,
+          {
+            ...res.data.data,
+            replyCount: 0,
+            userId,
+            nickname,
+          },
+        ]);
+        clearForm();
       })
       .catch((err) => {
         alert('댓글 작성 중 에러가 발생했습니다.');
@@ -45,34 +51,38 @@ const CommentWrite = ({
         setIsSending(() => false);
       });
   };
-  const handleDelete = () => {
+  const clearForm = () => {
     setContent(() => '');
   };
 
-  if (!isLoggedIn) return null;
   return (
     <form onSubmit={handleSubmit} className="flex py-4">
       <textarea
-        className="w-full border p-4 resize-none focus:outline-none focus:border-tea focus:ring-tea"
+        className={`w-full border p-4 resize-none focus:outline-none focus:border-tea focus:ring-tea ${!isLoggedIn && 'bg-gray-100'}`}
         name="content"
-        placeholder="댓글을 작성해 보세요"
+        placeholder={
+          isLoggedIn
+            ? '댓글을 작성해 보세요'
+            : '댓글을 작성하려면 로그인 하세요'
+        }
         value={content}
         onChange={(e) => setContent(e.target.value)}
         required
+        disabled={!isLoggedIn}
       />
       <div className="w-24 flex flex-col px-2 gap-2">
         <button
           type="submit"
           className="btn rounded bg-teabg text-tea hover:bg-tea hover:text-white"
-          disabled={isSending}
+          disabled={isSending || !isLoggedIn}
         >
           작성
         </button>
         <button
-          onClick={handleDelete}
+          onClick={clearForm}
           type="button"
           className="btn rounded bg-teabg text-tea hover:bg-tea hover:text-white"
-          disabled={isSending}
+          disabled={isSending || !isLoggedIn}
         >
           삭제
         </button>

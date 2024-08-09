@@ -2,17 +2,15 @@ import { useEffect, useState } from 'react';
 import { fetchArticleDetail } from '../../api/fetchArticle';
 import { useParams } from 'react-router-dom';
 import { ShareDetailItem } from '../../types/ShareType';
-import { ShareDetailResponse } from '../../constants/shareResponseTest';
 import ArticleCard from '../../components/Article/ArticleCard';
 import ArticleContent from '../../components/Article/ArticleContent';
 import CommentList from '../../components/Comment/CommentList';
 import SideLayout from '../../components/Layout/SideLayout';
+import ArticleLoading from '../../components/Loading/ArticleLoading';
 
 const ShareDetail = () => {
   const { boardId } = useParams();
-  const [shareDetail, setsShareDetail] = useState<ShareDetailItem>(
-    ShareDetailResponse.data
-  );
+  const [shareDetail, setsShareDetail] = useState<ShareDetailItem | null>(null);
 
   useEffect(() => {
     if (boardId) {
@@ -23,6 +21,7 @@ const ShareDetail = () => {
   }, [boardId]);
   // router 파라미터가 누락된 경우
   if (!boardId) return null;
+  if (!shareDetail) return <ArticleLoading />;
   return (
     <div className="grid grid-cols-10">
       <SideLayout></SideLayout>

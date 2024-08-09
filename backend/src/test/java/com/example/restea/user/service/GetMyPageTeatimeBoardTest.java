@@ -147,7 +147,7 @@ public class GetMyPageTeatimeBoardTest {
         writeUserTeatimeBoard(myTotalTeatimeBoards, testUser, contentsCount);
         writeOtherUserTeatimeBoard(contentsCount);
 
-        final String url = "/api/v1/users/mypage/teatimes";
+        final String url = "/api/v1/users/" + testUser.getId() + "/mypage/teatimes";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -201,7 +201,7 @@ public class GetMyPageTeatimeBoardTest {
     void NoContent_getMyPageTeatimeBoard_테스트(String testName, Integer page, Integer perPage)
             throws Exception {
         // given
-        final String url = "/api/v1/users/mypage/teatimes";
+        final String url = "/api/v1/users/" + testUser.getId() + "/mypage/teatimes";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)
@@ -220,7 +220,7 @@ public class GetMyPageTeatimeBoardTest {
     void invalid_getMyPageTeatimeBoard_테스트(String testName, String page, String perPage)
             throws Exception {
         // given
-        final String url = "/api/v1/users/mypage/teatimes";
+        final String url = "/api/v1/users/" + testUser.getId() + "/mypage/teatimes";
 
         // when
         ResultActions resultActions = mockMvc.perform(get(url)

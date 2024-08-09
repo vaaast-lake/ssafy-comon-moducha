@@ -6,14 +6,16 @@ import './TextEditor.css';
 import { Dispatch, SetStateAction } from 'react';
 
 interface EditorType {
+  content?: string;
   setInput: Dispatch<SetStateAction<string>>;
 }
 
-export default function TextEditor({ setInput }: EditorType) {
+export default function TextEditor({ content, setInput }: EditorType) {
   return (
     <CKEditor
       editor={ClassicEditor}
       config={editorConfig as any}
+      data={content}
       onBlur={(event, editor) => setInput(editor.getData())}
     />
   );

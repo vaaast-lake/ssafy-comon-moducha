@@ -1,5 +1,5 @@
 import Records from './components/MyRecords';
-import Shares from './components/MyShares';
+import MyShares from './components/MyShares';
 import Teatimes from './components/MyTeatimes';
 import AccountDeactivation from './components/AccountDeactivation';
 import MainLayout from '../../components/Layout/MainLayout';
@@ -8,7 +8,7 @@ import TitleCard from '../../components/Title/TitleCard';
 import { Navigate } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';
 
-const ProfilePage = () => {
+const MyPage = () => {
   const { isLoggedIn, currentUsername } = useAuthStore();
   if (!isLoggedIn) {
     return <Navigate to="/" />;
@@ -19,7 +19,7 @@ const ProfilePage = () => {
       {/* 좌측 사이드바 영역 */}
       <SideLayout></SideLayout>
       <MainLayout className="gap-4">
-        <header>
+        {/* <header>
           <TitleCard>
             <div className="flex justify-between items-center">
               <span className="text-disabled">마이페이지</span>
@@ -35,8 +35,8 @@ const ProfilePage = () => {
         <Records />
         <div className="divider"></div>
         <Teatimes />
-        <div className="divider"></div>
-        <Shares />
+        <div className="divider"></div> */}
+        <MyShares />
         <div className="divider"></div>
         <AccountDeactivation />
       </MainLayout>
@@ -46,4 +46,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default MyPage;

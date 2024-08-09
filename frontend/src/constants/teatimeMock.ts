@@ -3,7 +3,7 @@ export const genMockList = (n: number) => {
   const mockItems = [];
   for (let i = 1; i < n + 1; i++) {
     const mockItem = {
-      userId: i,
+      userId: `${i}`,
       boardId: i,
       title: `티타임 ${i}`,
       content:
@@ -28,7 +28,7 @@ export const mockList = {
 
 export const mockDetail = {
   data: {
-    userId: 1,
+    userId: "1",
     boardId: 1,
     title: 'Tea Time Event',
     content: 'Join us for a relaxing tea time event.',
