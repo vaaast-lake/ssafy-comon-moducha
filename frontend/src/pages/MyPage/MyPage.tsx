@@ -19,7 +19,7 @@ const MyPage = () => {
       {/* 좌측 사이드바 영역 */}
       <SideLayout></SideLayout>
       <MainLayout className="gap-4">
-        {/* <header>
+        <header>
           <TitleCard>
             <div className="flex justify-between items-center">
               <span className="text-disabled">마이페이지</span>
@@ -35,7 +35,7 @@ const MyPage = () => {
         <Records />
         <div className="divider"></div>
         <Teatimes />
-        <div className="divider"></div> */}
+        <div className="divider"></div>
         <MyShares />
         <div className="divider"></div>
         <AccountDeactivation />

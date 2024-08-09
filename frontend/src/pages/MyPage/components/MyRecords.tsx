@@ -1,3 +1,4 @@
+//API 작성 완료
 import { useEffect, useState } from 'react';
 import {
   getMypageRecords,
@@ -32,7 +33,7 @@ const Records = () => {
     return (
       <>
         <h1 className="font-semibold text-2xl">나의 기록</h1>
-        <div>로딩 중...</div>;
+        <div>로딩 중...</div>
       </>
     );
   }
