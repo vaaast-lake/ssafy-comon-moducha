@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import mockReply from '../../constants/shareReplyResponseTest.json';
 import CommentListItem from './CommentListItem';
 import { fetchReplyList } from '../../api/fetchComment';
 import { BoardType } from '../../types/BoardType';
+import { Comment } from '../../types/CommentType';
 
 interface ReplyType {
   boardType: BoardType;
@@ -18,7 +18,7 @@ const CommentReply = ({
   boardId,
   currentUserId,
 }: ReplyType) => {
-  const [replyList, setReplyList] = useState(mockReply.data);
+  const [replyList, setReplyList] = useState<Comment[]>([]);
   const [fetchParams, setFetchParams] = useState({
     boardType: boardType,
     boardId,
@@ -30,6 +30,7 @@ const CommentReply = ({
     // 재귀호출된 경우 fetch 방지
     fetchReplyList(fetchParams).then((res) => setReplyList(res.data));
   });
+  if (!replyList) return null;
   return (
     <div id="reply-list">
       <div>
@@ -41,6 +42,7 @@ const CommentReply = ({
             <div className="col-span-11">
               <hr />
               <CommentListItem
+                setCommentList={setReplyList}
                 {...{ ...el, type: 'reply', boardType, currentUserId }}
               />
             </div>

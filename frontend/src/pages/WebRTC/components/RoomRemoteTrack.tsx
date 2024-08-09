@@ -3,8 +3,8 @@ import { GroupedTracks } from '../../../types/WebRTCType';
 import RoomAudio from './RoomAudio';
 import RoomVideo from './RoomVideo';
 import useConfigureUrls from '../../../hooks/useConfigureUrls';
-import { GoUnmute } from 'react-icons/go';
-import { IoVideocamOutline } from 'react-icons/io5';
+import { GoMute, GoUnmute } from 'react-icons/go';
+import { IoVideocamOffOutline, IoVideocamOutline } from 'react-icons/io5';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { useMemo, useState } from 'react';
 
@@ -26,17 +26,19 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
 
   const handleMuteAudioRemoteUser = (
     participantIdentity: string,
-    trackSid: string | undefined
+    trackSid: string | undefined,
+    isMute: boolean,
   ) => {
     axios({
       method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/7/lives/mute/1`,
+      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/mute/1`,
       headers: {
         'Content-Type': 'application/json',
       },
       data: {
         userId: `${participantIdentity}`,
         trackSid: `${trackSid}`,
+        isMute: `${!isMute}`
       },
     })
       .then((res) => {
@@ -47,19 +49,21 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
       });
   };
 
-  const handleMuteScreenRemoteUser = (
+  const toggleMuteScreenRemoteUser = (
     participantIdentity: string,
-    trackSid: string | undefined
+    trackSid: string | undefined,
+    isMute: boolean
   ) => {
     axios({
       method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/7/lives/mute/1`,
+      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/mute/1`,
       headers: {
         'Content-Type': 'application/json',
       },
       data: {
         userId: `${participantIdentity}`,
         trackSid: `${trackSid}`,
+        isMute: `${!isMute}`
       },
     })
       .then((res) => {
@@ -73,7 +77,7 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
   const handleKickUser = (participantIdentity: string) => {
     axios({
       method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/7/lives/kick/1`,
+      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/kick/1`,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -94,13 +98,12 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
   return (
     <div
       className="
-          remote-video-container
-          row-span-3
-          pt-2
-          flex
-          flex-col
-          w-full h-full
-        "
+        remote-video-container
+        row-span-3
+        pt-2
+        flex flex-col
+        w-full h-full
+      "
     >
       <div className="remote-video-wrapper gap-3 grid grid-cols-12 row-span-11 w-full h-full">
         {currentGroup.map(([participantIdentity, tracks]) => {
@@ -116,9 +119,15 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                       participant-container 
                       relative
                       col-span-4
+                      rounded-2xl overflow-hidden
                     "
                 >
-                  <div className="participant-screen w-full h-full">
+                  <div 
+                    className={`
+                      participant-screen w-full h-full
+                      ${tracks.video?.isMute && 'bg-black bg-opacity-40'}
+                    `}
+                  >
                     {tracks.video &&
                       tracks.video.trackPublication.source !==
                         'screen_share' && (
@@ -155,26 +164,41 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                         '
                       >
                         <button
-                          className="bg-yellow-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-yellow-600"
+                          className={`
+                            text-white text-3xl px-5 py-2 rounded ml-2 transition-all
+                            ${tracks.audio?.isMute ? 
+                              'bg-red-500 hover:bg-red-600' 
+                              : 'bg-yellow-500 hover:bg-yellow-600'
+                            }
+                          `}
                           onClick={() =>
                             handleMuteAudioRemoteUser(
                               participantIdentity,
-                              audioTrackSid
+                              audioTrackSid,
+                              tracks.audio!.isMute
                             )
                           }
                         >
-                          <GoUnmute />
+                          {tracks.audio?.isMute ? <GoMute /> : <GoUnmute />}
+                          
                         </button>
                         <button
-                          className="bg-yellow-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-yellow-600"
+                          className={`
+                            text-white text-3xl px-5 py-2 rounded ml-2 transition-all
+                            ${tracks.video?.isMute ? 
+                              'bg-red-500 hover:bg-red-600' 
+                              : 'bg-yellow-500 hover:bg-yellow-600'
+                            }
+                          `}
                           onClick={() =>
-                            handleMuteScreenRemoteUser(
+                            toggleMuteScreenRemoteUser(
                               participantIdentity,
-                              videoTrackSid
+                              videoTrackSid,
+                              tracks.video!.isMute
                             )
                           }
                         >
-                          <IoVideocamOutline />
+                          {tracks.video?.isMute ? <IoVideocamOffOutline /> : <IoVideocamOutline />}
                         </button>
                         <button
                           className="bg-gray-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-gray-600"
