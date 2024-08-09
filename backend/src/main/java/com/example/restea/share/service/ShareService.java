@@ -1,8 +1,7 @@
 package com.example.restea.share.service;
 
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_WRITER;
-import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
-import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
+import static com.example.restea.share.util.ShareUtil.getActivatedShareBoard;
 
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.share.dto.ShareCreationRequest;
@@ -16,6 +15,7 @@ import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareReply;
 import com.example.restea.share.repository.ShareBoardRepository;
 import com.example.restea.share.repository.ShareParticipantRepository;
+import com.example.restea.share.util.ShareUtil;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -45,7 +45,7 @@ public class ShareService {
     public Map<String, Object> getShareBoardList(String sort, Integer page, Integer perPage) {
 
         // data
-        Page<ShareBoard> shareBoards = getShareBoards(sort, page, perPage); // 아직 기간이 지나지 않고 활성화된 게시글
+        Page<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage); // 아직 기간이 지나지 않고 활성화된 게시글
         List<ShareListResponse> data = createResponseFormShareBoards(shareBoards.getContent());
         Long count = calculateCount(sort); // latest, urgent 처리방식에 따라 달라질 수 있음
 
@@ -58,55 +58,51 @@ public class ShareService {
     @Transactional
     public ShareCreationResponse createShareBoard(ShareCreationRequest request, Integer userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
-        if (!user.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_ALREADY_WITHDRAWN.getMessage());
-        }
-        ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(user));
+        User activatedUser = ShareUtil.getActivatedUser(userRepository, userId);
+        ShareBoard result = shareBoardRepository.save(request.toEntity().addUser(activatedUser));
         return ShareCreationResponse.of(result);
     }
 
     @Transactional
     public ShareViewResponse getShareBoard(Integer shareBoardId) {
 
-        ShareBoard shareBoard = getActivatedBoard(shareBoardId);
-        Integer participants = shareParticipantRepository.countByShareBoard(shareBoard).intValue();
+        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        Integer participants = shareParticipantRepository.countByShareBoard(activatedShareBoard).intValue();
 
-        shareBoard.addViewCount();
+        activatedShareBoard.addViewCount();
 
-        return ShareViewResponse.of(shareBoard, participants);
+        return ShareViewResponse.of(activatedShareBoard, participants);
     }
 
     @Transactional
     public ShareUpdateResponse updateShareBoard(Integer shareBoardId, ShareUpdateRequest request, Integer userId) {
 
-        ShareBoard shareBoard = getActivatedBoard(shareBoardId);
+        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        User activatedUser = ShareUtil.getActivatedUser(userRepository, userId);
+        checkAuthorized(activatedShareBoard, activatedUser);
+        checkLessThanCurrentParticipants(request, activatedShareBoard);
 
-        checkAuthorized(shareBoard, userId);
-        checkLessThanCurrentParticipants(request, shareBoard);
-
-        // 업데이트
-        shareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
+        activatedShareBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
                 request.getEndDate());
-        Integer participants = shareParticipantRepository.countByShareBoard(shareBoard).intValue();
-        return ShareUpdateResponse.of(shareBoard, participants);
+        Integer participants = shareParticipantRepository.countByShareBoard(activatedShareBoard).intValue();
+        return ShareUpdateResponse.of(activatedShareBoard, participants);
     }
 
     @Transactional
     public ShareDeleteResponse deactivateShareBoard(Integer shareBoardId, Integer userId) {
 
-        ShareBoard shareBoard = getActivatedBoard(shareBoardId);
+        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        User activatedUser = ShareUtil.getActivatedUser(userRepository, userId);
+        checkAuthorized(activatedShareBoard, activatedUser);
 
-        checkAuthorized(shareBoard, userId);
+        activatedShareBoard.deactivate();
 
-        shareBoard.deactivate();
-
-        shareBoard.getShareComments().forEach((comment) -> {
+        // TODO : shareBoard.deactivate() 안으로 이동
+        activatedShareBoard.getShareComments().forEach((comment) -> {
             comment.getShareReplies().forEach(ShareReply::deactivate);
             comment.deactivate();
         });
-        shareParticipantRepository.deleteAll(shareBoard.getShareParticipants());
+        shareParticipantRepository.deleteAll(activatedShareBoard.getShareParticipants());
 
         return ShareDeleteResponse.builder()
                 .boardId(shareBoardId)
@@ -121,7 +117,7 @@ public class ShareService {
         };
     }
 
-    private @NotNull Page<ShareBoard> getShareBoards(String sort, Integer page, Integer perPage) {
+    private @NotNull Page<ShareBoard> getActivatedShareBoards(String sort, Integer page, Integer perPage) {
 
         Page<ShareBoard> shareBoards = switch (sort) {
             case "latest" -> shareBoardRepository.findAllByActivated(true,
@@ -145,22 +141,8 @@ public class ShareService {
         return data;
     }
 
-    private @NotNull ShareBoard getActivatedBoard(Integer shareBoardId) {
-        ShareBoard shareBoard = shareBoardRepository.findById(shareBoardId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found"));
-        if (!shareBoard.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard deactivated");
-        }
-        return shareBoard;
-    }
-
-    private void checkAuthorized(ShareBoard shareBoard, Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
-        if (!user.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_ALREADY_WITHDRAWN.getMessage());
-        }
-        if (!Objects.equals(shareBoard.getUser().getId(), userId)) {
+    private void checkAuthorized(ShareBoard shareBoard, User activatedUser) {
+        if (!Objects.equals(shareBoard.getUser().getId(), activatedUser.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, SHARE_BOARD_NOT_WRITER.getMessage());
         }
     }
