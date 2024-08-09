@@ -85,7 +85,7 @@ const tokenRefresh = async (instance: AxiosInstance) => {
       /^Bearer\s+/,
       ''
     );
-    console.log(newAccessToken);
+    // console.log(newAccessToken);
     if (!newAccessToken) {
       console.log(
         '리프레시 토큰을 통해 액세스 토큰을 재발급하지 못했습니다. axios interceptor의 문제이거나 재로그인이 필요합니다'

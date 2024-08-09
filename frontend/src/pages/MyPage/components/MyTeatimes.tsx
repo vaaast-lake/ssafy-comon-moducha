@@ -18,13 +18,11 @@ const Teatimes = () => {
   const [status, setStatus] = useState<'before' | 'ongoing'>('before'); // 티타임 상태 필터
   const [writeError, setWriteError] = useState<string | null>(null); // 작성 티타임 오류
   const [participateError, setParticipateError] = useState<string | null>(null); // 참여 티타임 오류
-  const userId = 1; // 사용자 ID (예제용, 실제로는 로그인 사용자 ID로 대체)
 
   // 티타임 작성 목록 조회
   const fetchMyTeatimeWriteList = async () => {
     try {
       const response = await getMyTeatimeWriteList({
-        userId,
         page: writePagination.page,
         perPage: writePagination.perPage,
       });
@@ -41,7 +39,6 @@ const Teatimes = () => {
   const fetchMyTeatimeParticipateList = async () => {
     try {
       const response = await getMyTeatimeParticipateList({
-        userId,
         status,
         page: participatePagination.page,
         perPage: participatePagination.perPage,

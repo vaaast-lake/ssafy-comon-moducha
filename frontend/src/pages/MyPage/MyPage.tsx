@@ -32,9 +32,9 @@ const MyPage = () => {
           </TitleCard>
           <div className="divider"></div>
         </header>
-        <Records />
+        {/* <Records />
         <div className="divider"></div>
-        <Teatimes />
+        <Teatimes /> */}
         <div className="divider"></div>
         <MyShares />
         <div className="divider"></div>
