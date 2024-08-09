@@ -2,20 +2,24 @@ import { useEffect, useState } from 'react';
 import CommentListItem from './CommentListItem';
 import { fetchReplyList } from '../../api/fetchComment';
 import { BoardType } from '../../types/BoardType';
-import { Comment } from '../../types/CommentType';
+import { Comment, CommentReplyType } from '../../types/CommentType';
+import CommentReplyWrite from './CommentReplyWrite';
 
 interface ReplyType {
+  isReplyWrite: boolean;
+  commentType: CommentReplyType;
   boardType: BoardType;
-  boardId?: number;
+  boardId: number;
   commentId: number;
   replyCount?: number;
   currentUserId: string;
 }
 
 const CommentReply = ({
+  isReplyWrite,
   boardType,
-  commentId,
   boardId,
+  commentId,
   currentUserId,
 }: ReplyType) => {
   const [replyList, setReplyList] = useState<Comment[]>([]);
@@ -26,30 +30,41 @@ const CommentReply = ({
     page: 1,
     perPage: 10,
   });
+
   useEffect(() => {
-    // 재귀호출된 경우 fetch 방지
-    fetchReplyList(fetchParams).then((res) => setReplyList(res.data));
-  });
-  if (!replyList) return null;
+    fetchReplyList(fetchParams).then((res) => {
+      setReplyList(res.data.data);
+    });
+  }, []);
+
   return (
-    <div id="reply-list">
-      <div>
-        {replyList.map((el) => (
-          <ul key={el.replyId} className="grid grid-cols-12">
-            <div className="col-span-1 relative">
-              <div className="after:div after:border-l-2 after:border-b-2  after:rounded-sm after:border-slate-300 after:w-1/3 after:h-1/4 after:absolute after:right-2 after:top-2"></div>
-            </div>
-            <div className="col-span-11">
-              <hr />
-              <CommentListItem
-                setCommentList={setReplyList}
-                {...{ ...el, type: 'reply', boardType, currentUserId }}
-              />
-            </div>
-          </ul>
-        ))}
-      </div>
-    </div>
+    <ul id="reply-list">
+      {isReplyWrite && (
+        <CommentReplyWrite
+          {...{ boardId, boardType, commentId, setReplyList }}
+        />
+      )}
+      {replyList.map((el) => (
+        <li key={el.replyId} className="grid grid-cols-12">
+          <div className="col-span-1 relative">
+            <div className="after:div after:border-l-2 after:border-b-2  after:rounded-sm after:border-slate-300 after:w-1/3 after:h-1/4 after:absolute after:right-2 after:top-2"></div>
+          </div>
+          <div className="col-span-11">
+            <hr />
+            <CommentListItem
+              setCommentList={setReplyList}
+              {...{
+                ...el,
+                commentType: 'reply',
+                boardType,
+                boardId,
+                currentUserId,
+              }}
+            />
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 };
 

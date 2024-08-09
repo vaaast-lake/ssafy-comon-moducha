@@ -20,7 +20,10 @@ const CommentList = ({ boardType, boardId }: Board) => {
     perPage: 10,
   });
   const sentinel = useRef(null);
-  const currentUserId = useAuthStore((state) => state.currentUserId);
+  const { currentUserId, isLoggedIn } = useAuthStore((state) => ({
+    currentUserId: state.currentUserId,
+    isLoggedIn: state.isLoggedIn,
+  }));
 
   useEffect(() => {
     fetchCommentList(fetchParams)
@@ -38,16 +41,26 @@ const CommentList = ({ boardType, boardId }: Board) => {
         <h1 className="m-2 text-xl font-bold">댓글</h1>
         <hr className="border border-gray-300" />
       </header>
-      <CommentWrite {...{ boardType, boardId, setCommentList }} />
+      <CommentWrite
+        {...{ commentType: 'comment', boardType, boardId, setCommentList }}
+      />
       <hr />
       <main>
         {!!commentList.length && (
           <ul>
             {commentList.map((el: Comment) => (
-              <CommentListItem
-                key={el.commentId}
-                {...{ ...el, type: 'comment', boardType, currentUserId, setCommentList }}
-              />
+              <li key={el.commentId}>
+                <CommentListItem
+                  {...{
+                    ...el,
+                    commentType: 'comment',
+                    boardType,
+                    isLoggedIn,
+                    currentUserId,
+                    setCommentList,
+                  }}
+                />
+              </li>
             ))}
           </ul>
         )}

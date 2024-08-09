@@ -3,7 +3,7 @@ import { PaginationDTO } from './PaginationType';
 export interface Comment {
   commentId: number;
   replyId?: number;
-  boardId?: number;
+  boardId: number;
   content: string;
   createdDate: string;
   nickname?: string;
@@ -23,3 +23,5 @@ export interface ReplyDTO {
   createdDate: string;
   nickname: string;
 }
+
+export type CommentReplyType = 'comment' | 'reply';
