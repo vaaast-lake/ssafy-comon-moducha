@@ -253,7 +253,7 @@ public class GetShareReplyListTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<ShareReply> shareReplies = shareReplyRepository.findAll();
         assertThat(shareReplies.size()).isEqualTo(1);
     }

@@ -1,12 +1,13 @@
 package com.example.restea.share.service;
 
-import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_FOUND;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_USER_NOT_ACTIVATED;
-import static com.example.restea.share.enums.ShareCommentMessage.SHARE_COMMENT_NOT_FOUND;
 import static com.example.restea.share.enums.ShareReplyMessage.SHARE_REPLY_NOT_FOUND;
 import static com.example.restea.share.enums.ShareReplyMessage.SHARE_REPLY_NOT_WRITER;
-import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
-import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
+import static com.example.restea.share.util.ShareUtil.getActivatedShareBoard;
+import static com.example.restea.share.util.ShareUtil.getActivatedShareComment;
+import static com.example.restea.share.util.ShareUtil.getActivatedShareReply;
+import static com.example.restea.share.util.ShareUtil.getActivatedUser;
+import static com.example.restea.share.util.ShareUtil.getShareComment;
 
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
@@ -17,15 +18,14 @@ import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
 import com.example.restea.share.entity.ShareReply;
 import com.example.restea.share.repository.ShareBoardRepository;
-import com.example.restea.share.repository.ShareCommentRepository;
 import com.example.restea.share.repository.ShareReplyRepository;
+import com.example.restea.share.util.ShareUtil;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +37,6 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class ShareReplyService {
 
-    private final ShareCommentRepository shareCommentRepository;
     private final ShareReplyRepository shareReplyRepository;
     private final UserRepository userRepository;
     private final ShareBoardRepository shareBoardRepository;
@@ -45,15 +44,8 @@ public class ShareReplyService {
     public ResponseDTO<List<ShareReplyViewResponse>> getShareReplyList(
             Integer shareBoardId, Integer shareCommentId, Integer page, Integer perPage) {
 
-        ShareBoard shareBoard = shareBoardRepository.findById(shareBoardId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, SHARE_BOARD_NOT_FOUND.getMessage()));
-
-        ShareComment shareComment = shareBoard.getShareComments().stream()
-                .filter(comment -> Objects.equals(comment.getId(), shareCommentId))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, SHARE_COMMENT_NOT_FOUND.getMessage()));
+        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        ShareComment shareComment = getShareComment(shareCommentId, activatedShareBoard);
 
         Page<ShareReply> shareReplies = getShareReplies(shareComment, page, perPage);
         List<ShareReplyViewResponse> data = createResponseFromShareReplies(shareReplies.getContent());
@@ -68,31 +60,17 @@ public class ShareReplyService {
     public ShareReplyCreationResponse createShareReply(Integer shareBoardId, String content, Integer shareCommentId,
                                                        Integer userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+        User user = getActivatedUser(userRepository, userId);
+        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        ShareComment activatedShareComment = getActivatedShareComment(shareCommentId, activatedShareBoard);
 
-        if (!user.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_ALREADY_WITHDRAWN.getMessage());
-        }
-
-        ShareBoard shareBoard = shareBoardRepository.findByIdAndActivated(shareBoardId, true)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, SHARE_BOARD_NOT_FOUND.getMessage()));
-
-        ShareComment shareComment = shareBoard.getShareComments().stream()
-                .filter(comment -> Objects.equals(comment.getId(), shareCommentId))
-                .filter(ShareComment::getActivated)
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST, SHARE_COMMENT_NOT_FOUND.getMessage()));
-
-        if (!shareComment.getShareBoard().getUser().getActivated()) {
+        if (!activatedShareComment.getShareBoard().getUser().getActivated()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_USER_NOT_ACTIVATED.getMessage());
         }
 
         ShareReply shareReply = ShareReply.builder()
                 .content(content)
-                .shareComment(shareComment)
+                .shareComment(activatedShareComment)
                 .user(user)
                 .build();
 
@@ -104,26 +82,20 @@ public class ShareReplyService {
     public ShareReplyDeleteResponse deactivateShareReply(Integer shareBoardId, Integer shareCommentId,
                                                          Integer shareReplyId, Integer userId) {
 
-        ShareComment shareComment = shareCommentRepository.findById(shareCommentId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_COMMENT_NOT_FOUND.getMessage()));
+        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        ShareComment shareComment = getShareComment(shareCommentId, activatedShareBoard);
+        ShareReply activatedShareReply = getActivatedShareReply(shareReplyId, shareComment);
 
-        ShareReply shareReply = shareComment.getShareReplies().stream()
-                .filter(reply -> Objects.equals(reply.getId(), shareReplyId))
-                .filter(ShareReply::getActivated)
-                .findFirst()
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_REPLY_NOT_FOUND.getMessage()));
+        User activatedUser = ShareUtil.getActivatedUser(userRepository, userId);
+        checkAuthorized(activatedShareReply, activatedUser);
 
-        checkAuthorized(shareReply, userId);
+        activatedShareReply.deactivate();
 
-        shareReply.deactivate();
-
-        return ShareReplyDeleteResponse.from(shareReply);
+        return ShareReplyDeleteResponse.from(activatedShareReply);
     }
 
-    private void checkAuthorized(ShareReply shareReply, Integer userId) {
-        if (!shareReply.getUser().getId().equals(userId)) {
+    private void checkAuthorized(ShareReply shareReply, User activatedUser) {
+        if (!shareReply.getUser().getId().equals(activatedUser.getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, SHARE_REPLY_NOT_WRITER.getMessage());
         }
     }
