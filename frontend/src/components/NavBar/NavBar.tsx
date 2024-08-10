@@ -24,7 +24,7 @@ const NavBar = () => {
   return (
     <div className="flex justify-center border-b-2 border-[#eee]">
       <nav className="flex justify-between w-full lg:w-3/5 h-16 items-center">
-        <Link to="/" className="btn btn-ghost">
+        <Link to="/" className="btn btn-ghost rounded-xl hover:bg-teabg">
           <img src={navModucha} alt="Nav Logo" />
         </Link>
         <ul className="flex shrink-0 justify-between items-center gap-4 mr-5">
