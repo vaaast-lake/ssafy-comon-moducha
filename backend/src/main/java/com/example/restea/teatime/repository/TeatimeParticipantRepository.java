@@ -19,4 +19,6 @@ public interface TeatimeParticipantRepository extends JpaRepository<TeatimeParti
     @Transactional
     @Query("DELETE FROM TeatimeParticipant tp WHERE tp.user.id = :userId")
     void deleteByUserId(@Param("userId") Integer userId);
+
+    boolean existsByTeatimeBoardIdAndUser(Integer teatimeBoardId, User user);
 }
