@@ -10,6 +10,7 @@ import static com.example.restea.teatime.util.TeatimeUtil.getActivatedTeatimeBoa
 import static com.example.restea.teatime.util.TeatimeUtil.getActivatedUser;
 
 import com.example.restea.teatime.dto.TeatimeCancelResponse;
+import com.example.restea.teatime.dto.TeatimeJoinCheckResponse;
 import com.example.restea.teatime.dto.TeatimeJoinRequest;
 import com.example.restea.teatime.dto.TeatimeJoinResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
@@ -82,6 +83,23 @@ public class TeatimeParticipantService {
         teatimeParticipantRepository.delete(participant);
 
         return TeatimeCancelResponse.of(teatimeBoardId, userId);
+    }
+
+    @Transactional
+    public TeatimeJoinCheckResponse joinCheckParticipant(Integer teatimeBoardId, Integer userId,
+                                                         Integer customOAuth2UserId) {
+        User activatedUser = userService.checkValidUser(customOAuth2UserId, userId);
+        TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
+
+        if (checkActivatedTeatimeBoardWriter(activatedTeatimeBoard, activatedUser)) {
+            return TeatimeJoinCheckResponse.of(teatimeBoardId, userId, true);
+        }
+
+        if (teatimeParticipantRepository.existsByTeatimeBoardIdAndUser(activatedTeatimeBoard.getId(), activatedUser)) {
+            return TeatimeJoinCheckResponse.of(teatimeBoardId, userId, true);
+        }
+
+        return TeatimeJoinCheckResponse.of(teatimeBoardId, userId, false);
     }
 
     private boolean checkActivatedTeatimeBoardWriter(TeatimeBoard activatedTeatimeBoard, User activatedUser) {
