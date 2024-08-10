@@ -3,7 +3,9 @@ import {
   AutoImage,
   Autosave,
   Bold,
+  EditorConfig,
   Essentials,
+  FileRepository,
   FontBackgroundColor,
   FontColor,
   FontSize,
@@ -20,7 +22,6 @@ import {
   LinkImage,
   Paragraph,
   SelectAll,
-  SimpleUploadAdapter,
   SpecialCharacters,
   SpecialCharactersArrows,
   SpecialCharactersCurrency,
@@ -34,11 +35,7 @@ import {
   Undo,
 } from 'ckeditor5';
 
-// 이미지 업로더 토큰
-// import useAuthStore from '../../stores/authStore';
-// const token = useAuthStore.getState().token;
-
-const editorConfig = {
+const editorConfig: EditorConfig = {
   toolbar: {
     items: [
       'undo',
@@ -67,6 +64,7 @@ const editorConfig = {
     Autosave,
     Bold,
     Essentials,
+    FileRepository,
     FontBackgroundColor,
     FontColor,
     FontSize,
@@ -83,7 +81,6 @@ const editorConfig = {
     LinkImage,
     Paragraph,
     SelectAll,
-    SimpleUploadAdapter,
     SpecialCharacters,
     SpecialCharactersArrows,
     SpecialCharactersCurrency,
@@ -131,13 +128,6 @@ const editorConfig = {
   },
   table: {
     contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
-  },
-  simpleUpload: {
-    uploadUrl: 'test',
-    withCredentials: true,
-    headers: {
-      Authorization: 'Bearer <JSON Web Token>',
-    },
   },
   initialData: '',
   language: 'ko',

@@ -35,7 +35,7 @@ const CommentReply = ({
     fetchReplyList(fetchParams).then((res) => {
       setReplyList(res.data.data);
     });
-  }, []);
+  }, [fetchParams]);
 
   return (
     <ul id="reply-list">
@@ -47,7 +47,7 @@ const CommentReply = ({
       {replyList.map((el) => (
         <li key={el.replyId} className="grid grid-cols-12">
           <div className="col-span-1 relative">
-            <div className="after:div after:border-l-2 after:border-b-2  after:rounded-sm after:border-slate-300 after:w-1/3 after:h-1/4 after:absolute after:right-2 after:top-2"></div>
+            <div className="after:div after:border-l-2 after:border-b-2 after:rounded-sm after:border-slate-300 after:w-1/3 after:h-1/4 after:absolute after:right-2 after:top-2"></div>
           </div>
           <div className="col-span-11">
             <hr />
