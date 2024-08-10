@@ -1,18 +1,25 @@
 import Records from './components/MyRecords';
 import MyShares from './components/MyShares';
 import Teatimes from './components/MyTeatimes';
-import AccountDeactivation from './components/AccountDeactivation';
+import PrivacySetting from './components/PrivacySetting';
 import MainLayout from '../../components/Layout/MainLayout';
 import SideLayout from '../../components/Layout/SideLayout';
 import TitleCard from '../../components/Title/TitleCard';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';
+import { useEffect, useState } from 'react';
+import MyPageToggle from './components/MyPageToggle';
 
 const MyPage = () => {
+  const [currentTab, setCurrentTab] = useState('myTeatimes'); // 초기 기본 탭
+  const navigate = useNavigate();
   const { isLoggedIn, currentUsername } = useAuthStore();
-  if (!isLoggedIn) {
-    return <Navigate to="/" />;
-  }
+  useEffect(() => {
+    // 비로그인 상태인 경우 메인 페이지로 리디렉션
+    if (!isLoggedIn) {
+      navigate('/');
+    }
+  }, [isLoggedIn, navigate]);
 
   return (
     <div className="grid grid-cols-10">
@@ -30,15 +37,17 @@ const MyPage = () => {
               )}
             </div>
           </TitleCard>
-          <div className="divider"></div>
         </header>
-        {/* <Records />
-        <div className="divider"></div>
-        <Teatimes /> */}
-        <div className="divider"></div>
-        <MyShares />
-        <div className="divider"></div>
-        <AccountDeactivation />
+        <div className="flex gap-2">
+          <MyPageToggle currentTab={currentTab} setCurrentTab={setCurrentTab} />
+        </div>
+
+        <div className="content">
+          {currentTab === 'myRecrods' && <Records />}
+          {currentTab === 'myTeatimes' && <Teatimes />}
+          {currentTab === 'myShares' && <MyShares />}
+          {currentTab === 'PrivacySetting' && <PrivacySetting />}
+        </div>
       </MainLayout>
       {/* 우측 사이드바 영역 */}
       <SideLayout></SideLayout>
