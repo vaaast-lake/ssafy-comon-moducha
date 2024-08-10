@@ -1,5 +1,6 @@
 package com.example.restea.share.service;
 
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_WRITER;
 import static com.example.restea.share.util.ShareUtil.getActivatedShareBoard;
 
@@ -151,7 +152,8 @@ public class ShareService {
         boolean isLessThanCurrentParticipants =
                 request.getMaxParticipants() < shareParticipantRepository.countByShareBoard(shareBoard);
         if (isLessThanCurrentParticipants) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 신청자보다 적은 인원으로 수정할 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    SHARE_BOARD_LESS_THAN_CURRENT_PARTICIPANTS.getMessage());
         }
     }
 
