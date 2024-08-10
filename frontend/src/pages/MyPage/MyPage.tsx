@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import MyPageToggle from './components/MyPageToggle';
 
 const MyPage = () => {
-  const [currentTab, setCurrentTab] = useState('myTeatimes'); // 초기 기본 탭
+  const [currentTab, setCurrentTab] = useState('privacySetting'); // 초기 기본 탭. 디버그를 위해 기본 탭 privacysetting으로 둠
   const navigate = useNavigate();
   const { isLoggedIn, currentUsername } = useAuthStore();
   useEffect(() => {
@@ -43,10 +43,10 @@ const MyPage = () => {
         </div>
 
         <div className="content">
-          {currentTab === 'myRecrods' && <Records />}
+          {currentTab === 'myRecords' && <Records />}
           {currentTab === 'myTeatimes' && <Teatimes />}
           {currentTab === 'myShares' && <MyShares />}
-          {currentTab === 'PrivacySetting' && <PrivacySetting />}
+          {currentTab === 'privacySetting' && <PrivacySetting />}
         </div>
       </MainLayout>
       {/* 우측 사이드바 영역 */}
