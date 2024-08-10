@@ -1,5 +1,6 @@
 package com.example.restea.teatime.service;
 
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_WRITER;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_USER_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_WRITER;
 import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_AFTER_END_DATE;
@@ -11,6 +12,7 @@ import static com.example.restea.teatime.util.TeatimeUtil.getActivatedUser;
 
 import com.example.restea.teatime.dto.TeatimeCancelResponse;
 import com.example.restea.teatime.dto.TeatimeJoinCheckResponse;
+import com.example.restea.teatime.dto.TeatimeJoinListResponse;
 import com.example.restea.teatime.dto.TeatimeJoinRequest;
 import com.example.restea.teatime.dto.TeatimeJoinResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
@@ -22,6 +24,7 @@ import com.example.restea.user.repository.UserRepository;
 import com.example.restea.user.service.UserService;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -100,6 +103,21 @@ public class TeatimeParticipantService {
         }
 
         return TeatimeJoinCheckResponse.of(teatimeBoardId, userId, false);
+    }
+
+    @Transactional
+    public List<TeatimeJoinListResponse> getParticipants(Integer teatimeBoardId, Integer userId) {
+        User activatedUser = getActivatedUser(userRepository, userId);
+        TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
+
+        if (!checkActivatedTeatimeBoardWriter(activatedTeatimeBoard, activatedUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_NOT_WRITER.getMessage());
+        }
+
+        return teatimeParticipantRepository.findByTeatimeBoard(activatedTeatimeBoard)
+                .stream()
+                .map(TeatimeJoinListResponse::of)
+                .toList();
     }
 
     private boolean checkActivatedTeatimeBoardWriter(TeatimeBoard activatedTeatimeBoard, User activatedUser) {
