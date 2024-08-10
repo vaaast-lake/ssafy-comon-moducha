@@ -233,7 +233,7 @@ public class CreateShareCommentTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<ShareComment> shareComments = shareCommentRepository.findAll();
         assertThat(shareComments.size()).isEqualTo(0);
     }

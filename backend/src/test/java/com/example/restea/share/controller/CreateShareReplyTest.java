@@ -150,7 +150,7 @@ public class CreateShareReplyTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<ShareReply> shareReplies = shareReplyRepository.findAll();
         assertThat(shareReplies.size()).isEqualTo(0);
     }
@@ -178,7 +178,7 @@ public class CreateShareReplyTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<ShareReply> shareReplies = shareReplyRepository.findAll();
         assertThat(shareReplies.size()).isEqualTo(0);
     }
@@ -208,7 +208,7 @@ public class CreateShareReplyTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<ShareReply> shareReplies = shareReplyRepository.findAll();
         assertThat(shareReplies.size()).isEqualTo(0);
     }
@@ -301,7 +301,7 @@ public class CreateShareReplyTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<ShareReply> shareReplies = shareReplyRepository.findAll();
         assertThat(shareReplies.size()).isEqualTo(0);
     }

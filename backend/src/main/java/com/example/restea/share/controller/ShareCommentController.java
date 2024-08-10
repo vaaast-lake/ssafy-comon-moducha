@@ -81,11 +81,12 @@ public class ShareCommentController {
      */
     @PatchMapping("/deactivated-comments/{shareCommentId}")
     public ResponseEntity<ResponseDTO<?>> deactivateShareComment(
+            @PathVariable("shareBoardId") Integer shareBoardId,
             @PathVariable("shareCommentId") Integer shareCommentId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         ShareCommentDeleteResponse result
-                = shareCommentService.deactivateShareComment(shareCommentId,
+                = shareCommentService.deactivateShareComment(shareBoardId, shareCommentId,
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
