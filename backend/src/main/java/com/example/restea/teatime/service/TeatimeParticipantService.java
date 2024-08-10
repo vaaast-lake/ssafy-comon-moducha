@@ -2,6 +2,7 @@ package com.example.restea.teatime.service;
 
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_USER_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_WRITER;
+import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_AFTER_END_DATE;
 import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_ALREADY_EXISTS;
 import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_FULL;
 import static com.example.restea.teatime.util.TeatimeUtil.getActivatedTeatimeBoard;
@@ -16,6 +17,7 @@ import com.example.restea.teatime.repository.TeatimeParticipantRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,8 +40,8 @@ public class TeatimeParticipantService {
         if (checkActivatedTeatimeBoardWriter(activatedTeatimeBoard, activatedUser)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_WRITER.getMessage());
         }
-        ;
 
+        validateEndDate(activatedTeatimeBoard.getEndDate());
         validateParticipantCount(activatedTeatimeBoard);
         validateParticipantAlreadyExists(activatedTeatimeBoard, activatedUser);
 
@@ -66,6 +68,12 @@ public class TeatimeParticipantService {
         }
 
         return false;
+    }
+
+    private void validateEndDate(LocalDateTime endDate) {
+        if (LocalDateTime.now().isAfter(endDate)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_PARTICIPANT_AFTER_END_DATE.getMessage());
+        }
     }
 
     private void validateParticipantCount(TeatimeBoard activatedTeatimeBoard) {
