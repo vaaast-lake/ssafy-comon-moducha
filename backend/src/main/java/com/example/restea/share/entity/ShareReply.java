@@ -52,7 +52,7 @@ public class ShareReply extends BaseTimeEntity {
     }
 
     public String getExposedContent() {
-        return activated ? content : "삭제된 댓글입니다.";
+        return activated ? content : "삭제된 답글입니다.";
     }
 
     public String getExposedNickname() {
