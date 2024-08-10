@@ -77,7 +77,7 @@ public class AddTeatimeParticipantTest {
 
                 Arguments.of("이름이 빈 경우", "", "01012345678", "경상북도 구미시 어떤7길 어떤타운 123호"),
                 Arguments.of("전화번호가 빈 경우", "홍길동", "", "경상북도 구미시 어떤7길 어떤타운 123호"),
-                Arguments.of("주고가 빈 경우", "홍길동", "01012345678", "")
+                Arguments.of("주소가 빈 경우", "홍길동", "01012345678", "")
         );
     }
 
