@@ -11,11 +11,11 @@ const MyShares = () => {
   const [participatedPerPage] = useState<number>(12);
   const [writeTotal, setWriteTotal] = useState<number>(0);
   const [participatedTotal, setParticipatedTotal] = useState<number>(0);
-  const [writeStatus, setWriteStatus] = useState<
-    'before' | 'ongoing' | undefined
-  >('before');
+  const [writeStatus, setWriteStatus] = useState<'before' | 'ongoing'>(
+    'before'
+  );
   const [participatedStatus, setParticipatedStatus] = useState<
-    'before' | 'ongoing' | undefined
+    'before' | 'ongoing'
   >('before');
 
   useEffect(() => {
@@ -50,16 +50,12 @@ const MyShares = () => {
     }
   };
 
-  const handleWriteStatusChange = (
-    status: 'before' | 'ongoing' | undefined
-  ) => {
+  const handleWriteStatusChange = (status: 'before' | 'ongoing') => {
     setWriteStatus(status);
     setWritePage(1); // 상태 변경 시 페이지를 1로 리셋
   };
 
-  const handleParticipatedStatusChange = (
-    status: 'before' | 'ongoing' | undefined
-  ) => {
+  const handleParticipatedStatusChange = (status: 'before' | 'ongoing') => {
     setParticipatedStatus(status);
     setParticipatedPage(1); // 상태 변경 시 페이지를 1로 리셋
   };

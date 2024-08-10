@@ -1,7 +1,7 @@
 // 1. 이 컴포넌트는 스프링 서버에서 redirect해줌. 로딩 및 리프레시를 가리기 위한 빈 페이지입니다.
 // js 로직만 구현하며 html 요소는 없습니다.
 import { useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+// import { jwtDecode } from 'jwt-decode';
 import useAuthStore from '../../stores/authStore';
 
 const Access = () => {
@@ -14,11 +14,11 @@ const Access = () => {
 
     if (accessToken) {
       localStorage.setItem('authorization', accessToken);
-      console.log(jwtDecode(accessToken));
+      // console.log(jwtDecode(accessToken));
 
-      console.log(
-        'access token localStorage: ' + localStorage.getItem('authorization')
-      );
+      // console.log(
+      //   'access token localStorage: ' + localStorage.getItem('authorization')
+      // );
     } else {
       console.log('error: access token을 localStorage에 저장하지 못했습니다.');
     }
