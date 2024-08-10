@@ -2,6 +2,7 @@ package com.example.restea.teatime.controller;
 
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
+import com.example.restea.teatime.dto.TeatimeCancelResponse;
 import com.example.restea.teatime.dto.TeatimeJoinRequest;
 import com.example.restea.teatime.dto.TeatimeJoinResponse;
 import com.example.restea.teatime.service.TeatimeParticipantService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,26 @@ public class TeatimeParticipantController {
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ResponseDTO.from(result));
+    }
+
+    /**
+     * 주어진 티타임 게시글에 참가 취소
+     *
+     * @param teatimeBoardId   티타임 게시글 ID
+     * @param userId           참가 취소할 사용자 ID
+     * @param customOAuth2User 현재 인증된 사용자.
+     * @return 티타임 게시글 ID, 참가 취소하는 사용자 ID 포함하는 ResponseEntity 객체를 반환합니다. 참가 취소에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
+     */
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> cancelParticipant(@PathVariable("teatimeBoardId") Integer teatimeBoardId,
+                                               @PathVariable("userId") Integer userId,
+                                               @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        TeatimeCancelResponse result = teatimeParticipantService.cancelParticipation(teatimeBoardId, userId,
+                customOAuth2User.getUserId());
+
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.from(result));
     }
 }
