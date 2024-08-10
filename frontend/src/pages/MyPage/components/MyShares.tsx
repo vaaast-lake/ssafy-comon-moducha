@@ -1,3 +1,4 @@
+//MyShares.tsx
 import { useState, useEffect } from 'react';
 import getMyShareWriteList from '../api/getMyShareWriteList';
 import getMySharesParticipateList from '../api/getMyShareParticipateList';
@@ -11,17 +12,15 @@ const MyShares = () => {
   const [participatedPerPage] = useState<number>(12);
   const [writeTotal, setWriteTotal] = useState<number>(0);
   const [participatedTotal, setParticipatedTotal] = useState<number>(0);
-  const [writeStatus, setWriteStatus] = useState<'before' | 'ongoing'>(
-    'before'
-  );
-  const [participatedStatus, setParticipatedStatus] = useState<
+  const [writeSort, setWriteSort] = useState<'before' | 'ongoing'>('before');
+  const [participatedSort, setParticipatedSort] = useState<
     'before' | 'ongoing'
   >('before');
 
   useEffect(() => {
     fetchMyShareWriteList();
     fetchMySharesParticipateList();
-  }, [writePage, participatedPage, writeStatus, participatedStatus]);
+  }, [writePage, participatedPage, writeSort, participatedSort]);
 
   const fetchMyShareWriteList = async () => {
     try {
@@ -29,34 +28,47 @@ const MyShares = () => {
         page: writePage,
         perPage: writePerPage,
       });
-      setWriteList(data.items);
-      setWriteTotal(data.pagination.total);
+
+      // 데이터 구조를 맞추어 수정합니다.
+      const items = data.data || []; // data 배열
+      const pagination = data.pagination || { total: 0 }; // pagination 객체
+
+      setWriteList(items);
+      setWriteTotal(pagination.total);
     } catch (error) {
-      console.error('Failed to fetch my share write list:', error);
+      console.error('나의 나눔 작성 목록을 가져오는 데 실패했습니다:', error);
     }
   };
 
   const fetchMySharesParticipateList = async () => {
     try {
       const { data } = await getMySharesParticipateList({
-        status: participatedStatus,
+        sort: participatedSort,
         page: participatedPage,
         perPage: participatedPerPage,
       });
-      setParticipatedList(data.items);
-      setParticipatedTotal(data.pagination.total);
+
+      // 데이터 구조를 맞추어 수정합니다.
+      const items = data.data || []; // data 배열
+      const pagination = data.pagination || { total: 0 }; // pagination 객체
+
+      setParticipatedList(items);
+      setParticipatedTotal(pagination.total);
     } catch (error) {
-      console.error('Failed to fetch my shares participate list:', error);
+      console.error(
+        '내가 참여 신청한 나눔 목록을 가져오는 데 실패했습니다:',
+        error
+      );
     }
   };
 
-  const handleWriteStatusChange = (status: 'before' | 'ongoing') => {
-    setWriteStatus(status);
+  const handleWriteSortChange = (sort: 'before' | 'ongoing') => {
+    setWriteSort(sort);
     setWritePage(1); // 상태 변경 시 페이지를 1로 리셋
   };
 
-  const handleParticipatedStatusChange = (status: 'before' | 'ongoing') => {
-    setParticipatedStatus(status);
+  const handleParticipatedSortChange = (sort: 'before' | 'ongoing') => {
+    setParticipatedSort(sort);
     setParticipatedPage(1); // 상태 변경 시 페이지를 1로 리셋
   };
 
@@ -66,22 +78,26 @@ const MyShares = () => {
       <div>
         <h3 className="font-semibold">내가 작성한 나눔 목록</h3>
         <div>
-          <button onClick={() => handleWriteStatusChange('before')}>
+          <button onClick={() => handleWriteSortChange('before')}>
             전체(버튼)
           </button>
-          <button onClick={() => handleWriteStatusChange('ongoing')}>
+          <button onClick={() => handleWriteSortChange('ongoing')}>
             진행 중(버튼)
           </button>
         </div>
         <ul>
-          {writeList.map((item) => (
-            <li key={item.shareBoardId}>
-              <h3>{item.title}</h3>
-              <p>{item.content}</p>
-              <p>작성자: {item.nickname}</p>
-              <p>마감일: {new Date(item.endDate).toLocaleDateString()}</p>
-            </li>
-          ))}
+          {writeList.length > 0 ? (
+            writeList.map((item) => (
+              <li key={item.boardId}>
+                <h3>{item.title}</h3>
+                <p dangerouslySetInnerHTML={{ __html: item.content }} />
+                <p>작성자: {item.nickname}</p>
+                <p>마감일: {new Date(item.endDate).toLocaleDateString()}</p>
+              </li>
+            ))
+          ) : (
+            <li>작성한 나눔이 없습니다.</li>
+          )}
         </ul>
         <div>
           <button
@@ -100,48 +116,54 @@ const MyShares = () => {
             Next(버튼)
           </button>
         </div>
-      </div>
 
-      <div>
-        <h3 className="font-semibold">내가 참여 신청한 나눔 목록</h3>
         <div>
-          <button onClick={() => handleParticipatedStatusChange('before')}>
-            전체(버튼)
-          </button>
-          <button onClick={() => handleParticipatedStatusChange('ongoing')}>
-            진행 중(버튼)
-          </button>
-        </div>
-        <ul>
-          {participatedList.map((item) => (
-            <li key={item.shareBoardId}>
-              <h3>{item.title}</h3>
-              <p>{item.content}</p>
-              <p>작성자: {item.nickname}</p>
-              <p>마감일: {new Date(item.endDate).toLocaleDateString()}</p>
-            </li>
-          ))}
-        </ul>
-        <div>
-          <button
-            onClick={() => setParticipatedPage((prev) => Math.max(prev - 1, 1))}
-            disabled={participatedPage === 1}
-          >
-            Previous(버튼)
-          </button>
-          <span>
-            Page {participatedPage} of{' '}
-            {Math.ceil(participatedTotal / participatedPerPage)}
-          </span>
-          <button
-            onClick={() => setParticipatedPage((prev) => prev + 1)}
-            disabled={
-              participatedPage >=
-              Math.ceil(participatedTotal / participatedPerPage)
-            }
-          >
-            Next(버튼)
-          </button>
+          <h3 className="font-semibold">내가 참여 신청한 나눔 목록</h3>
+          <div>
+            <button onClick={() => handleParticipatedSortChange('before')}>
+              전체(버튼)
+            </button>
+            <button onClick={() => handleParticipatedSortChange('ongoing')}>
+              진행 중(버튼)
+            </button>
+          </div>
+          <ul>
+            {participatedList.length > 0 ? (
+              participatedList.map((item) => (
+                <li key={item.boardId}>
+                  <h3>{item.title}</h3>
+                  <p dangerouslySetInnerHTML={{ __html: item.content }} />
+                  <p>작성자: {item.nickname}</p>
+                  <p>마감일: {new Date(item.endDate).toLocaleDateString()}</p>
+                </li>
+              ))
+            ) : (
+              <li>참여한 나눔이 없습니다.</li>
+            )}
+          </ul>
+          <div>
+            <button
+              onClick={() =>
+                setParticipatedPage((prev) => Math.max(prev - 1, 1))
+              }
+              disabled={participatedPage === 1}
+            >
+              Previous(버튼)
+            </button>
+            <span>
+              Page {participatedPage} of{' '}
+              {Math.ceil(participatedTotal / participatedPerPage)}
+            </span>
+            <button
+              onClick={() => setParticipatedPage((prev) => prev + 1)}
+              disabled={
+                participatedPage >=
+                Math.ceil(participatedTotal / participatedPerPage)
+              }
+            >
+              Next(버튼)
+            </button>
+          </div>
         </div>
       </div>
     </div>

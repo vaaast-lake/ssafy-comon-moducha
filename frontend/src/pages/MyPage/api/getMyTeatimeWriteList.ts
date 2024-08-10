@@ -45,7 +45,10 @@ async function getMyTeatimeWriteList({
           perPage,
         },
       });
-
+    console.log(
+      'getMyTeatimeWriteList response.data is: ' +
+        JSON.stringify(response.data, null, 2)
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching my teatime write list:', error);
