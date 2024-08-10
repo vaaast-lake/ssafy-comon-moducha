@@ -35,6 +35,7 @@ public class ShareController {
         Map<String, Object> result =
                 shareService.getShareBoardList(dto.getSort(), dto.getPage(), dto.getPerPage());
 
+        // TODO : emtpy list
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.builder()
                         .data(result.get("data"))
@@ -43,8 +44,6 @@ public class ShareController {
     }
 
     @PostMapping
-//   TODO : @PreAuthorize 어노테이션을 사용하여 권한을 확인할 것
-//   @PreAuthorize("hasRole('USER', 'ADMIN')")
     public ResponseEntity<ResponseDTO<?>> createShareBoard(
             @Valid @RequestBody ShareCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {

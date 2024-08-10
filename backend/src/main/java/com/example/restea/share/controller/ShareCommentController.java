@@ -47,6 +47,7 @@ public class ShareCommentController {
         ResponseDTO<List<ShareCommentViewResponse>> result = shareCommentService.getShareCommentList(shareBoardId, page,
                 perPage);
 
+        // TODO : emtpy list
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
     }
