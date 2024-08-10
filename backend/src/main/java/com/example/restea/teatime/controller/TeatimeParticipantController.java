@@ -3,6 +3,7 @@ package com.example.restea.teatime.controller;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.teatime.dto.TeatimeCancelResponse;
+import com.example.restea.teatime.dto.TeatimeJoinCheckResponse;
 import com.example.restea.teatime.dto.TeatimeJoinRequest;
 import com.example.restea.teatime.dto.TeatimeJoinResponse;
 import com.example.restea.teatime.service.TeatimeParticipantService;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,6 +62,18 @@ public class TeatimeParticipantController {
                                                @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
         TeatimeCancelResponse result = teatimeParticipantService.cancelParticipation(teatimeBoardId, userId,
+                customOAuth2User.getUserId());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.from(result));
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> joinCheckParticipant(@PathVariable("teatimeBoardId") Integer teatimeBoardId,
+                                                  @PathVariable("userId") Integer userId,
+                                                  @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        TeatimeJoinCheckResponse result = teatimeParticipantService.joinCheckParticipant(teatimeBoardId, userId,
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
