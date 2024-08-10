@@ -25,16 +25,16 @@ const MyPageToggle = ({ currentTab, setCurrentTab }: MyPageToggle) => (
     </TabButton>
     <TabButton
       className="h-8"
-      onClick={() => setCurrentTab('myRecrods')}
-      value="myRecrods"
+      onClick={() => setCurrentTab('myRecords')}
+      value="myRecords"
       currentTab={currentTab}
     >
       나의 기록
     </TabButton>
     <TabButton
       className="h-8"
-      onClick={() => setCurrentTab('PrivacySetting')}
-      value="PrivacySetting"
+      onClick={() => setCurrentTab('privacySetting')}
+      value="privacySetting"
       currentTab={currentTab}
     >
       개인정보 수정
