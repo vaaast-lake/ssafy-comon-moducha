@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import TeatimeListCard from './TeatimeListCard';
 import { genMockList } from '../../../constants/teatimeMock';
-import { ChevronDownIcon } from '@heroicons/react/16/solid';
+import { ChevronRightIcon } from '@heroicons/react/16/solid';
 
 const TeatimeList = ({ ...props }) => {
   const [teatimeList, setTeatimeList] = useState(genMockList(6));
@@ -30,7 +30,7 @@ const TeatimeList = ({ ...props }) => {
           className="flex justify-center items-center bg-[#F1F1F1] px-3 py-2 ps-4 rounded-full font-semibold"
         >
           <span className="text-gray-600 text-sm">더보기</span>
-          <ChevronDownIcon className="size-5 text-[#A2A2A2]" />
+          <ChevronRightIcon className="size-5 text-[#A2A2A2]" />
         </Link>
       </footer>
     </section>
