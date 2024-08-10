@@ -68,6 +68,15 @@ public class TeatimeParticipantController {
                 .body(ResponseDTO.from(result));
     }
 
+    /**
+     * 주어진 티타임 게시글에 참가 여부 조회
+     *
+     * @param teatimeBoardId   티타임 게시글 ID
+     * @param userId           참가 여부 조회할 사용자 ID
+     * @param customOAuth2User 현재 인증된 사용자.
+     * @return 티타임 게시글 ID, 참가 여부 조회할 사용자 ID, 참가 여부를 포함하는 ResponseEntity 객체를 반환합니다. 참가 여부 조회에 실패하면 에러 코드를 담은
+     * ResponseEntity를 반환합니다.
+     */
     @GetMapping("/{userId}")
     public ResponseEntity<?> joinCheckParticipant(@PathVariable("teatimeBoardId") Integer teatimeBoardId,
                                                   @PathVariable("userId") Integer userId,
