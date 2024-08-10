@@ -1,10 +1,11 @@
+//getMyShareParticipateList.ts;
 import axiosInstance from '../../../api/axiosInstance';
 import useAuthStore from '../../../stores/authStore';
 import { AxiosResponse } from 'axios';
 const { currentUserId } = useAuthStore.getState();
 
 interface MypageShareParticipateListRequestParams {
-  status?: 'before' | 'ongoing'; // 필터링 상태
+  sort?: 'before' | 'ongoing'; // 필터링 상태
   page?: number; // 페이지 번호 (기본값: 1)
   perPage?: number; // 페이지 당 항목 수 (기본값: 12)
 }
@@ -34,7 +35,7 @@ interface MypageShareParticipateListResponse {
 }
 
 async function getMyShareParticipateList({
-  status,
+  sort,
   page = 1,
   perPage = 12,
 }: MypageShareParticipateListRequestParams): Promise<MypageShareParticipateListResponse> {
@@ -44,13 +45,13 @@ async function getMyShareParticipateList({
         `/users/${currentUserId}/mypage/participated-shares`,
         {
           params: {
-            status,
+            sort,
             page,
             perPage,
           },
         }
       );
-
+    console.log('getMyShareParticipateList response is: ', response);
     return response.data;
   } catch (error) {
     console.error('Error fetching my shares participate list:', error);

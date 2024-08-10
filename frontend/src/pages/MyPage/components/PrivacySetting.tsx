@@ -1,6 +1,7 @@
 import useAuthStore from '../../../stores/authStore';
 import axiosInstance from '../../../api/axiosInstance';
 import { handleLogout } from '../../../api/logout';
+import updateNickname from '../api/updateNickname';
 
 const AccountDeactivation = () => {
   const { setLoggedIn, setCurrentUsername } = useAuthStore.getState();
@@ -57,14 +58,19 @@ const AccountDeactivation = () => {
   };
 
   return (
-    <div>
-      <h1 className="font-semibold text-2xl">회원 탈퇴</h1>
-      <p>작성한 글은 삭제하지 않으면 탈퇴 이후에도 남겨집니다.</p>
-      <button onClick={handleDeactivate} className="font-semibold">
-        회원 탈퇴
-      </button>
-      <br />
-    </div>
+    <>
+      <div>닉네임 수정하기</div>
+      <div>
+        <h1 className="font-semibold text-2xl">회원 탈퇴</h1>
+        <p className="text-red-500">
+          작성한 글, 댓글, 대댓글은 삭제하지 않으면 탈퇴 이후에도 남겨집니다.
+        </p>
+        <button onClick={handleDeactivate} className="font-semibold">
+          회원 탈퇴
+        </button>
+        <br />
+      </div>
+    </>
   );
 };
 

@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 const { currentUserId } = useAuthStore.getState();
 
 interface MypageTeatimeParticipateListRequestParams {
-  status?: 'before' | 'ongoing'; // 필터링 상태
+  sort?: 'before' | 'ongoing'; // 필터링 상태
   page?: number; // 페이지 번호 (기본값: 1)
   perPage?: number; // 페이지 당 항목 수 (기본값: 12)
 }
@@ -33,7 +33,7 @@ interface MypageTeatimeParticipateListResponse {
 }
 
 async function getMyTeatimeParticipateList({
-  status,
+  sort,
   page = 1,
   perPage = 12,
 }: MypageTeatimeParticipateListRequestParams): Promise<MypageTeatimeParticipateListResponse> {
@@ -43,13 +43,15 @@ async function getMyTeatimeParticipateList({
         `/users/${currentUserId}/mypage/participated-teatimes`,
         {
           params: {
-            status,
+            sort,
             page,
             perPage,
           },
         }
       );
-
+    console.log(
+      'getMyTeatimeParticipateList response.data is: ' + response.data
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching my teatime participate list:', error);

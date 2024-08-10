@@ -59,7 +59,7 @@ axiosInstance.interceptors.response.use(
             error.config
           );
           error.config.headers.Authorization = `Bearer ${accessToken}`;
-          console.log(error.config.headers.Authorization);
+          // console.log(error.config.headers.Authorization);
           return axiosInstance(error.config);
         }
       } catch (refreshError) {
