@@ -1,18 +1,22 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
 import { BoardType } from '../../types/BoardType';
-import { Comment } from '../../types/CommentType';
+import { Comment, CommentReplyType } from '../../types/CommentType';
 import useAuthStore from '../../stores/authStore';
 
 interface CommentWriteProp {
+  commentType: CommentReplyType;
   boardType: BoardType;
   boardId: number;
+  commentId?: number;
   setCommentList: Dispatch<SetStateAction<Comment[]>>;
 }
 
 const CommentWrite = ({
+  commentType,
   boardType,
   boardId,
+  commentId,
   setCommentList,
 }: CommentWriteProp) => {
   const [content, setContent] = useState('');
@@ -22,12 +26,16 @@ const CommentWrite = ({
     userId: state.currentUserId,
     nickname: state.currentUsername,
   }));
+  const replyOrComment = commentType === 'comment' ? '댓글' : '답글';
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSending(() => true);
+    const BASE_URL = `${boardType}/${boardId}/comments`;
+    const FETCH_URL =
+      commentType === 'comment' ? BASE_URL : `${BASE_URL}/${commentId}/replies`;
     axiosInstance
-      .post(`${boardType}/${boardId}/comments`, {
+      .post(FETCH_URL, {
         content,
       })
       .then((res) => {
@@ -44,7 +52,7 @@ const CommentWrite = ({
         clearForm();
       })
       .catch((err) => {
-        alert('댓글 작성 중 에러가 발생했습니다.');
+        alert(`${replyOrComment} 작성 중 에러가 발생했습니다.`);
         return err;
       })
       .finally(() => {
@@ -62,8 +70,8 @@ const CommentWrite = ({
         name="content"
         placeholder={
           isLoggedIn
-            ? '댓글을 작성해 보세요'
-            : '댓글을 작성하려면 로그인 하세요'
+            ? `${replyOrComment}을 작성해 보세요`
+            : `${replyOrComment}을 작성하려면 로그인 하세요`
         }
         value={content}
         onChange={(e) => setContent(e.target.value)}

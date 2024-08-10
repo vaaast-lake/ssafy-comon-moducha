@@ -23,10 +23,14 @@ const ArticleLoading = () => {
           <div className="p-4 shadow border flex flex-col gap-4">
             {/* content skeleton */}
             <div className="flex w-full flex-col gap-4">
-              <div className="skeleton h-48 w-full"></div>
+              <div className="skeleton h-60 w-full"></div>
+              <div className="skeleton h-4 w-1/12"></div>
               <div className="skeleton h-4 w-1/6"></div>
-              <div className="skeleton h-4 w-2/6"></div>
-              <div className="skeleton h-4 w-2/6"></div>
+              <div className="skeleton h-4 w-1/6"></div>
+              <div className="skeleton h-4 w-4/6"></div>
+              <div className="skeleton h-4 w-4/6"></div>
+              <div className="skeleton h-4 w-4/6"></div>
+              <div className="skeleton h-4 w-full"></div>
               <div className="skeleton h-4 w-full"></div>
               <div className="skeleton h-4 w-full"></div>
               <div className="skeleton h-4 w-full"></div>
