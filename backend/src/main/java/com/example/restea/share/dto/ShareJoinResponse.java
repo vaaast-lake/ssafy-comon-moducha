@@ -1,5 +1,7 @@
 package com.example.restea.share.dto;
 
+import com.example.restea.share.entity.ShareParticipant;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,16 +17,15 @@ public class ShareJoinResponse {
     private Integer userId;
     private Integer boardId;
 
-    public static ShareJoinResponse of(Integer participantId, LocalDateTime createdDate, String name, String phone,
-                                       String address, Integer userId, Integer boardId) {
+    public static ShareJoinResponse of(@NotNull ShareParticipant shareParticipant) {
         return ShareJoinResponse.builder()
-                .participantId(participantId)
-                .createdDate(createdDate)
-                .name(name)
-                .phone(phone)
-                .address(address)
-                .userId(userId)
-                .boardId(boardId)
+                .participantId(shareParticipant.getId())
+                .createdDate(shareParticipant.getCreatedDate())
+                .name(shareParticipant.getName())
+                .phone(shareParticipant.getPhone())
+                .address(shareParticipant.getAddress())
+                .userId(shareParticipant.getUser().getId())
+                .boardId(shareParticipant.getShareBoard().getId())
                 .build();
     }
 }

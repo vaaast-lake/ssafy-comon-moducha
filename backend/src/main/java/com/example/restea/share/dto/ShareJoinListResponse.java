@@ -1,5 +1,6 @@
 package com.example.restea.share.dto;
 
+import com.example.restea.share.entity.ShareParticipant;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,17 +17,16 @@ public class ShareJoinListResponse {
     private Integer boardId;
     private String nickname;
 
-    public static ShareJoinListResponse of(Integer participantId, LocalDateTime createdDate, String name, String phone,
-                                           String address, Integer userId, Integer boardId, String nickname) {
+    public static ShareJoinListResponse of(ShareParticipant shareParticipant) {
         return ShareJoinListResponse.builder()
-                .participantId(participantId)
-                .createdDate(createdDate)
-                .name(name)
-                .phone(phone)
-                .address(address)
-                .userId(userId)
-                .boardId(boardId)
-                .nickname(nickname)
+                .participantId(shareParticipant.getId())
+                .createdDate(shareParticipant.getCreatedDate())
+                .name(shareParticipant.getName())
+                .phone(shareParticipant.getPhone())
+                .address(shareParticipant.getAddress())
+                .userId(shareParticipant.getUser().getId())
+                .boardId(shareParticipant.getShareBoard().getId())
+                .nickname(shareParticipant.getUser().getNickname())
                 .build();
     }
 

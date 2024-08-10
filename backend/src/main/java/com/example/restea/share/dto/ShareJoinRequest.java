@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class ShareJoinRequest {
-    @NotBlank
+    @NotBlank(message = "name is empty.")
     @Size(max = 30, message = "name is too long.")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "phone is empty.")
     @Size(max = 13, message = "phone number is too long.") // 010-1234-5678
 //    @Size(max = 11, message = "phone number is too long.") // 01012345678
     private String phone;
 
-    @NotBlank
+    @NotBlank(message = "address is empty.")
     @Size(max = 100, message = "address is too long.")
     private String address;
 }
