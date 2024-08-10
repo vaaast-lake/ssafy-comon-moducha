@@ -14,10 +14,10 @@ import dayjs from 'dayjs';
 
 const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
   const [pickedDate, setPickedDate] = useState<string>(
-    dayJsNow(dayjs().add(1, 'day').toString())
+    dayJsNow(dayjs().add(1, 'minutes').toString())
   );
   const [broadcastDate, setBroadcastDate] = useState<string>(
-    dayJsNow(dayjs().add(1, 'day').toString())
+    dayJsNow(dayjs().add(2, 'minutes').toString())
   );
   const [content, setContent] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
@@ -63,9 +63,10 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && <InputError error={error} />}
       <InputTitle />
-      <InputDate pickedDate={pickedDate} setPickedDate={setPickedDate} />
+      <InputDate pickedDate={pickedDate} setPickedDate={setPickedDate} setBroadcastDate={setBroadcastDate} />
       {boardType === 'teatimes' && (
         <InputBroadcastDate
+          pickedDate={pickedDate}
           broadcastDate={broadcastDate}
           setBroadcastDate={setBroadcastDate}
         />
