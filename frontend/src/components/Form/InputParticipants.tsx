@@ -1,8 +1,12 @@
+import { BoardType } from '../../types/BoardType';
+
 type ParticipantsInputProps = {
+  boardType: BoardType;
   maxParticipants?: number;
   setMaxParticipants?: (max: number) => void;
 };
 const InputParticipants = ({
+  boardType,
   maxParticipants,
   setMaxParticipants,
 }: ParticipantsInputProps) => (
@@ -13,7 +17,7 @@ const InputParticipants = ({
       type="number"
       name="maxParticipants"
       min={1}
-      max={100}
+      max={boardType === 'teatimes' ? 6 : 100}
       value={maxParticipants}
       onChange={
         setMaxParticipants &&
