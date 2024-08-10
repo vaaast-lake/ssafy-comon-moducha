@@ -18,10 +18,10 @@ export const logout = async (): Promise<void> => {
     console.log('Logout failed');
   }
   localStorage.removeItem('authorization');
-  console.log(
-    '현재 localstorage 상태: ',
-    localStorage.getItem('authorization')
-  );
+  // console.log(
+  //   '현재 localstorage 상태: ',
+  //   localStorage.getItem('authorization')
+  // );
 };
 
 // 로그아웃을 처리하는 함수

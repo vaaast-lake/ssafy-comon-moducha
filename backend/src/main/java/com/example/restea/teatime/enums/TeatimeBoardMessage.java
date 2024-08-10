@@ -14,6 +14,7 @@ public enum TeatimeBoardMessage {
     TEATIME_BOARD_INVALID_SORT("Invalid sort."),
     TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS("Less than current participants."),
     TEATIME_BOARD_USER_NOT_ACTIVATED("TeatimeBoard User not activated"),
+    TEATIME_BOARD_WRITER("TeatimeBoard Writer"),
     ;
 
     private final String message;

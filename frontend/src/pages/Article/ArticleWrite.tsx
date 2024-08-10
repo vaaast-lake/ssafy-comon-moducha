@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TextEditor from '../../utils/TextEditor/TextEditor';
 import axiosInstance from '../../api/axiosInstance';
@@ -21,6 +21,7 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
   );
   const [content, setContent] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
+  const images = useRef<Array<string>>([]);
   const navigate = useNavigate();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
@@ -45,6 +46,7 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
         broadcastDate: formData.get('broadcastDate') + 'Z',
       }),
       content,
+      images: images.current,
     };
 
     try {
@@ -69,7 +71,7 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
         />
       )}
       <InputParticipants />
-      <TextEditor setInput={setContent} />
+      <TextEditor images={images} setInput={setContent} />
     </form>
   );
 };

@@ -6,7 +6,7 @@ import CommentReply from './CommentReply';
 import axiosInstance from '../../api/axiosInstance';
 import { Dispatch, SetStateAction, useState } from 'react';
 
-interface CommentListType extends Comment {
+interface CommentListItemProps extends Comment {
   commentType: CommentReplyType;
   boardType: BoardType;
   isLoggedIn?: boolean;
@@ -25,45 +25,74 @@ const CommentListItem = ({
   replyId,
   replyCount,
   userId,
-  isLoggedIn,
+  isLoggedIn = false,
   currentUserId,
   setCommentList,
-}: CommentListType) => {
+}: CommentListItemProps) => {
   const [isReplyWrite, setIsReplyWrite] = useState(false);
-  const handleDelete = () => {
-    const BASE_URL = `${boardType}/${boardId}`;
-    const DELETE_URL =
+
+  const handleDelete = async () => {
+    const baseUrl = `${boardType}/${boardId}`;
+    const deleteUrl =
       commentType === 'comment'
-        ? `${BASE_URL}/deactivated-comments/${commentId}`
-        : `${BASE_URL}/comments/${commentId}/deactivated-replies/${replyId}`;
+        ? `${baseUrl}/deactivated-comments/${commentId}`
+        : `${baseUrl}/comments/${commentId}/deactivated-replies/${replyId}`;
 
-    axiosInstance.patch(DELETE_URL).then(() => {
-      if (commentType === 'comment') {
-        setIsReplyWrite(() => false);
-      }
+    try {
+      await axiosInstance.patch(deleteUrl);
+
       setCommentList((prev) =>
-        // 댓글 삭제가 서버에서 성공하면 댓글 배열 순회하며 업데이트
         prev.map((el) => {
-          const removeComment = (item: Comment) => {
-            item.nickname = '';
-            item.content = '삭제된 댓글입니다.';
-          };
-          if (commentType === 'comment' && el.commentId === commentId)
-            removeComment(el);
-          if (commentType === 'reply' && el.replyId === replyId)
-            removeComment(el);
-
+          if (
+            (commentType === 'comment' && el.commentId === commentId) ||
+            (commentType === 'reply' && el.replyId === replyId)
+          ) {
+            return {
+              ...el,
+              nickname: '',
+              content: `삭제된 ${commentType === 'comment' ? '댓글' : '답글'}입니다.`,
+            };
+          }
           return el;
         })
       );
-    });
+
+      if (commentType === 'comment') {
+        setIsReplyWrite(false);
+      }
+    } catch (error) {
+      console.error('Failed to delete the comment:', error);
+    }
   };
+
+  const renderReplyButton = () =>
+    !!nickname &&
+    commentType === 'comment' &&
+    isLoggedIn && (
+      <button
+        onClick={() => setIsReplyWrite((prev) => !prev)}
+        className="font-medium text-gray-600"
+      >
+        답글
+      </button>
+    );
+
+  const renderDeleteButton = () =>
+    userId === currentUserId &&
+    nickname && (
+      <>
+        ·
+        <button onClick={handleDelete} className="font-medium text-gray-600">
+          삭제
+        </button>
+      </>
+    );
 
   return (
     <>
       <div className="flex py-4">
-        <figure id="cmt-thumb" className="w-1/12">
-          <img src={avatarUrl} alt="" />
+        <figure className="w-1/12">
+          <img src={avatarUrl} alt={`${nickname}'s avatar`} />
         </figure>
         <main className="w-11/12 px-2 flex flex-col justify-between">
           <header className="flex justify-between">
@@ -75,25 +104,8 @@ const CommentListItem = ({
           <footer className="mt-2 text-sm text-gray-500 font-light flex gap-2">
             <span>{dateParser(createdDate)}</span>
             <div className="flex gap-1">
-              {!!nickname && commentType === 'comment' && isLoggedIn && (
-                <button
-                  onClick={() => setIsReplyWrite((prev) => !prev)}
-                  className="font-medium text-gray-600"
-                >
-                  답글
-                </button>
-              )}
-              {userId === currentUserId && nickname && (
-                <>
-                  ·
-                  <button
-                    onClick={handleDelete}
-                    className="font-medium text-gray-600"
-                  >
-                    삭제
-                  </button>
-                </>
-              )}
+              {renderReplyButton()}
+              {renderDeleteButton()}
             </div>
           </footer>
         </main>
@@ -101,15 +113,13 @@ const CommentListItem = ({
       {commentType === 'comment' && (
         <>
           <CommentReply
-            {...{
-              isReplyWrite,
-              commentType,
-              boardType,
-              boardId,
-              commentId,
-              replyCount,
-              currentUserId,
-            }}
+            isReplyWrite={isReplyWrite}
+            commentType={commentType}
+            boardType={boardType}
+            boardId={boardId}
+            commentId={commentId}
+            replyCount={replyCount}
+            currentUserId={currentUserId}
           />
           <hr />
         </>

@@ -15,16 +15,14 @@ const Teatimes = () => {
     page: 1,
     perPage: 12,
   });
-  const [status, setStatus] = useState<'before' | 'ongoing'>('before'); // 티타임 상태 필터
+  const [sort, setSort] = useState<'before' | 'ongoing'>('before'); // 티타임 상태 필터
   const [writeError, setWriteError] = useState<string | null>(null); // 작성 티타임 오류
   const [participateError, setParticipateError] = useState<string | null>(null); // 참여 티타임 오류
-  const userId = 1; // 사용자 ID (예제용, 실제로는 로그인 사용자 ID로 대체)
 
   // 티타임 작성 목록 조회
   const fetchMyTeatimeWriteList = async () => {
     try {
       const response = await getMyTeatimeWriteList({
-        userId,
         page: writePagination.page,
         perPage: writePagination.perPage,
       });
@@ -41,8 +39,7 @@ const Teatimes = () => {
   const fetchMyTeatimeParticipateList = async () => {
     try {
       const response = await getMyTeatimeParticipateList({
-        userId,
-        status,
+        sort,
         page: participatePagination.page,
         perPage: participatePagination.perPage,
       });
@@ -65,7 +62,7 @@ const Teatimes = () => {
   // 상태 변경 시 참여 티타임 목록 조회
   useEffect(() => {
     fetchMyTeatimeParticipateList();
-  }, [status, participatePagination.page, participatePagination.perPage]);
+  }, [sort, participatePagination.page, participatePagination.perPage]);
 
   return (
     <div>
@@ -105,14 +102,14 @@ const Teatimes = () => {
         <h3 className="font-semibold">참여한 티타임</h3>
         <div className="mb-4">
           <button
-            onClick={() => setStatus('before')}
-            className={`px-4 py-2 ${status === 'before' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSort('before')}
+            className={`px-4 py-2 ${sort === 'before' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           >
             전체
           </button>
           <button
-            onClick={() => setStatus('ongoing')}
-            className={`px-4 py-2 ${status === 'ongoing' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => setSort('ongoing')}
+            className={`px-4 py-2 ${sort === 'ongoing' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
           >
             진행 중
           </button>
