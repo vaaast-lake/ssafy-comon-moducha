@@ -1,3 +1,4 @@
+//getMyShareWriteList.ts
 import axiosInstance from '../../../api/axiosInstance';
 import useAuthStore from '../../../stores/authStore';
 import { AxiosResponse } from 'axios';
@@ -14,11 +15,11 @@ interface MypageShareWriteListResponseItem {
   content: string;
   createdDate: string;
   lastUpdated: string;
+  nickname: string;
   endDate: string;
   maxParticipants: number;
   participants: number;
   viewCount: number;
-  nickname: string;
 }
 
 interface MypageShareWriteListResponse {
@@ -44,7 +45,7 @@ async function getMyShareWriteList({
           perPage,
         },
       });
-
+    console.log('getMyShareWriteList response.data is: ', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching my share write list:', error);
