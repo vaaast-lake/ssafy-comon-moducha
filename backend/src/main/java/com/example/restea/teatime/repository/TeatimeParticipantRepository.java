@@ -3,6 +3,7 @@ package com.example.restea.teatime.repository;
 import com.example.restea.teatime.entity.TeatimeBoard;
 import com.example.restea.teatime.entity.TeatimeParticipant;
 import com.example.restea.user.entity.User;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,4 +25,6 @@ public interface TeatimeParticipantRepository extends JpaRepository<TeatimeParti
     boolean existsByTeatimeBoardIdAndUser(Integer teatimeBoardId, User user);
 
     Optional<TeatimeParticipant> findByTeatimeBoardAndUser(TeatimeBoard teatimeBoard, User user);
+
+    List<TeatimeParticipant> findByTeatimeBoard(TeatimeBoard teatimeBoard);
 }
