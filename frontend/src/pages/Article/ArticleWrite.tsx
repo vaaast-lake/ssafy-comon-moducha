@@ -21,9 +21,9 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
   );
   const [content, setContent] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
-  const images = useRef<Array<string>>([]);
-  const navigate = useNavigate();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const images = useRef<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 비로그인 상태인 경우 로그인 페이지로 리디렉션
@@ -63,7 +63,11 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       {error && <InputError error={error} />}
       <InputTitle />
-      <InputDate pickedDate={pickedDate} setPickedDate={setPickedDate} setBroadcastDate={setBroadcastDate} />
+      <InputDate
+        pickedDate={pickedDate}
+        setPickedDate={setPickedDate}
+        setBroadcastDate={setBroadcastDate}
+      />
       {boardType === 'teatimes' && (
         <InputBroadcastDate
           pickedDate={pickedDate}
@@ -71,7 +75,7 @@ const ArticleWrite = ({ boardType }: { boardType: BoardType }) => {
           setBroadcastDate={setBroadcastDate}
         />
       )}
-      <InputParticipants />
+      <InputParticipants boardType={boardType} />
       <TextEditor images={images} setInput={setContent} />
     </form>
   );
