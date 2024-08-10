@@ -3,20 +3,25 @@ import { ClassicEditor } from 'ckeditor5';
 import editorConfig from './editorConfig';
 import 'ckeditor5/ckeditor5.css';
 import './TextEditor.css';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction } from 'react';
+import ImageAdapterPlugin from './ImageAdapter';
 
 interface EditorType {
   content?: string;
+  images: MutableRefObject<string[]>;
   setInput: Dispatch<SetStateAction<string>>;
 }
 
-export default function TextEditor({ content, setInput }: EditorType) {
+export default function TextEditor({ content, images, setInput }: EditorType) {
   return (
     <CKEditor
       editor={ClassicEditor}
-      config={editorConfig as any}
+      config={editorConfig}
+      onReady={(editor) => {
+        ImageAdapterPlugin(editor, images);
+      }}
       data={content}
-      onBlur={(event, editor) => setInput(editor.getData())}
+      onBlur={(_event, editor) => setInput(editor.getData())}
     />
   );
 }

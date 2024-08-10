@@ -34,6 +34,7 @@ const CommentWrite = ({
     const BASE_URL = `${boardType}/${boardId}/comments`;
     const FETCH_URL =
       commentType === 'comment' ? BASE_URL : `${BASE_URL}/${commentId}/replies`;
+
     axiosInstance
       .post(FETCH_URL, {
         content,
