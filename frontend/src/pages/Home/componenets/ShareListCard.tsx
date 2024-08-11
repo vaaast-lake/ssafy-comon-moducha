@@ -1,8 +1,15 @@
 import { ShareListItem } from '../../../types/ShareType';
 import { Link } from 'react-router-dom';
 import { HeartIcon } from '@heroicons/react/16/solid';
+import { parse } from 'node-html-parser';
 
 const ShareListCard = ({ boardId, title, content }: ShareListItem) => {
+  const parsedContent = parse(content);
+  const imageUrl = parsedContent.querySelector('img')?.getAttribute('src');
+  const defaultImage = new URL(
+    `../../../assets/defaultcard/share${(boardId % 4) + 1}.jpg`,
+    import.meta.url
+  ).href;
   return (
     <Link
       to={`shares/${boardId}`}
@@ -11,7 +18,7 @@ const ShareListCard = ({ boardId, title, content }: ShareListItem) => {
       <figure
         className="overflow-hidden rounded border h-32 bg-cover bg-no-repeat bg-center duration-300 delay-50 transition ease-in-out group-hover/sharecard:scale-105"
         style={{
-          backgroundImage: `url(/mock/maincard/share${boardId}.png)`,
+          backgroundImage: `url(${imageUrl || defaultImage})`,
         }}
       ></figure>
       <main className="flex flex-col gap-1">
@@ -19,7 +26,9 @@ const ShareListCard = ({ boardId, title, content }: ShareListItem) => {
           <h1 className="truncate font-semibold">{title}</h1>
         </header>
         <article>
-          <p className="line-clamp-2 text-sm text-disabled">{content}</p>
+          <p className="line-clamp-2 text-sm text-disabled">
+            {parsedContent.textContent}
+          </p>
         </article>
         <footer className="flex items-center text-sm gap-0.5 text-gray-400">
           <HeartIcon className="size-5 text-error" />

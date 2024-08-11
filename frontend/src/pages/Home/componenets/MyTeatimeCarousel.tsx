@@ -12,8 +12,8 @@ const MyTeatimeCarousel = ({ myTeatimeList }: MyTeatimeCarouselProps) => {
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const slideTo = (targetImageNumber: number) => {
-    let carouselWidth = carouselRef.current?.clientWidth || 0;
-    let targetXPixel = carouselWidth * targetImageNumber + 1;
+    const carouselWidth = carouselRef.current?.clientWidth || 0;
+    const targetXPixel = carouselWidth * targetImageNumber + 1;
     carouselRef.current?.scrollTo(targetXPixel, 0);
   };
 
@@ -59,7 +59,7 @@ const MyTeatimeCarousel = ({ myTeatimeList }: MyTeatimeCarouselProps) => {
           <div
             key={chunkIndex}
             id={`slide${chunkIndex}`}
-            className="carousel-item relative w-full transition ease-in-out duration-500 gap-4 grid grid-cols-2 lg:grid-cols-4 items-center gap-4"
+            className="carousel-item relative w-full transition ease-in-out duration-500 gap-4 grid grid-cols-2 lg:grid-cols-4 gap-4"
           >
             {chunk.map((el) => (
               <MyTeatimeCard key={el.boardId} {...el} />

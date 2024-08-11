@@ -1,7 +1,15 @@
 import { Link } from 'react-router-dom';
 import Badge from '../../../components/Badge/Badge';
 import { TeatimeListItem } from '../../../types/TeatimeType';
+import { parse } from 'node-html-parser';
+
 const MyTeatimeCard = ({ boardId, title, content }: TeatimeListItem) => {
+  const parsedContent = parse(content);
+  const imageUrl = parsedContent.querySelector('img')?.getAttribute('src');
+  const defaultImage = new URL(
+    `../../../assets/defaultcard/my${(boardId % 4) + 1}.jpg`,
+    import.meta.url
+  ).href;
   return (
     <Link
       to={`teatimes/${boardId}`}
@@ -10,7 +18,7 @@ const MyTeatimeCard = ({ boardId, title, content }: TeatimeListItem) => {
       <figure
         className="overflow-hidden rounded border h-32 bg-cover bg-no-repeat bg-center duration-300 delay-50 transition ease-in-out group-hover/myteatime:scale-105"
         style={{
-          backgroundImage: `url(/mock/maincard/my${(boardId % 4) + 1}.png)`,
+          backgroundImage: `url(${imageUrl || defaultImage})`,
         }}
       ></figure>
       <main className="flex flex-col gap-1">
@@ -19,7 +27,7 @@ const MyTeatimeCard = ({ boardId, title, content }: TeatimeListItem) => {
           <h1 className="truncate font-semibold">{title}</h1>
         </header>
         <article>
-          <p className="line-clamp-2 text-sm text-disabled">{content}</p>
+          <p className="line-clamp-2 text-sm text-disabled">{parsedContent.textContent}</p>
         </article>
       </main>
     </Link>
