@@ -30,7 +30,7 @@ public class ShareParticipantController {
     private final ShareParticipantService service;
 
     @PostMapping
-    public ResponseEntity<ResponseDTO<?>> participate(
+    public ResponseEntity<ResponseDTO<?>> participateShare(
             @PathVariable("share_board_id") Integer shareBoardId,
             @Valid @RequestBody ShareJoinRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
@@ -44,7 +44,7 @@ public class ShareParticipantController {
     }
 
     @GetMapping("/{user_id}")
-    public ResponseEntity<ResponseDTO<?>> isParticipated(
+    public ResponseEntity<ResponseDTO<?>> isParticipatedShare(
             @PathVariable("share_board_id") Integer shareBoardId,
             @PathVariable("user_id") Integer userId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
@@ -57,7 +57,7 @@ public class ShareParticipantController {
     }
 
     @DeleteMapping("/{user_id}")
-    public ResponseEntity<ResponseDTO<?>> cancel(
+    public ResponseEntity<ResponseDTO<?>> cancelShare(
             @PathVariable("share_board_id") Integer shareBoardId,
             @PathVariable("user_id") Integer targetId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {

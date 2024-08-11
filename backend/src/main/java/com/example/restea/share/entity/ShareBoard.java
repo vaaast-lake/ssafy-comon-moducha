@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -43,6 +44,7 @@ public class ShareBoard extends BaseTimeEntity {
     @Column(nullable = false)
     private Integer maxParticipants;
 
+    @Setter
     @Column(nullable = false)
     private LocalDateTime endDate;
 

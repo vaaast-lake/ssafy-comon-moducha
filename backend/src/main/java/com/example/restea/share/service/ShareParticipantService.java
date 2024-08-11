@@ -44,7 +44,9 @@ public class ShareParticipantService {
         User activatedUser = getActivatedUser(userRepository, userId);
         ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
         checkWriterActivated(activatedShareBoard);
-        checkUserIsWriter(activatedShareBoard, activatedUser);
+        if (checkUserIsWriter(activatedShareBoard, activatedUser)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_PARTICIPANT_USER_IS_WRITER.getMessage());
+        }
         if (checkIfUserAlreadyParticipating(activatedShareBoard, activatedUser)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     SHARE_PARTICIPANT_ALREADY_EXISTS.getMessage());
