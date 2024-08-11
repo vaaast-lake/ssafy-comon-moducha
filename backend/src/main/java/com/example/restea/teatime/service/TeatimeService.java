@@ -2,7 +2,6 @@ package com.example.restea.teatime.service;
 
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_INVALID_SORT;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_FOUND;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_WRITER;
 import static com.example.restea.teatime.util.TeatimeUtil.getActivatedTeatimeBoard;
 import static com.example.restea.teatime.util.TeatimeUtil.getActivatedUser;
@@ -46,12 +45,9 @@ public class TeatimeService {
 
     @Transactional
     public ResponseDTO<List<TeatimeListResponse>> getTeatimeBoardList(String sort, Integer page, Integer perPage) {
+
         Page<TeatimeBoard> teatimeBoards = getActivatedTeatimeBoards(sort, page, perPage);
         List<TeatimeListResponse> data = createResponseFormTeatimeBoards(teatimeBoards.getContent());
-
-        if (data.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, TEATIME_BOARD_NOT_FOUND.getMessage());
-        }
 
         PaginationDTO pagination = PaginationDTO.of(teatimeBoards.getTotalPages(), page, perPage);
 

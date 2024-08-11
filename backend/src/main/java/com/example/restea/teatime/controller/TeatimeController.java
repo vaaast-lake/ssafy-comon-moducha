@@ -44,10 +44,15 @@ public class TeatimeController {
      */
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getTeatimeBoardList(@Valid @ModelAttribute PaginationAndSortingDto dto) {
+
         ResponseDTO<List<TeatimeListResponse>> result = teatimeService.getTeatimeBoardList(
                 dto.getSort(),
                 dto.getPage(),
                 dto.getPerPage());
+
+        if (result.getData().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
