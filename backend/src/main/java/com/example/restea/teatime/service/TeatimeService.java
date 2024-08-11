@@ -50,7 +50,7 @@ public class TeatimeService {
         List<TeatimeListResponse> data = createResponseFormTeatimeBoards(teatimeBoards.getContent());
 
         if (data.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIME_BOARD_NOT_FOUND.getMessage());
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, TEATIME_BOARD_NOT_FOUND.getMessage());
         }
 
         PaginationDTO pagination = PaginationDTO.of(teatimeBoards.getTotalPages(), page, perPage);
