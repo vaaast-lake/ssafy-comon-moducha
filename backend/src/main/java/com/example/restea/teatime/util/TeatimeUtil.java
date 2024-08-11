@@ -1,7 +1,7 @@
 package com.example.restea.teatime.util;
 
 
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_FOUND;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_ACTIVATED;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
@@ -26,6 +26,6 @@ public class TeatimeUtil {
                                                         Integer teatimeBoardId) {
         return teatimeBoardRepository.findByIdAndActivated(teatimeBoardId, true)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_FOUND.getMessage()));
+                        HttpStatus.NOT_FOUND, TEATIME_BOARD_NOT_FOUND.getMessage()));
     }
 }

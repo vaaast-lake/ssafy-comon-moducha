@@ -2,11 +2,11 @@ package com.example.restea.live.service;
 
 import static com.example.restea.live.enums.LiveMessage.LIVEKIT_BAD_REQUEST;
 import static com.example.restea.live.enums.LiveMessage.LIVE_NOT_FOUND;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_BEFORE_BROADCAST_DATE;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_ACTIVATED;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_BROADCAST_DATE;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_FOUND;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_WRITER;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_BEFORE_BROADCAST_DATE;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_ACTIVATED;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_BROADCAST_DATE;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_WRITER;
 import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_NOT_FOUND;
 
 import com.example.restea.live.dto.LiveMuteRequestDTO;
@@ -228,7 +228,7 @@ public class LiveService {
     // 티타임 게시글 작성자인지 확인하는 메소드
     private void checkWriter(TeatimeBoard teatimeBoard, User user) {
         if (!teatimeBoard.getUser().equals(user)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_NOT_WRITER.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_NOT_WRITER.getMessage());
         }
     }
 
@@ -251,12 +251,12 @@ public class LiveService {
 
         // 방송 예정일이랑 다른 날인 경우
         if (!broadcastDate.toLocalDate().isEqual(now.toLocalDate())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_NOT_BROADCAST_DATE.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_NOT_BROADCAST_DATE.getMessage());
         }
 
         // 방송 예정일보다 현재 시간이 전인 경우
         if (now.isBefore(broadcastDate)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_BEFORE_BROADCAST_DATE.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_BEFORE_BROADCAST_DATE.getMessage());
         }
     }
 
@@ -265,11 +265,11 @@ public class LiveService {
         // 티타임 게시글 존재하는지 확인하는 메소드
         TeatimeBoard teatimeBoard = teatimeBoardRepository.findById(teatimeBoardId)
                 .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_FOUND.getMessage()));
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIME_BOARD_NOT_FOUND.getMessage()));
 
         // 티타임 게시글 삭제 여부 확인
         if (!teatimeBoard.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_ACTIVATED.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIME_BOARD_NOT_ACTIVATED.getMessage());
         }
 
         return teatimeBoard;
