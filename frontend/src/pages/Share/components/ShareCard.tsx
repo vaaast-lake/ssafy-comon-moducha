@@ -2,7 +2,7 @@ import { ShareListItem } from '../../../types/ShareType';
 import { HiEye, HiUsers } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 import { parse } from 'node-html-parser';
-import defaultShare from '../../../assets/cardImage/defaultShare.webp';
+import defaultShare from '../../../assets/defaultcard/defaultShare.webp';
 
 const ShareCard = ({
   boardId,

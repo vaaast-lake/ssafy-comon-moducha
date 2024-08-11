@@ -2,7 +2,7 @@ import { TeatimeListItem } from '../../../types/TeatimeType';
 import { Link } from 'react-router-dom';
 import Badge from '../../../components/Badge/Badge';
 import { parse } from 'node-html-parser';
-import defaultTeatime from '../../../assets/cardImage/defaultTeatime.jpg';
+import defaultTeatime from '../../../assets/defaultcard/defaultTeatime.jpg';
 
 const TeatimeCard = ({ boardId, title, content }: TeatimeListItem) => {
   const parsedContent = parse(content);

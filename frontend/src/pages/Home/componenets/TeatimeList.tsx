@@ -1,13 +1,24 @@
 import TeatimeListToggle from './TeatimeListToggle';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TeatimeListCard from './TeatimeListCard';
-import { genMockList } from '../../../constants/teatimeMock';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
+import { TeatimeListItem } from '../../../types/TeatimeType';
+import { fetchArticleList } from '../../../api/fetchArticle';
 
 const TeatimeList = ({ ...props }) => {
-  const [teatimeList, setTeatimeList] = useState(genMockList(6));
-  const [currentTab, setCurrentTab] = useState('total');
+  const [teatimeList, setTeatimeList] = useState<TeatimeListItem[]>([]);
+  const [currentTab, setCurrentTab] = useState('latest');
+  useEffect(() => {
+    fetchArticleList({
+      boardType: 'teatimes',
+      sort: currentTab,
+      page: 1,
+      perPage: 8,
+    }).then((res) => {
+      setTeatimeList(res.data.data);
+    });
+  }, [currentTab]);
   return (
     <section {...props}>
       <h1 className="font-semibold text-2xl">티타임 목록</h1>
@@ -19,9 +30,9 @@ const TeatimeList = ({ ...props }) => {
           + 모집하기
         </Link>
       </section>
-      <article className="grid grid-cols-2 lg:grid-cols-3 items-center gap-4">
-        {teatimeList.map((el) => (
-          <TeatimeListCard key={el.boardId} {...el} />
+      <article className="grid grid-cols-2 grid-rows-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {teatimeList.map((el, index) => (
+          <TeatimeListCard key={el.boardId} {...{ ...el, index }} />
         ))}
       </article>
       <footer className="flex justify-center">

@@ -1,11 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { genMockList } from '../../../constants/teatimeMock';
 import MyTeatimeCarousel from './MyTeatimeCarousel';
+import { TeatimeListItem } from '../../../types/TeatimeType';
+import { fetchMyParticipatedList } from '../../../api/fetchArticle';
+import useAuthStore from '../../../stores/authStore';
+import NotFound from './NotFound';
 
 const MyTeatime = ({ ...props }) => {
-  const [myTeatimeList, setMyTeatime] = useState(genMockList(12));
-  useEffect(() => {});
+  const [myTeatimeList, setMyTeatime] = useState<TeatimeListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { userId } = useAuthStore((state) => ({ userId: state.currentUserId }));
+  useEffect(() => {
+    fetchMyParticipatedList({ userId, boardType: 'teatimes' })
+      .then((res) => {
+        setMyTeatime(res.data.data);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  }, [userId]);
   return (
     <section {...props}>
       <header className="flex justify-between items-center">
@@ -15,7 +27,10 @@ const MyTeatime = ({ ...props }) => {
         </Link>
       </header>
       <main className="relative">
-        <MyTeatimeCarousel myTeatimeList={myTeatimeList} />
+        {!isLoading && !myTeatimeList.length && <NotFound />}
+        {!isLoading && !!myTeatimeList.length && (
+          <MyTeatimeCarousel myTeatimeList={myTeatimeList} />
+        )}
       </main>
     </section>
   );

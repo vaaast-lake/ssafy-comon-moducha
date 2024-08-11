@@ -1,4 +1,4 @@
-import signInWithGoogle from '/googleLogin/web_light_rd_SI.svg';
+import signInWithGoogle from '../../assets/google/web_light_rd_SI.svg';
 
 const LoginModal = () => {
   const handleLogin = () => {

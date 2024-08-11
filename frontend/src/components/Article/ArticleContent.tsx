@@ -42,7 +42,10 @@ const ArticleContent = ({
       </header>
       <article>
         {/* content -> HTML 태그로 렌더링 */}
-        <p dangerouslySetInnerHTML={{ __html: content }} className="my-4 overflow-hidden"></p>
+        <p
+          dangerouslySetInnerHTML={{ __html: content }}
+          className="my-4 overflow-hidden text-wrap break-words whitespace-normal"
+        ></p>
         <hr />
       </article>
       <section>{children}</section>
