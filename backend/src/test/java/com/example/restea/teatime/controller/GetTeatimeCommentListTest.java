@@ -201,7 +201,7 @@ public class GetTeatimeCommentListTest {
 
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("noContentParameter")
-    @DisplayName("[NotFound] getTeatimeCommentList : 티타임 게시판 댓글 목록 조회")
+    @DisplayName("[NotCoent] getTeatimeCommentList : 티타임 게시판 댓글 목록 조회")
     void getTeatimeCommentList_NoContent_Failure(String testName, Integer page, Integer perPage)
             throws Exception {
         // given
@@ -223,7 +223,7 @@ public class GetTeatimeCommentListTest {
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
-        resultActions.andExpect(status().isNotFound());
+        resultActions.andExpect(status().isNoContent());
     }
 
     @ParameterizedTest(name = "{index}: {0}")

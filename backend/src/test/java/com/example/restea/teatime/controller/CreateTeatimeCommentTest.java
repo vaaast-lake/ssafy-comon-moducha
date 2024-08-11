@@ -219,7 +219,7 @@ public class CreateTeatimeCommentTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<TeatimeComment> teatimeComments = teatimeCommentRepository.findAll();
         assertThat(teatimeComments.size()).isEqualTo(0);
     }
@@ -281,7 +281,7 @@ public class CreateTeatimeCommentTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<TeatimeComment> teatimeComments = teatimeCommentRepository.findAll();
         assertThat(teatimeComments.size()).isEqualTo(0);
     }
@@ -325,7 +325,7 @@ public class CreateTeatimeCommentTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isUnauthorized());
         List<TeatimeComment> teatimeComments = teatimeCommentRepository.findAll();
         assertThat(teatimeComments.size()).isEqualTo(0);
     }

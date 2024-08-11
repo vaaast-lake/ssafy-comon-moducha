@@ -189,7 +189,7 @@ public class DeactivateTeatimeCommentTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
     }
 
     @DisplayName("deactivateTeatimeComment 실패 - 권한이 없는 사용자")
@@ -269,7 +269,7 @@ public class DeactivateTeatimeCommentTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
     }
 
     @DisplayName("deactivateTeatimeComment 실패 - 비활성화된 회원이 댓글 삭제를 요청한 경우")
@@ -314,6 +314,6 @@ public class DeactivateTeatimeCommentTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isUnauthorized());
     }
 }
