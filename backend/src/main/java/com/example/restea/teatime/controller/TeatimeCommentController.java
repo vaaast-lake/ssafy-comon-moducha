@@ -45,8 +45,11 @@ public class TeatimeCommentController {
             @NotNull @Positive @RequestParam("page") Integer page) {
 
         ResponseDTO<List<TeatimeCommentViewResponse>> result = teatimeCommentService.getTeatimeCommentList(
-                teatimeBoardId, page,
-                perPage);
+                teatimeBoardId, page, perPage);
+
+        if (result.getData().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
+        }
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
