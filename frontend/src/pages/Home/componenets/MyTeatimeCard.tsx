@@ -5,10 +5,10 @@ const MyTeatimeCard = ({ boardId, title, content }: TeatimeListItem) => {
   return (
     <Link
       to={`teatimes/${boardId}`}
-      className={`flex flex-col gap-3 rounded group/myteatime duration-300 delay-50 transition ease-in-out hover:text-tea`}
+      className="flex flex-col gap-3 rounded group/myteatime duration-300 delay-50 transition ease-in-out hover:text-tea"
     >
       <figure
-        className={`overflow-hidden rounded border h-32 bg-cover bg-no-repeat bg-center duration-300 delay-50 transition ease-in-out group-hover/myteatime:scale-105`}
+        className="overflow-hidden rounded border h-32 bg-cover bg-no-repeat bg-center duration-300 delay-50 transition ease-in-out group-hover/myteatime:scale-105"
         style={{
           backgroundImage: `url(/mock/maincard/my${(boardId % 4) + 1}.png)`,
         }}
