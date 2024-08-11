@@ -123,6 +123,13 @@ public class TeatimeController {
         return teatimeUpdateResponse;
     }
 
+    /**
+     * 주어진 티타임 게시글 삭제(activate를 false로 변경)
+     *
+     * @param teatimeBoardId   티타임게시판 ID
+     * @param customOAuth2User SecurityContextHolder에 등록된 인증된 유저
+     * @return 삭제한 티타임 게시판 ID를 포함하는 ResponseEntity 객체를 반환합니다. 티타임 게시글 삭제에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
+     */
     @PatchMapping("/deactivated-teatimes/{teatimeBoardId}")
     public ResponseEntity<ResponseDTO<?>> deactivateTeatimeBoard(
             @PathVariable("teatimeBoardId") Integer teatimeBoardId,
