@@ -42,16 +42,11 @@ public class TeatimeParticipantService {
 
     @Transactional
     public TeatimeJoinResponse addParticipant(Integer teatimeBoardId, TeatimeJoinRequest request, Integer userId) {
+
         User activatedUser = getActivatedUser(userRepository, userId);
         TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
 
-        if (checkActivatedTeatimeBoardWriter(activatedTeatimeBoard, activatedUser)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_WRITER.getMessage());
-        }
-
-        validateEndDate(activatedTeatimeBoard.getEndDate());
-        validateParticipantCount(activatedTeatimeBoard);
-        validateParticipantAlreadyExists(activatedTeatimeBoard, activatedUser);
+        validateParticipationRequest(activatedTeatimeBoard, activatedUser);
 
         TeatimeParticipant teatimeParticipant = TeatimeParticipant.builder()
                 .name(request.getName())
@@ -69,14 +64,11 @@ public class TeatimeParticipantService {
     @Transactional
     public TeatimeCancelResponse cancelParticipation(Integer teatimeBoardId, Integer userId,
                                                      Integer customOAuth2UserId) {
+
         User activatedUser = userService.checkValidUser(customOAuth2UserId, userId);
         TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
 
-        if (Objects.equals(activatedTeatimeBoard.getUser().getId(), activatedUser.getId())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_WRITER.getMessage());
-        }
-
-        validateEndDate(activatedTeatimeBoard.getEndDate());
+        validateCancelRequest(activatedTeatimeBoard, activatedUser);
 
         TeatimeParticipant participant = teatimeParticipantRepository.findByTeatimeBoardAndUser(activatedTeatimeBoard,
                         activatedUser)
@@ -91,14 +83,15 @@ public class TeatimeParticipantService {
     @Transactional
     public TeatimeJoinCheckResponse joinCheckParticipant(Integer teatimeBoardId, Integer userId,
                                                          Integer customOAuth2UserId) {
+
         User activatedUser = userService.checkValidUser(customOAuth2UserId, userId);
         TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
 
-        if (checkActivatedTeatimeBoardWriter(activatedTeatimeBoard, activatedUser)) {
+        if (Objects.equals(activatedTeatimeBoard.getUser(), activatedUser)) {
             return TeatimeJoinCheckResponse.of(teatimeBoardId, userId, true);
         }
 
-        if (teatimeParticipantRepository.existsByTeatimeBoardIdAndUser(activatedTeatimeBoard.getId(), activatedUser)) {
+        if (teatimeParticipantRepository.existsByTeatimeBoardAndUser(activatedTeatimeBoard, activatedUser)) {
             return TeatimeJoinCheckResponse.of(teatimeBoardId, userId, true);
         }
 
@@ -107,10 +100,11 @@ public class TeatimeParticipantService {
 
     @Transactional
     public List<TeatimeJoinListResponse> getParticipants(Integer teatimeBoardId, Integer userId) {
+
         User activatedUser = getActivatedUser(userRepository, userId);
         TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
 
-        if (!checkActivatedTeatimeBoardWriter(activatedTeatimeBoard, activatedUser)) {
+        if (!Objects.equals(activatedTeatimeBoard.getUser(), activatedUser)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_NOT_WRITER.getMessage());
         }
 
@@ -120,33 +114,37 @@ public class TeatimeParticipantService {
                 .toList();
     }
 
-    private boolean checkActivatedTeatimeBoardWriter(TeatimeBoard activatedTeatimeBoard, User activatedUser) {
+    private void validateParticipationRequest(TeatimeBoard activatedTeatimeBoard, User activatedUser) {
         if (!activatedTeatimeBoard.getUser().getActivated()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_USER_NOT_ACTIVATED.getMessage());
         }
 
         if (Objects.equals(activatedTeatimeBoard.getUser().getId(), activatedUser.getId())) {
-            return true;
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_WRITER.getMessage());
         }
 
-        return false;
+        validateEndDate(activatedTeatimeBoard.getEndDate());
+
+        if (activatedTeatimeBoard.getTeatimeParticipants().size() >= activatedTeatimeBoard.getMaxParticipants()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_PARTICIPANT_FULL.getMessage());
+        }
+
+        if (teatimeParticipantRepository.existsByTeatimeBoardAndUser(activatedTeatimeBoard, activatedUser)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, TEATIME_PARTICIPANT_ALREADY_EXISTS.getMessage());
+        }
+    }
+
+    private void validateCancelRequest(TeatimeBoard activatedTeatimeBoard, User activatedUser) {
+        if (Objects.equals(activatedTeatimeBoard.getUser().getId(), activatedUser.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_WRITER.getMessage());
+        }
+
+        validateEndDate(activatedTeatimeBoard.getEndDate());
     }
 
     private void validateEndDate(LocalDateTime endDate) {
         if (LocalDateTime.now().isAfter(endDate)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_PARTICIPANT_AFTER_END_DATE.getMessage());
-        }
-    }
-
-    private void validateParticipantCount(TeatimeBoard activatedTeatimeBoard) {
-        if (activatedTeatimeBoard.getTeatimeParticipants().size() >= activatedTeatimeBoard.getMaxParticipants()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_PARTICIPANT_FULL.getMessage());
-        }
-    }
-
-    private void validateParticipantAlreadyExists(TeatimeBoard activatedTeatimeBoard, User user) {
-        if (teatimeParticipantRepository.existsByTeatimeBoardIdAndUser(activatedTeatimeBoard.getId(), user)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, TEATIME_PARTICIPANT_ALREADY_EXISTS.getMessage());
         }
     }
 }
