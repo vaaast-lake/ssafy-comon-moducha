@@ -15,6 +15,7 @@ import com.example.restea.user.repository.UserRepository;
 import com.example.restea.util.SecurityTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
@@ -39,13 +40,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class CreateTeatimeBoardTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -151,7 +151,7 @@ public class CreateTeatimeBoardTest {
         // given
         final String url = "/api/v1/teatimes";
         final TeatimeCreationRequest teatimeCreationRequest = new TeatimeCreationRequest(title, content,
-                endDate, broadcastDate, maxParticipants);
+                endDate, broadcastDate, maxParticipants, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(teatimeCreationRequest);
 
         // when
@@ -177,7 +177,7 @@ public class CreateTeatimeBoardTest {
         // given
         final String url = "/api/v1/teatimes";
         final TeatimeCreationRequest teatimeCreationRequest = new TeatimeCreationRequest(title, content,
-                endDate, broadcastDate, maxParticipants);
+                endDate, broadcastDate, maxParticipants, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(teatimeCreationRequest);
 
         // when

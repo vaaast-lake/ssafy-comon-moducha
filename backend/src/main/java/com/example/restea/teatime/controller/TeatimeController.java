@@ -3,6 +3,7 @@ package com.example.restea.teatime.controller;
 import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
+import com.example.restea.s3.service.S3ServiceImpl;
 import com.example.restea.teatime.dto.TeatimeCreationRequest;
 import com.example.restea.teatime.dto.TeatimeCreationResponse;
 import com.example.restea.teatime.dto.TeatimeDeleteResponse;
@@ -12,6 +13,7 @@ import com.example.restea.teatime.dto.TeatimeUpdateResponse;
 import com.example.restea.teatime.dto.TeatimeViewResponse;
 import com.example.restea.teatime.service.TeatimeService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/teatimes")
 public class TeatimeController {
     private final TeatimeService teatimeService;
+    private final S3ServiceImpl s3ServiceImpl;
 
     /**
      * 티타임 게시글 목록 조회
@@ -61,6 +64,7 @@ public class TeatimeController {
             @Valid @RequestBody TeatimeCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
+        s3ServiceImpl.deleteImagesNotUsedInContent(request);
         TeatimeCreationResponse result = teatimeService.createTeatimeBoard(request, customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -97,11 +101,26 @@ public class TeatimeController {
             @Valid @RequestBody TeatimeUpdateRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        TeatimeUpdateResponse result = teatimeService.updateTeatimeBoard(teatimeBoardId, request,
-                customOAuth2User.getUserId());
+        TeatimeUpdateResponse teatimeUpdateResponse = updateAndHandleImages(teatimeBoardId, request, customOAuth2User);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseDTO.from(result));
+                .body(ResponseDTO.from(teatimeUpdateResponse));
+    }
+
+    private @NotNull TeatimeUpdateResponse updateAndHandleImages(Integer teatimeBoardId, TeatimeUpdateRequest request,
+                                                                 CustomOAuth2User customOAuth2User) {
+        // 수정 전 Content
+        String contentBefore = teatimeService.getOnlyTeatimeBoard(teatimeBoardId).getContent();
+
+        TeatimeUpdateResponse teatimeUpdateResponse = teatimeService.updateTeatimeBoard(teatimeBoardId, request,
+                customOAuth2User.getUserId());
+
+        // 수정 후 Content
+        String contentAfter = teatimeUpdateResponse.getContent();
+
+        // 이미지 삭제 요청
+        s3ServiceImpl.deleteImagesNotUsedInContent(request, contentBefore, contentAfter);
+        return teatimeUpdateResponse;
     }
 
     @PatchMapping("/deactivated-teatimes/{teatimeBoardId}")
