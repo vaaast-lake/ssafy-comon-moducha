@@ -38,15 +38,14 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 public class GetShareBoardListTest {
 
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
     private final ShareParticipantRepository shareParticipantRepository;
-
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -90,7 +89,7 @@ public class GetShareBoardListTest {
     @Test
     public void getShareBoardList_10_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<ShareBoard> shareBoards = new ArrayList<>();
@@ -141,7 +140,7 @@ public class GetShareBoardListTest {
     @Test
     public void getShareBoardList_5_latest_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<ShareBoard> shareBoards = new ArrayList<>();
@@ -196,7 +195,7 @@ public class GetShareBoardListTest {
     @Test
     public void getShareBoardList_5_urgent_success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<ShareBoard> shareBoards = new ArrayList<>();

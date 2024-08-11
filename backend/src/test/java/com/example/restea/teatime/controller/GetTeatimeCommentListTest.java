@@ -43,15 +43,28 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class GetTeatimeCommentListTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeCommentRepository teatimeCommentRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private User testUser;
+
+    @Autowired
+    public GetTeatimeCommentListTest(MockMvc mockMvc, ObjectMapper objectMapper,
+                                     WebApplicationContext context, TeatimeBoardRepository teatimeBoardRepository,
+                                     TeatimeCommentRepository teatimeCommentRepository, UserRepository userRepository,
+                                     CustomOAuth2UserService customOAuth2UserService) {
+        this.mockMvc = mockMvc;
+        this.objectMapper = objectMapper;
+        this.context = context;
+        this.teatimeBoardRepository = teatimeBoardRepository;
+        this.teatimeCommentRepository = teatimeCommentRepository;
+        this.userRepository = userRepository;
+        this.customOAuth2UserService = customOAuth2UserService;
+    }
 
     /**
      * testName, Page, perPage, contentsCount
@@ -109,20 +122,6 @@ public class GetTeatimeCommentListTest {
         );
     }
 
-    @Autowired
-    public GetTeatimeCommentListTest(MockMvc mockMvc, ObjectMapper objectMapper,
-                                     WebApplicationContext context, TeatimeBoardRepository teatimeBoardRepository,
-                                     TeatimeCommentRepository teatimeCommentRepository, UserRepository userRepository,
-                                     CustomOAuth2UserService customOAuth2UserService) {
-        this.mockMvc = mockMvc;
-        this.objectMapper = objectMapper;
-        this.context = context;
-        this.teatimeBoardRepository = teatimeBoardRepository;
-        this.teatimeCommentRepository = teatimeCommentRepository;
-        this.userRepository = userRepository;
-        this.customOAuth2UserService = customOAuth2UserService;
-    }
-
     @Transactional
     @BeforeEach
     void setUp() {
@@ -139,7 +138,7 @@ public class GetTeatimeCommentListTest {
     public void OAuth2UserSetup() {
         CustomOAuth2User customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
-        testUser = userRepository.findByAuthId("authId")
+        testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
     }
 

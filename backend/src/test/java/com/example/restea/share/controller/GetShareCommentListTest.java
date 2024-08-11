@@ -39,16 +39,15 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class GetShareCommentListTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final ShareCommentRepository shareCommentRepository;
     private final ShareReplyRepository shareReplyRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
-
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -95,7 +94,7 @@ public class GetShareCommentListTest {
     @Test
     public void getShareCommentList_10_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
@@ -145,7 +144,7 @@ public class GetShareCommentListTest {
     @Test
     public void getShareBoardList_5_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()

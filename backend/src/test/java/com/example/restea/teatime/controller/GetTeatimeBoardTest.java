@@ -37,13 +37,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class GetTeatimeBoardTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -106,7 +105,7 @@ public class GetTeatimeBoardTest {
     public void getTeatimeBoard_Success() throws Exception {
         // given
         custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard createdTeatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -143,7 +142,7 @@ public class GetTeatimeBoardTest {
     public void getTeatimeBoard_deactivatedUser() throws Exception {
         // given
         custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard createdTeatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -195,7 +194,7 @@ public class GetTeatimeBoardTest {
 
         // given
         custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard createdTeatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()

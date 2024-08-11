@@ -35,13 +35,12 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 class GetTeatimeBoardListTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -80,7 +79,7 @@ class GetTeatimeBoardListTest {
     @Test
     public void getTeatimeBoardList_10_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<TeatimeBoard> teatimeBoards = new ArrayList<>();
@@ -131,7 +130,7 @@ class GetTeatimeBoardListTest {
     @Test
     public void getTeatimeBoardList_5_latest_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<TeatimeBoard> teatimeBoards = new ArrayList<>();
@@ -187,7 +186,7 @@ class GetTeatimeBoardListTest {
     @Test
     public void getTeatimeBoardList_5_urgent_success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<TeatimeBoard> teatimeBoards = new ArrayList<>();

@@ -36,14 +36,13 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 public class CancelParticipationTest {
 
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -87,11 +86,11 @@ public class CancelParticipationTest {
     public void cancelParticipation_Success() throws Exception {
 
         // given
-        User testUser = userRepository.findByAuthId("authId")
+        User testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         customOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -127,7 +126,7 @@ public class CancelParticipationTest {
     public void cancelParticipation_NotFoundTeatimeBoard_Fail() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         final String url = "/api/v1/teatimes/999/participants/" + user.getId();
@@ -144,11 +143,11 @@ public class CancelParticipationTest {
     public void cancelParticipation_NotFoundParticipant_Fail() throws Exception {
 
         // given
-        User testUser = userRepository.findByAuthId("authId")
+        User testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         customOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
