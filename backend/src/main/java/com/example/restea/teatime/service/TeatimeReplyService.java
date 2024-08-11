@@ -1,14 +1,17 @@
 package com.example.restea.teatime.service;
 
-import static com.example.restea.share.util.ShareUtil.getActivatedUser;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_USER_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeCommentMessage.TEATIME_COMMENT_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeReplyMessage.TEATIME_REPLY_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeReplyMessage.TEATIME_REPLY_NOT_WRITER;
 import static com.example.restea.teatime.util.TeatimeUtil.getActivatedTeatimeBoard;
 import static com.example.restea.teatime.util.TeatimeUtil.getActivatedTeatimeComment;
+import static com.example.restea.teatime.util.TeatimeUtil.getActivatedUser;
 
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.teatime.dto.TeatimeReplyCreationResponse;
+import com.example.restea.teatime.dto.TeatimeReplyDeleteResponse;
 import com.example.restea.teatime.dto.TeatimeReplyViewResponse;
 import com.example.restea.teatime.entity.TeatimeBoard;
 import com.example.restea.teatime.entity.TeatimeComment;
@@ -71,6 +74,22 @@ public class TeatimeReplyService {
         return TeatimeReplyCreationResponse.of(teatimeReply, activatedUser.getExposedNickname());
     }
 
+    @Transactional
+    public TeatimeReplyDeleteResponse deactivateTeatimeReply(Integer teatimeBoardId, Integer teatimeCommentId,
+                                                             Integer teatimeReplyId, Integer userId) {
+
+        User activatedUser = getActivatedUser(userRepository, userId);
+        TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
+        TeatimeComment teatimeComment = getTeatimeComment(teatimeCommentId, activatedTeatimeBoard);
+
+        TeatimeReply activatedTeatimeReply = getActivatedTeatimeReply(teatimeReplyId, teatimeComment);
+        checkWriter(activatedTeatimeReply, activatedUser);
+
+        activatedTeatimeReply.deactivate();
+
+        return TeatimeReplyDeleteResponse.from(activatedTeatimeReply);
+    }
+
     public TeatimeComment getTeatimeComment(Integer teatimeCommentId, TeatimeBoard activatedTeatimeBoard) {
         return activatedTeatimeBoard.getTeatimeComments().stream()
                 .filter(comment -> Objects.equals(comment.getId(), teatimeCommentId))
@@ -96,5 +115,20 @@ public class TeatimeReplyService {
             return;
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_USER_NOT_ACTIVATED.getMessage());
+    }
+
+    public static TeatimeReply getActivatedTeatimeReply(Integer teatimeReplyId, TeatimeComment teatimeComment) {
+        return teatimeComment.getTeatimeReplies().stream()
+                .filter(reply -> Objects.equals(reply.getId(), teatimeReplyId))
+                .filter(TeatimeReply::getActivated)
+                .findFirst()
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIME_REPLY_NOT_FOUND.getMessage()));
+    }
+
+    private void checkWriter(TeatimeReply teatimeReply, User activatedUser) {
+        if (!Objects.equals(teatimeReply.getUser(), activatedUser)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_REPLY_NOT_WRITER.getMessage());
+        }
     }
 }
