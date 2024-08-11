@@ -69,12 +69,16 @@ public class TeatimeService {
     @Transactional
     public TeatimeViewResponse getTeatimeBoard(Integer teatimeBoardId) {
 
-        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+        TeatimeBoard teatimeBoard = getOnlyTeatimeBoard(teatimeBoardId);
         Integer participants = teatimeParticipantRepository.countByTeatimeBoard(teatimeBoard).intValue();
 
         teatimeBoard.addViewCount();
 
         return TeatimeViewResponse.of(teatimeBoard, participants);
+    }
+
+    public @NotNull TeatimeBoard getOnlyTeatimeBoard(Integer teatimeBoardId) {
+        return getActivatedBoard(teatimeBoardId);
     }
 
     @Transactional
@@ -87,7 +91,7 @@ public class TeatimeService {
             throw new IllegalArgumentException(USER_NOT_ACTIVATED.getMessage());
         }
 
-        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+        TeatimeBoard teatimeBoard = getOnlyTeatimeBoard(teatimeBoardId);
 
         checkAuthorized(teatimeBoard, userId);
 
@@ -110,7 +114,7 @@ public class TeatimeService {
             throw new IllegalArgumentException(USER_NOT_ACTIVATED.getMessage());
         }
 
-        TeatimeBoard teatimeBoard = getActivatedBoard(teatimeBoardId);
+        TeatimeBoard teatimeBoard = getOnlyTeatimeBoard(teatimeBoardId);
 
         checkAuthorized(teatimeBoard, userId);
 

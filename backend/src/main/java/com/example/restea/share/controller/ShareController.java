@@ -4,12 +4,15 @@ import com.example.restea.common.dto.PaginationAndSortingDto;
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
+import com.example.restea.s3.service.S3ServiceImpl;
 import com.example.restea.share.dto.ShareCreationRequest;
 import com.example.restea.share.dto.ShareUpdateRequest;
+import com.example.restea.share.dto.ShareUpdateResponse;
 import com.example.restea.share.service.ShareService;
 import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/shares")
 public class ShareController {
     private final ShareService shareService;
+    private final S3ServiceImpl s3ServiceImpl;
 
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getShareBoardList(
@@ -48,6 +52,9 @@ public class ShareController {
     public ResponseEntity<ResponseDTO<?>> createShareBoard(
             @Valid @RequestBody ShareCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
+
+        s3ServiceImpl.deleteImagesNotUsedInContent(request);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseDTO.builder()
                         .data(shareService.createShareBoard(request, customOAuth2User.getUserId()))
@@ -70,10 +77,28 @@ public class ShareController {
             @Valid @RequestBody ShareUpdateRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
+        ShareUpdateResponse shareUpdateResponse = updateAndHandleImages(shareBoardId, request, customOAuth2User);
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.builder()
-                        .data(shareService.updateShareBoard(shareBoardId, request, customOAuth2User.getUserId()))
+                        .data(shareUpdateResponse)
                         .build());
+    }
+
+    private @NotNull ShareUpdateResponse updateAndHandleImages(Integer shareBoardId, ShareUpdateRequest request,
+                                                               CustomOAuth2User customOAuth2User) {
+        // 수정 전 Content
+        String contentBefore = shareService.getOnlyShareBoard(shareBoardId).getContent();
+
+        ShareUpdateResponse shareUpdateResponse = shareService.updateShareBoard(shareBoardId, request,
+                customOAuth2User.getUserId());
+
+        // 수정 후 Content
+        String contentAfter = shareUpdateResponse.getContent();
+
+        // 이미지 삭제 요청
+        s3ServiceImpl.deleteImagesNotUsedInContent(request, contentBefore, contentAfter);
+        return shareUpdateResponse;
     }
 
     @PatchMapping("/deactivated-shares/{shareBoardId}")

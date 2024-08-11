@@ -18,6 +18,7 @@ import com.example.restea.user.repository.UserRepository;
 import com.example.restea.util.SecurityTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,14 +42,13 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class UpdateTeatimeBoardTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -176,7 +176,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -204,7 +204,7 @@ public class UpdateTeatimeBoardTest {
         // given
         final String url = "/api/v1/shares/999";
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -244,7 +244,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -280,7 +280,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -333,7 +333,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -367,7 +367,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 

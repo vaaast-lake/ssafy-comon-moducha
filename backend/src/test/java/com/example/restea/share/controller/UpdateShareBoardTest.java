@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,15 +39,14 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 public class UpdateShareBoardTest {
 
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
     private final ShareParticipantRepository shareParticipantRepository;
-
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -111,7 +111,7 @@ public class UpdateShareBoardTest {
         final Integer updatedMaxParticipants = 20;
         final LocalDateTime updatedEndDate = LocalDateTime.now().plusWeeks(2L);
         final ShareUpdateRequest shareUpdateRequest = new ShareUpdateRequest(
-                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants
+                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(shareUpdateRequest);
 
@@ -142,7 +142,7 @@ public class UpdateShareBoardTest {
         final Integer updatedMaxParticipants = 20;
         final LocalDateTime updatedEndDate = LocalDateTime.now().plusWeeks(2L);
         final ShareUpdateRequest shareUpdateRequest = new ShareUpdateRequest(
-                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants
+                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(shareUpdateRequest);
 
@@ -187,7 +187,7 @@ public class UpdateShareBoardTest {
         final Integer updatedMaxParticipants = 20;
         final LocalDateTime updatedEndDate = LocalDateTime.now().plusWeeks(2L);
         final ShareUpdateRequest shareUpdateRequest = new ShareUpdateRequest(
-                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants
+                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(shareUpdateRequest);
 
@@ -224,7 +224,7 @@ public class UpdateShareBoardTest {
         final Integer updatedMaxParticipants = 20;
         final LocalDateTime updatedEndDate = LocalDateTime.now().plusWeeks(2L);
         final ShareUpdateRequest shareUpdateRequest = new ShareUpdateRequest(
-                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants
+                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(shareUpdateRequest);
 
@@ -276,7 +276,7 @@ public class UpdateShareBoardTest {
         final Integer updatedMaxParticipants = 1;
         final LocalDateTime updatedEndDate = LocalDateTime.now().plusWeeks(2L);
         final ShareUpdateRequest shareUpdateRequest = new ShareUpdateRequest(
-                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants
+                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(shareUpdateRequest);
 
@@ -312,7 +312,7 @@ public class UpdateShareBoardTest {
         final Integer updatedMaxParticipants = 10;
         final LocalDateTime updatedEndDate = LocalDateTime.now().minusDays(1);
         final ShareUpdateRequest shareUpdateRequest = new ShareUpdateRequest(
-                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants
+                updatedTitle, updatedContent, updatedEndDate, updatedMaxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(shareUpdateRequest);
 
