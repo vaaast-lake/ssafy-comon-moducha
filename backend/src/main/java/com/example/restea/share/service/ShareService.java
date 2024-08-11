@@ -1,5 +1,7 @@
 package com.example.restea.share.service;
 
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_SEARCH_BY;
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_SORT;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_WRITER;
 import static com.example.restea.share.util.ShareUtil.getActivatedShareBoard;
@@ -15,6 +17,7 @@ import com.example.restea.share.dto.ShareViewResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareReply;
 import com.example.restea.share.repository.ShareBoardRepository;
+import com.example.restea.share.repository.ShareBoardSearchRepository;
 import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.share.util.ShareUtil;
 import com.example.restea.user.entity.User;
@@ -27,9 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,13 +41,19 @@ public class ShareService {
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final ShareParticipantRepository shareParticipantRepository;
+    private final ShareBoardSearchRepository shareBoardSearchRepository;
 
     @Transactional
-    public Map<String, Object> getShareBoardList(String sort, Integer page, Integer perPage) {
+    public Map<String, Object> getShareBoardList(
+            String sort, Integer page, Integer perPage, String searchBy, String keyword) {
+
+        checkSort(sort);
+        checkSearchBy(searchBy);
 
         // data
-        Page<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage); // 아직 기간이 지나지 않고 활성화된 게시글
-        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards.getContent());
+        List<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage, searchBy,
+                keyword); // 아직 기간이 지나지 않고 활성화된 게시글
+        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards);
         Long count = calculateCount(sort); // latest, urgent 처리방식에 따라 달라질 수 있음
 
         // pagination info
@@ -110,6 +116,18 @@ public class ShareService {
                 .build();
     }
 
+    private void checkSort(String sort) {
+        if (!List.of("urgent", "latest").contains(sort)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_SORT.getMessage());
+        }
+    }
+
+    private void checkSearchBy(String searchBy) {
+        if (!List.of("title", "content", "writer").contains(searchBy)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_SEARCH_BY.getMessage());
+        }
+    }
+
     private Long calculateCount(String sort) {
         return switch (sort) {
             case "latest" -> shareBoardRepository.countByActivated(true);
@@ -118,19 +136,11 @@ public class ShareService {
         };
     }
 
-    private @NotNull Page<ShareBoard> getActivatedShareBoards(String sort, Integer page, Integer perPage) {
+    private @NotNull List<ShareBoard> getActivatedShareBoards(
+            String sort, Integer page, Integer perPage, String searchBy, String keyword) {
 
-        Page<ShareBoard> shareBoards = switch (sort) {
-            case "latest" -> shareBoardRepository.findAllByActivated(true,
-                    PageRequest.of(page - 1, perPage, Sort.by("createdDate").descending()));
-            case "urgent" -> shareBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
-                    PageRequest.of(page - 1, perPage, Sort.by("endDate").ascending()));
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
-        };
-        if (shareBoards.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found");
-        }
-        return shareBoards;
+        return shareBoardSearchRepository.findAllBySortAndKeyword(
+                sort, page, perPage, searchBy, keyword);
     }
 
     private List<ShareListResponse> createResponseFormShareBoards(List<ShareBoard> shareBoards) {
