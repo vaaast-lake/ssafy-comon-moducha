@@ -35,20 +35,19 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 public class GetShareBoardTest {
 
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
-
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH:mm");
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
     public GetShareBoardTest(MockMvc mockMvc, ObjectMapper objectMapper,
-                                   WebApplicationContext context,
-                                   ShareBoardRepository shareBoardRepository, UserRepository userRepository
+                             WebApplicationContext context,
+                             ShareBoardRepository shareBoardRepository, UserRepository userRepository
             , CustomOAuth2UserService custumOAuth2UserService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
@@ -85,7 +84,7 @@ public class GetShareBoardTest {
     public void getShareBoard_Success() throws Exception {
         // given
         custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard createdShareBoard = shareBoardRepository.save(ShareBoard.builder()
@@ -120,7 +119,7 @@ public class GetShareBoardTest {
     public void getShareBoard_deactivatedUser() throws Exception {
         // given
         custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard createdShareBoard = shareBoardRepository.save(ShareBoard.builder()
@@ -173,7 +172,7 @@ public class GetShareBoardTest {
 
         // given
         custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard createdShareBoard = shareBoardRepository.save(ShareBoard.builder()

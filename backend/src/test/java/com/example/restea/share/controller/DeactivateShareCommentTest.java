@@ -35,14 +35,13 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class DeactivateShareCommentTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
     private final ShareCommentRepository shareCommentRepository;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -88,7 +87,7 @@ public class DeactivateShareCommentTest {
     public void deactivateShareComment_Success() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
@@ -140,7 +139,7 @@ public class DeactivateShareCommentTest {
     public void deactivateShareComment_Deactivated_Fail() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()
@@ -180,7 +179,7 @@ public class DeactivateShareCommentTest {
 
         // given
         custumOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = shareBoardRepository.save(ShareBoard.builder()

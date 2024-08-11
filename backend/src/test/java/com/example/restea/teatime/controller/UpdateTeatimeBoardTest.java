@@ -162,7 +162,7 @@ public class UpdateTeatimeBoardTest {
     void updateTeatime_Success(String testName, String title, String content, LocalDateTime endDate,
                                LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -225,7 +225,7 @@ public class UpdateTeatimeBoardTest {
                                              LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -266,7 +266,7 @@ public class UpdateTeatimeBoardTest {
 
         // given
         customOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -303,7 +303,7 @@ public class UpdateTeatimeBoardTest {
             throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -319,7 +319,7 @@ public class UpdateTeatimeBoardTest {
         User participant;
         for (int i = 0; i < 3; i++) {
             customOAuth2UserService.handleNewUser("authId" + i, "authToken" + i);
-            participant = userRepository.findByAuthId("authId" + i)
+            participant = userRepository.findByAuthIdAndActivated("authId" + i, true)
                     .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
             teatimeParticipantRepository.save(TeatimeParticipant.builder()
@@ -353,7 +353,7 @@ public class UpdateTeatimeBoardTest {
     void updateTeatime_Failure(String testName, String title, String content, LocalDateTime endDate,
                                LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()

@@ -128,7 +128,7 @@ public class ChangeNicknameTest {
     void OAuth2UserSetup() {
         CustomOAuth2User customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
-        testUser = userRepository.findByAuthId("authId")
+        testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         String value = jwtUtil.createJwt(REFRESH.getType(), testUser.getId(), testUser.getNickname(),

@@ -37,14 +37,13 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class DeactivateTeatimeCommentTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final TeatimeCommentRepository teatimeCommentRepository;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -91,7 +90,7 @@ public class DeactivateTeatimeCommentTest {
     public void deactivateTeatimeComment_Success() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -129,7 +128,7 @@ public class DeactivateTeatimeCommentTest {
     public void deactivateTeatimeComment_NotFound_Fail() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -157,7 +156,7 @@ public class DeactivateTeatimeCommentTest {
     public void deactivateTeatimeComment_AlreadyDeactivatedTeatimeComment_Fail() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -199,7 +198,7 @@ public class DeactivateTeatimeCommentTest {
 
         // given
         customOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -234,7 +233,7 @@ public class DeactivateTeatimeCommentTest {
     public void deactivateTeatimeComment_NotFoundComment_Fail() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -277,7 +276,7 @@ public class DeactivateTeatimeCommentTest {
     @Test
     public void deactivateTeatimeComment_deactivatedUser_Fail() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         user.deactivate();
