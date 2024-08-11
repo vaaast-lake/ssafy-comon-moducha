@@ -1,12 +1,11 @@
 package com.example.restea.teatime.service;
 
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_ACTIVATED;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_FOUND;
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_WRITER;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_INVALID_SORT;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
-import static com.example.restea.user.enums.UserMessage.USER_NOT_ACTIVATED;
-import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_WRITER;
+import static com.example.restea.teatime.util.TeatimeUtil.getActivatedTeatimeBoard;
+import static com.example.restea.teatime.util.TeatimeUtil.getActivatedUser;
 
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -48,11 +46,14 @@ public class TeatimeService {
 
     @Transactional
     public ResponseDTO<List<TeatimeListResponse>> getTeatimeBoardList(String sort, Integer page, Integer perPage) {
-        Page<TeatimeBoard> teatimeBoards = getTeatimeBoards(sort, page, perPage); // 마감 기간이 지나지 않고 활성화된 게시글
+        Page<TeatimeBoard> teatimeBoards = getActivatedTeatimeBoards(sort, page, perPage);
         List<TeatimeListResponse> data = createResponseFormTeatimeBoards(teatimeBoards.getContent());
-        Long count = calculateCount(sort);
 
-        PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
+        if (data.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIME_BOARD_NOT_FOUND.getMessage());
+        }
+
+        PaginationDTO pagination = PaginationDTO.of(teatimeBoards.getTotalPages(), page, perPage);
 
         return ResponseDTO.of(data, pagination);
     }
@@ -60,9 +61,9 @@ public class TeatimeService {
     @Transactional
     public TeatimeCreationResponse createTeatimeBoard(TeatimeCreationRequest request, Integer userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
-        TeatimeBoard result = teatimeBoardRepository.save(request.toEntity(user));
+        User activatedUser = getActivatedUser(userRepository, userId);
+        TeatimeBoard result = teatimeBoardRepository.save(request.toEntity(activatedUser));
+
         return TeatimeCreationResponse.of(result);
     }
 
@@ -77,110 +78,80 @@ public class TeatimeService {
         return TeatimeViewResponse.of(teatimeBoard, participants);
     }
 
-    public @NotNull TeatimeBoard getOnlyTeatimeBoard(Integer teatimeBoardId) {
-        return getActivatedBoard(teatimeBoardId);
+    public TeatimeBoard getOnlyTeatimeBoard(Integer teatimeBoardId) {
+        return getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
     }
 
     @Transactional
     public TeatimeUpdateResponse updateTeatimeBoard(Integer teatimeBoardId, TeatimeUpdateRequest request,
                                                     Integer userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
 
-        if (!user.getActivated()) {
-            throw new IllegalArgumentException(USER_NOT_ACTIVATED.getMessage());
-        }
+        User activatedUser = getActivatedUser(userRepository, userId);
+        TeatimeBoard activatedTeatimeBoard = getOnlyTeatimeBoard(teatimeBoardId);
 
-        TeatimeBoard teatimeBoard = getOnlyTeatimeBoard(teatimeBoardId);
+        checkWriter(activatedTeatimeBoard, userId);
 
-        checkAuthorized(teatimeBoard, userId);
-
-        Integer participants = teatimeParticipantRepository.countByTeatimeBoard(teatimeBoard).intValue();
+        Integer participants = teatimeParticipantRepository.countByTeatimeBoard(activatedTeatimeBoard).intValue();
         checkLessThanCurrentParticipants(request, participants);
 
-        // 업데이트
-        teatimeBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
+        activatedTeatimeBoard.update(request.getTitle(), request.getContent(), request.getMaxParticipants(),
                 request.getEndDate(), request.getBroadcastDate());
-        return TeatimeUpdateResponse.of(teatimeBoard, participants);
+
+        return TeatimeUpdateResponse.of(activatedTeatimeBoard, participants);
     }
 
     @Transactional
     public TeatimeDeleteResponse deactivateTeatimeBoard(Integer teatimeBoardId, Integer userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND.getMessage()));
+        User user = getActivatedUser(userRepository, userId);
+        TeatimeBoard activatedTeatimeBoard = getOnlyTeatimeBoard(teatimeBoardId);
 
-        if (!user.getActivated()) {
-            throw new IllegalArgumentException(USER_NOT_ACTIVATED.getMessage());
-        }
+        checkWriter(activatedTeatimeBoard, userId);
 
-        TeatimeBoard teatimeBoard = getOnlyTeatimeBoard(teatimeBoardId);
+        deactivateCommentsAndReplies(activatedTeatimeBoard);
+        activatedTeatimeBoard.deactivate();
 
-        checkAuthorized(teatimeBoard, userId);
-
-        List<TeatimeComment> teatimeComments = teatimeBoard.getTeatimeComments();
-        teatimeComments.forEach(teatimeComment -> {
-            if (teatimeComment.getActivated()) {
-                teatimeComment.deactivate();
-            }
-
-            List<TeatimeReply> teatimeReplies = teatimeComment.getTeatimeReplies();
-            teatimeReplies.forEach(TeatimeReply::deactivate);
-        });
-
-        teatimeBoard.deactivate();
+        teatimeParticipantRepository.deleteAll(activatedTeatimeBoard.getTeatimeParticipants());
 
         return TeatimeDeleteResponse.from(teatimeBoardId);
     }
 
-    private @NotNull Page<TeatimeBoard> getTeatimeBoards(String sort, Integer page, Integer perPage) {
+    private Page<TeatimeBoard> getActivatedTeatimeBoards(String sort, Integer page, Integer perPage) {
+        Sort sortBy = determineSort(sort);
+        PageRequest pageRequest = PageRequest.of(page - 1, perPage, sortBy);
 
-        Page<TeatimeBoard> teatimeBoards = switch (sort) {
-            case "latest" -> teatimeBoardRepository.findAllByActivated(true,
-                    PageRequest.of(page - 1, perPage, Sort.by("createdDate").descending()));
-            case "urgent" -> teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
-                    PageRequest.of(page - 1, perPage, Sort.by("endDate").ascending()));
+        if (isUrgentSort(sort)) {
+            return teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(), pageRequest);
+        }
+
+        return teatimeBoardRepository.findAllByActivated(true, pageRequest);
+    }
+
+    private Sort determineSort(String sort) {
+        return switch (sort) {
+            case "latest" -> Sort.by("createdDate").descending();
+            case "urgent" -> Sort.by("endDate").ascending();
             default ->
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_INVALID_SORT.getMessage());
         };
-        if (teatimeBoards.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_FOUND.getMessage());
-        }
-        return teatimeBoards;
+    }
+
+    private boolean isUrgentSort(String sort) {
+        return "urgent".equals(sort);
     }
 
     private List<TeatimeListResponse> createResponseFormTeatimeBoards(List<TeatimeBoard> teatimeBoards) {
         List<TeatimeListResponse> data = new ArrayList<>();
-
-        teatimeBoards.forEach(teatimeBoard -> {
+        for (TeatimeBoard teatimeBoard : teatimeBoards) {
             Integer participants = teatimeParticipantRepository.countByTeatimeBoard(teatimeBoard).intValue();
             data.add(TeatimeListResponse.of(teatimeBoard, participants));
-        });
+        }
         return data;
     }
 
-    private Long calculateCount(String sort) {
-        return switch (sort) {
-            case "latest" -> teatimeBoardRepository.countByActivated(true);
-            case "urgent" -> teatimeBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
-            default ->
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_INVALID_SORT.getMessage());
-        };
-    }
-
-    private @NotNull TeatimeBoard getActivatedBoard(Integer teatimeBoardId) {
-        TeatimeBoard teatimeBoard = teatimeBoardRepository.findById(teatimeBoardId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_FOUND.getMessage()));
-        if (!teatimeBoard.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIMEBOARD_NOT_ACTIVATED.getMessage());
-        }
-        return teatimeBoard;
-    }
-
-    private void checkAuthorized(TeatimeBoard teatimeBoard, Integer userId) {
+    private void checkWriter(TeatimeBoard teatimeBoard, Integer userId) {
         if (!Objects.equals(teatimeBoard.getUser().getId(), userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_NOT_WRITER.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_NOT_WRITER.getMessage());
         }
     }
 
@@ -191,5 +162,14 @@ public class TeatimeService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS.getMessage());
         }
+    }
+
+    private void deactivateCommentsAndReplies(TeatimeBoard teatimeBoard) {
+        teatimeBoard.getTeatimeComments().forEach(this::deactivateCommentAndReplies);
+    }
+
+    private void deactivateCommentAndReplies(TeatimeComment comment) {
+        comment.deactivate();
+        comment.getTeatimeReplies().forEach(TeatimeReply::deactivate);
     }
 }
