@@ -1,6 +1,6 @@
 package com.example.restea.teatime.controller;
 
-import com.example.restea.common.dto.PaginationAndSortingDto;
+import com.example.restea.common.dto.PaginationAndSearchDto;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.s3.service.S3ServiceImpl;
@@ -38,17 +38,19 @@ public class TeatimeController {
     /**
      * 티타임 게시글 목록 조회
      *
-     * @param dto sort: 정렬 상태, page: 페이지 번호, perpage: 페이지 당 항목 수.
+     * @param dto sort, page, perpage, searchBy, keyword.
      * @return 페이지 번호에 맞는 게시글 수 만큼 티타임 게시글 목록을 포함하는 ResponseEntity 객체를 반환합니다. 티타임 게시글 목록 조회에 실패하면 에러 코드를 담은
      * ResponseEntity를 반환합니다.
      */
     @GetMapping
-    public ResponseEntity<ResponseDTO<?>> getTeatimeBoardList(@Valid @ModelAttribute PaginationAndSortingDto dto) {
+    public ResponseEntity<ResponseDTO<?>> getTeatimeBoardList(@Valid @ModelAttribute PaginationAndSearchDto dto) {
 
         ResponseDTO<List<TeatimeListResponse>> result = teatimeService.getTeatimeBoardList(
                 dto.getSort(),
                 dto.getPage(),
-                dto.getPerPage());
+                dto.getPerPage(),
+                dto.getSearchBy(),
+                dto.getKeyword());
 
         if (result.getData().isEmpty()) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);

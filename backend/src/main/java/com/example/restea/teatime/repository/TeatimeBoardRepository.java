@@ -25,4 +25,26 @@ public interface TeatimeBoardRepository extends JpaRepository<TeatimeBoard, Inte
     Page<TeatimeBoard> findAllByActivatedAndUserId(boolean b, Integer userId, Pageable pageable);
 
     Optional<TeatimeBoard> findByIdAndActivated(Integer id, boolean b);
+
+
+    // keyword search
+    Page<TeatimeBoard> findAllByTitleContainingAndActivatedAndEndDateAfter(String title, boolean activated,
+                                                                           LocalDateTime endDate,
+                                                                           PageRequest pageRequest);
+
+    Page<TeatimeBoard> findAllByUser_NicknameContainingAndActivatedAndEndDateAfter(String writerName, boolean activated,
+                                                                                   LocalDateTime endDate,
+                                                                                   PageRequest pageRequest);
+
+    Page<TeatimeBoard> findAllByContentContainingAndActivatedAndEndDateAfter(String content, boolean activated,
+                                                                             LocalDateTime endDate,
+                                                                             PageRequest pageRequest);
+
+    Page<TeatimeBoard> findAllByTitleContainingAndActivated(String title, boolean activated, PageRequest pageRequest);
+
+    Page<TeatimeBoard> findAllByUser_NicknameContainingAndActivated(String writerName, boolean activated,
+                                                                    PageRequest pageRequest);
+
+    Page<TeatimeBoard> findAllByContentContainingAndActivated(String content, boolean activated,
+                                                              PageRequest pageRequest);
 }
