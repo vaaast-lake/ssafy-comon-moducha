@@ -1,6 +1,6 @@
 package com.example.restea.teatime.service;
 
-import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIMEBOARD_NOT_WRITER;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_WRITER;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_USER_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_WRITER;
 import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_AFTER_END_DATE;
@@ -111,7 +111,7 @@ public class TeatimeParticipantService {
         TeatimeBoard activatedTeatimeBoard = getActivatedTeatimeBoard(teatimeBoardRepository, teatimeBoardId);
 
         if (!checkActivatedTeatimeBoardWriter(activatedTeatimeBoard, activatedUser)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIMEBOARD_NOT_WRITER.getMessage());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_NOT_WRITER.getMessage());
         }
 
         return teatimeParticipantRepository.findByTeatimeBoard(activatedTeatimeBoard)
