@@ -44,8 +44,12 @@ public class ShareCommentController {
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
-        ResponseDTO<List<ShareCommentViewResponse>> result = shareCommentService.getShareCommentList(shareBoardId, page,
-                perPage);
+        ResponseDTO<List<ShareCommentViewResponse>> result =
+                shareCommentService.getShareCommentList(shareBoardId, page, perPage);
+
+        if (result.getData().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
+        }
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
@@ -75,6 +79,7 @@ public class ShareCommentController {
     /**
      * 주어진 나눔 게시글에 댓글 삭제(activate를 false로 변경)
      *
+     * @param shareBoardId     나눔 게시글 ID
      * @param shareCommentId   나눔 게시판 댓글 ID.
      * @param customOAuth2User 현재 인증된 사용자.
      * @return 삭제한 댓글 ID를 포함하는 ResponseEntity 객체를 반환합니다. 댓글 삭제에 실패하면 에러 코드를 담은 ResponseEntity를 반환합니다.
@@ -85,8 +90,7 @@ public class ShareCommentController {
             @PathVariable("shareCommentId") Integer shareCommentId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        ShareCommentDeleteResponse result
-                = shareCommentService.deactivateShareComment(shareBoardId, shareCommentId,
+        ShareCommentDeleteResponse result = shareCommentService.deactivateShareComment(shareBoardId, shareCommentId,
                 customOAuth2User.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
