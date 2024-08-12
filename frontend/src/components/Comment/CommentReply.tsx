@@ -23,19 +23,20 @@ const CommentReply = ({
   currentUserId,
 }: ReplyType) => {
   const [replyList, setReplyList] = useState<Comment[]>([]);
-  const [fetchParams, setFetchParams] = useState({
-    boardType: boardType,
-    boardId,
-    commentId,
-    page: 1,
-    perPage: 10,
-  });
 
   useEffect(() => {
-    fetchReplyList(fetchParams).then((res) => {
-      setReplyList(res.data.data);
+    fetchReplyList({
+      boardType: boardType,
+      boardId,
+      commentId,
+      page: 1,
+      perPage: 10,
+    }).then((res) => {
+      if (res.status === 200) {
+        setReplyList(res.data.data);
+      }
     });
-  }, [fetchParams]);
+  }, []);
 
   return (
     <ul id="reply-list">

@@ -1,30 +1,29 @@
 import TeatimeListToggle from './TeatimeListToggle';
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import TeatimeListCard from './TeatimeListCard';
 import { ChevronRightIcon } from '@heroicons/react/16/solid';
+import useFetchList from '../../../hooks/useFetchList';
 import { TeatimeListItem } from '../../../types/TeatimeType';
-import { fetchArticleList } from '../../../api/fetchArticle';
+import { Dispatch, SetStateAction } from 'react';
 
 const TeatimeList = ({ ...props }) => {
-  const [teatimeList, setTeatimeList] = useState<TeatimeListItem[]>([]);
-  const [currentTab, setCurrentTab] = useState('latest');
-  useEffect(() => {
-    fetchArticleList({
-      boardType: 'teatimes',
-      sort: currentTab,
-      page: 1,
-      perPage: 8,
-    }).then((res) => {
-      setTeatimeList(res.data.data);
-    });
-  }, [currentTab]);
+  interface TeatimeFetch {
+    articleList: TeatimeListItem[];
+    sort: string;
+    setSort: Dispatch<SetStateAction<string>>;
+  }
+  const {
+    articleList: teatimeList,
+    sort,
+    setSort,
+  }: TeatimeFetch = useFetchList('teatimes', 8);
+
   return (
     <section {...props}>
       <h1 className="font-semibold text-2xl">티타임 목록</h1>
       <section className="flex items-center justify-between">
         <div className="flex gap-2">
-          <TeatimeListToggle {...{ currentTab, setCurrentTab }} />
+          <TeatimeListToggle {...{ sort, setSort }} />
         </div>
         <Link to={'teatimes/write'} className="text-tea">
           + 모집하기

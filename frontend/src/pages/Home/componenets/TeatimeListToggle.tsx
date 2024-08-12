@@ -1,28 +1,25 @@
 import TabButton from '../../../components/Button/TabButton';
 
 interface TeatimeListToggle {
-  currentTab: string;
-  setCurrentTab: (data: string) => void;
+  sort: string;
+  setSort: (data: string) => void;
 }
 
-const TeatimeListToggle = ({
-  currentTab,
-  setCurrentTab,
-}: TeatimeListToggle) => (
+const TeatimeListToggle = ({ sort, setSort }: TeatimeListToggle) => (
   <>
     <TabButton
       className="h-8"
-      onClick={() => setCurrentTab('latest')}
+      onClick={() => setSort('latest')}
       value="latest"
-      currentTab={currentTab}
+      currentTab={sort}
     >
       최신 순
     </TabButton>
     <TabButton
       className="h-8"
-      onClick={() => setCurrentTab('urgent')}
+      onClick={() => setSort('urgent')}
       value="urgent"
-      currentTab={currentTab}
+      currentTab={sort}
     >
       마감 순
     </TabButton>

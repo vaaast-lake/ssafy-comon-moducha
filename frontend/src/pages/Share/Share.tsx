@@ -2,31 +2,21 @@ import ShareCard from './components/ShareCard';
 import ShareHeader from './components/ShareHeader';
 import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
-
 import { ShareListItem } from '../../types/ShareType';
-import { fetchArticleList } from '../../api/fetchArticle';
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SideLayout from '../../components/Layout/SideLayout';
 import MainLayout from '../../components/Layout/MainLayout';
 import ArticleNotFound from '../../components/Article/ArticleNotFound';
+import useFetchList from '../../hooks/useFetchList';
 
 const Share = () => {
-  const [shareList, setShareList] = useState([]);
-  const [sort, setSort] = useState('latest');
-  const [page, setPage] = useState(1);
-  const [totalPage, setTotalPage] = useState(10);
-  const perPage = 12;
-
-  useEffect(() => {
-    fetchArticleList({ boardType: 'shares', sort, page, perPage })
-      .then((res) => {
-        setShareList(res.data.data);
-        setTotalPage(res.data.pagination.total);
-        setPage(res.data.pagination.page);
-      })
-      .catch((err) => console.log(err));
-  }, [sort, page]);
+  const {
+    articleList: shareList,
+    sort,
+    setSort,
+    pageData,
+    isLoading,
+  } = useFetchList('shares');
 
   return (
     <div className="grid grid-cols-10">
@@ -45,9 +35,9 @@ const Share = () => {
           <div className="divider"></div>
         </header>
 
-        {!shareList.length ? (
-          <ArticleNotFound />
-        ) : (
+        {!shareList.length && !isLoading && <ArticleNotFound />}
+        
+        {!!shareList.length && (
           <>
             <div className="flex justify-between">
               <ShareHeader {...{ sort, setSort }} />
@@ -61,7 +51,7 @@ const Share = () => {
             </section>
 
             <footer className="flex justify-center">
-              <Pagination {...{ page, totalPage, setPage }} />
+              <Pagination {...pageData} />
             </footer>
           </>
         )}
