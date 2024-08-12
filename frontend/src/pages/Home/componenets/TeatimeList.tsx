@@ -6,12 +6,13 @@ import useFetchList from '../../../hooks/useFetchList';
 import { TeatimeListItem } from '../../../types/TeatimeType';
 import { Dispatch, SetStateAction } from 'react';
 
+interface TeatimeFetch {
+  articleList: TeatimeListItem[];
+  sort: string;
+  setSort: Dispatch<SetStateAction<string>>;
+}
+
 const TeatimeList = ({ ...props }) => {
-  interface TeatimeFetch {
-    articleList: TeatimeListItem[];
-    sort: string;
-    setSort: Dispatch<SetStateAction<string>>;
-  }
   const {
     articleList: teatimeList,
     sort,

@@ -13,6 +13,7 @@ import AccessPage from './pages/Login/AccessPage';
 import TeatimeWrite from './pages/Teatime/TeatimeWrite';
 import ArticleUpdate from './pages/Article/ArticleUpdate';
 import TeatimeRoom from './pages/Teatime/TeatimeRoom';
+import ErrorPage from './pages/Error/ErrorPage';
 
 // Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
 // 새로운 컴포넌트를 추가하려면 children에 등록해 주세요
@@ -74,6 +75,7 @@ const router = createBrowserRouter([
         path: 'notifications',
         element: <Notifications />,
       },
+      { path: 'error', element: <ErrorPage /> },
     ],
   },
   { path: 'access', element: <AccessPage /> }, // access token 처리용 더미 페이지

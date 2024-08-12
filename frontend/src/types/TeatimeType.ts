@@ -25,8 +25,3 @@ export interface TeatimeDetailItem extends TeatimeListItem {
   nickname: string;
   title: string;
 }
-
-export interface TeatimeDetail {
-  message: string;
-  data: TeatimeDetailItem;
-}
