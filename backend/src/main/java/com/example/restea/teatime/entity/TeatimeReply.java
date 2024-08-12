@@ -37,11 +37,11 @@ public class TeatimeReply extends BaseTimeEntity {
     private Boolean activated;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "teatime_comment_id", insertable = false, updatable = false)
+    @JoinColumn(name = "teatime_comment_id", nullable = false)
     private TeatimeComment teatimeComment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "users_id", insertable = false, updatable = false)
+    @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
     @Builder
@@ -49,6 +49,14 @@ public class TeatimeReply extends BaseTimeEntity {
         this.content = content;
         this.teatimeComment = teatimeComment;
         this.user = user;
+    }
+
+    public String getExposedContent() {
+        return activated ? content : "삭제된 답글입니다.";
+    }
+
+    public String getExposedNickname() {
+        return activated ? user.getExposedNickname() : "";
     }
 
     public void deactivate() {
