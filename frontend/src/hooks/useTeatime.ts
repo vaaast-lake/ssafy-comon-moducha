@@ -40,7 +40,7 @@ export const useTeatime = (
   }
 
   const joinTeatime = async () => {
-    navigate('/teatimes/room', { state: { roomName: `${title}` } });
+    navigate('/teatimes/room', { state: { roomName: `${title}`, boardId, boardType } });
   };
 
   const applyTeatime = async () => {

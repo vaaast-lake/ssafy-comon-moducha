@@ -4,12 +4,14 @@ import { useEffect, useRef } from 'react';
 interface VideoComponentProps {
   track: LocalVideoTrack | RemoteVideoTrack;
   participantIdentity: string;
+  participantName?: string;
   local?: boolean;
 }
 
 export default function RoomVideo({
   track,
   participantIdentity,
+  participantName,
   local = false,
 }: VideoComponentProps) {
   const videoElement = useRef<HTMLVideoElement | null>(null);
@@ -39,10 +41,10 @@ export default function RoomVideo({
         className="
           participant-data
           flex flex-col absolute justify-center bottom-1
-          rounded-full bg-gray-600/50 min-w-20 m-1
-          text-white text-center
+          rounded-full bg-gray-600/50 min-w-20 m-1 p-2
+          text-white text-center text-sm
         ">
-        <p>{participantIdentity + (local ? ' (You)' : '')}</p>
+        <p>{participantName + (local ? ' (You)' : '')}</p>
       </div>
       <video 
         ref={videoElement} 
