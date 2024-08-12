@@ -1,17 +1,28 @@
-# Moducha (모두차, 모두를 위한 차)
+# <img width="35" height="35" src="./images/favicon.ico" /> Moducha (모두차, 모두를 위한 차)
 > 마자용 (구미 2반 2조 D202)
 >
 > 모두를 위한 차
 >
 > 프로젝트 기간 : 2024.08.01 - 2024.08.16 (7주)
 
-<br>
+<hr>
+<p align=center>
+  <a href="https://www.notion.so/tired-i/d5b073258ae04f59b37eab90347c40b5/">노션</a>
+  &nbsp; | &nbsp; 
+  <a href="https://ssafy.atlassian.net/jira/software/c/projects/S11P11D202/boards/6756/backlog3">백로그</a>
+  &nbsp; | &nbsp;
+  <a href="https://www.figma.com/design/kZUTKdWf5ARZF35fuIjVdW/%EB%A7%88%EC%9E%90%EC%9A%A9-%ED%94%BC%EA%B7%B8%EB%A7%88?node-id=0-1&t=z6e2psECzDWzvf0l-0">피그마</a>
+  &nbsp; | &nbsp; 
+  <a href="https://miro.com/app/board/uXjVK2ZTE6M=/">미로</a>
+</p>
+
+<hr>
 
 ## 카테고리
 
 | Application                       | Domain                                | Language                         | Framework                            |
 | --------------------------------- | ------------------------------------- | -------------------------------- | ------------------------------------ |
-| :white_check_mark: Desktop Web    | :white_check_mark: AI                 | :black_square_button: JavaScript | :black_square_button: Vue.js         |
+| :white_check_mark: Desktop Web    | :black_square_button: AI                 | :black_square_button: JavaScript | :black_square_button: Vue.js         |
 | :white_check_mark: Mobile Web     | :black_square_button: Big Data        | :white_check_mark: TypeScript    | :white_check_mark: React             |
 | :white_check_mark: Responsive Web | :black_square_button: Blockchain      | :black_square_button: C/C++      | :black_square_button: Angular        |
 | :black_square_button: Android App | :black_square_button: IoT             | :black_square_button: C#         | :white_check_mark: NginX             |
@@ -19,11 +30,10 @@
 | :black_square_button: Desktop App | :black_square_button: Game            | :white_check_mark: Java          | :white_check_mark: Spring/Springboot |
 |                                   |                                       | :black_square_button: Kotlin     |                                      |
 
-<!-- 필수 항목 -->
 <br>
 <br>
 
-## 👇모두차 소개 및 시연 영상👇
+## 👇 모두차 소개 및 시연 영상 👇
 [<img src="./docs/logo.png" width="250">](https://www.youtube.com/watch?v=_U6xNSv4kFM)
 
 모두차 시나리오는 👉[여기](./docs/시연%20시나리오.md)👈에서 더 자세히 보실 수 있습니다.
@@ -31,9 +41,9 @@
 <br>
 <br>
 
-## 🍵모두차 상세 설명
+## 🍵 모두차 상세 설명
 
-### 📌<ins>기획 배경
+### 📌 <ins>기획 배경
 
 > **티타임 방송**을 통해 차 문화를 즐기고, 차를 소분하며 서로 나누는 문화를 함께하는 플랫폼
 
@@ -45,7 +55,7 @@
 
 <br>
 
-### 💡<ins>모두차 목적
+### 💡 <ins>모두차 목적
 
 **차 문화에 입문하고자 하는 사람들이 쉽게 진입할 수 있도록** 하며, 차를 즐기던 애호가들도 **나눔의 즐거움을 더 키울 수 있게 도울 수 있는 커뮤니티**를 형성하여 **차 문화를 더 많은 사람들이 향유** 할 수 있는 환경을 조성하고자 한다.
 
@@ -70,7 +80,7 @@
 <br>
 <br>
 
-## 모두차 서비스 화면
+## 🖥️ 모두차 서비스 화면
 ### 메인
 ![메인](https://user-images.githubusercontent.com/31542907/131517102-ae6bd948-53df-4ce5-8b0f-0423dbbbcf35.gif)
 
@@ -113,7 +123,7 @@
 <br>
 <br>
 
-## 🔎주요 기능
+## 🔎 주요 기능
 - 로그인/로그아웃
   - OAuth2를 이용한 구글 소셜 로그인 지원
 - webRTC를 통한 티타임 방송
@@ -149,11 +159,12 @@
    - 작성자에게 배송정보 리스트 제공
 
 - 마이페이지
-   - 자신이 쓴 글, 관심 있는 글 목록 제공
+   - 자신이 작성한 글, 참여한 글 목록 제공
 
 <br>
+<br>
 
-### <ins>개발 환경
+## 🔨 개발 환경
 
 🛠️**Backend**
 - IntelliJ
@@ -182,9 +193,10 @@
 - nginx
 - jenkins
 
-
+<br>
 <br>
 
+## 📋 모두차 관련 문서
 ### <ins>기능 명세서
 
 [기능 명세서](./docs/기능명세서.md)
@@ -220,23 +232,11 @@
 <br>
 <br>
 
-<hr>
-<p align=center>
-  <a href="https://www.notion.so/tired-i/d5b073258ae04f59b37eab90347c40b5/">노션</a>
-  &nbsp; | &nbsp; 
-  <a href="https://ssafy.atlassian.net/jira/software/c/projects/S11P11D202/boards/6756/backlog3">백로그</a>
-  &nbsp; | &nbsp;
-  <a href="https://www.figma.com/design/kZUTKdWf5ARZF35fuIjVdW/%EB%A7%88%EC%9E%90%EC%9A%A9-%ED%94%BC%EA%B7%B8%EB%A7%88?node-id=0-1&t=z6e2psECzDWzvf0l-0">피그마</a>
-  &nbsp; | &nbsp; 
-  <a href="https://miro.com/app/board/uXjVK2ZTE6M=/">미로</a>
-</p>
-
-<hr>
 
 <!-- ## 팀 소개
 * 김봉상: 팀장, 프론트엔드 개발
 * 권대호: 부팀장, 기획 및 와이어프레임 작성, 프론트엔드 개발
-* 최진오 :
+* 최진오 : 프론트엔드 개발
 * 김범중: 백엔드 개발 및 QA 담당
 * 김소연: 백엔드 개발, Swagger API 문서 관리
 * 김의근: 코드 리뷰 및 인프라 담당, CI/CD, HTTPS, Docker 구성 -->
