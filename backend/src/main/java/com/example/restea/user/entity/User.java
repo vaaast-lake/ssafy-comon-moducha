@@ -25,6 +25,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -43,6 +44,12 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
+    @Transient
+    private static final String defaultPicture = "https://avatars.githubusercontent.com/u/121084350?v=4";
+
+    @Transient
+    private static final String deactivatedPicture = "https://cdn-icons-png.flaticon.com/128/9502/9502048.png";
+
     @Id
     @GeneratedValue
     @Column(name = "users_id")
@@ -52,7 +59,6 @@ public class User extends BaseTimeEntity {
     private String nickname;
 
     @Column(nullable = false)
-    @ColumnDefault("'https://avatars.githubusercontent.com/u/121084350?v=4'")
     private String picture;
 
     @Enumerated(value = EnumType.STRING)
@@ -112,7 +118,7 @@ public class User extends BaseTimeEntity {
         this.nickname = nickname;
         this.authId = authId;
         this.authToken = authToken;
-        this.picture = picture;
+        this.picture = picture == null ? defaultPicture : picture;
     }
 
     public void addRefreshToken(RefreshToken refreshToken) {
@@ -151,5 +157,9 @@ public class User extends BaseTimeEntity {
 
     public void updatePicture(String picture) {
         this.picture = picture;
+    }
+
+    public void changeDeactivatedPicture() {
+        this.picture = deactivatedPicture;
     }
 }

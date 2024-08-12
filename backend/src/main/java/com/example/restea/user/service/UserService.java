@@ -67,6 +67,7 @@ public class UserService {
     }
 
     private void performUserDeactivation(User user) {
+        user.changeDeactivatedPicture(); // 프로필 사진 삭제
         deleteRecords(user); // 기록 삭제
         deleteParticipants(user); // 참여기록 clear 및 삭제
         revokeRefreshToken(user); // RefreshToken를 지운 후 Revoke 처리
