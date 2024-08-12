@@ -117,7 +117,7 @@ class ParticipateShareTest {
         // given
         ShareBoard shareBoard = createShareBoard(10);
 
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         shareParticipantRepository.save(ShareParticipant.builder()
                 .name("홍동길")
@@ -171,7 +171,7 @@ class ParticipateShareTest {
         // given
         ShareBoard shareBoard = createShareBoard(10);
 
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         user.deactivate();
         userRepository.save(user);
@@ -274,7 +274,7 @@ class ParticipateShareTest {
     @Test
     public void participate_fail_user_is_writer() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         final String title = "Title";
         final String shareBoardContent = "Content";
@@ -307,7 +307,7 @@ class ParticipateShareTest {
 
     private ShareBoard createShareBoard(Integer maxParticipants) {
         custumOAuth2UserService.handleNewUser("authId-writer", "authToken-writer");
-        User writer = userRepository.findByAuthId("authId-writer")
+        User writer = userRepository.findByAuthIdAndActivated("authId-writer", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         final String title = "Title";
         final String shareBoardContent = "Content";
@@ -324,7 +324,7 @@ class ParticipateShareTest {
     private void createParticipant(ShareBoard shareBoard, int count) {
         for (int i = 0; i < count; i++) {
             CustomOAuth2User customOAuth2User = custumOAuth2UserService.handleNewUser("authId" + i, "authToken" + i);
-            User user = userRepository.findByAuthId("authId" + i)
+            User user = userRepository.findByAuthIdAndActivated("authId" + i, true)
                     .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
             shareParticipantRepository.save(ShareParticipant.builder()
                     .name("홍동길" + i)
