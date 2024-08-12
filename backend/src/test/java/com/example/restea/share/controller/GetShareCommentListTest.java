@@ -79,7 +79,7 @@ public class GetShareCommentListTest {
     // mockMvc에서 @AuthenticationPrincipal CustomOAuth2User를 사용하기 위해
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 

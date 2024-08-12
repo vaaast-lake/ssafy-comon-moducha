@@ -70,7 +70,7 @@ public class CancelParticipationTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -89,7 +89,7 @@ public class CancelParticipationTest {
         User testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
@@ -146,7 +146,7 @@ public class CancelParticipationTest {
         User testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 

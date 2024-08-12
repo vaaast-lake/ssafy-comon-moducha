@@ -146,7 +146,7 @@ public class UpdateTeatimeBoardTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -265,7 +265,7 @@ public class UpdateTeatimeBoardTest {
                                               LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
 
         // given
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
@@ -318,7 +318,7 @@ public class UpdateTeatimeBoardTest {
         // 참여자 추가
         User participant;
         for (int i = 0; i < 3; i++) {
-            customOAuth2UserService.handleNewUser("authId" + i, "authToken" + i);
+            customOAuth2UserService.handleNewUser("authId" + i, "authToken" + i, "picture");
             participant = userRepository.findByAuthIdAndActivated("authId" + i, true)
                     .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 

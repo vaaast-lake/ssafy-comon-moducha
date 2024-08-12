@@ -44,15 +44,14 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class CreateTeatimeReplyTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final UserRepository userRepository;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeCommentRepository teatimeCommentRepository;
     private final TeatimeReplyRepository teatimeReplyRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -91,7 +90,7 @@ public class CreateTeatimeReplyTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -225,7 +224,7 @@ public class CreateTeatimeReplyTest {
     public void createTeatimeReply_DeactivatedBoardWriter_Fail() throws Exception {
 
         // given
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User boardWriter = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         TeatimeBoard teatimeBoard = createTeatimeBoard(boardWriter);
@@ -260,7 +259,7 @@ public class CreateTeatimeReplyTest {
     public void createTeatimeReply_DeactivatedReplyWriter_Fail() throws Exception {
 
         // given
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User boardWriter = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         TeatimeBoard teatimeBoard = createTeatimeBoard(boardWriter);

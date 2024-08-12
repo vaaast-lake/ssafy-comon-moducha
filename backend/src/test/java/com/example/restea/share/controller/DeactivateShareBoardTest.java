@@ -70,7 +70,7 @@ public class DeactivateShareBoardTest {
     // mockMvc에서 @AuthenticationPrincipal CustomOAuth2User를 사용하기 위해
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -163,7 +163,7 @@ public class DeactivateShareBoardTest {
     public void deactivateShareBoard_Unauthorized_Fail() throws Exception {
 
         // given
-        custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+        custumOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 

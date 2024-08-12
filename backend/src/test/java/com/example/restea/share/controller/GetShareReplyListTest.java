@@ -94,7 +94,7 @@ public class GetShareReplyListTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 

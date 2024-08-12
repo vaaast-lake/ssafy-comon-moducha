@@ -126,14 +126,14 @@ public class ChangeNicknameTest {
     // mockMvc에서 @AuthenticaionPrincipal CustomOAuth2User를 사용하기 위한 세팅
     @BeforeEach
     void OAuth2UserSetup() {
-        CustomOAuth2User customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        CustomOAuth2User customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
         testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
-        String value = jwtUtil.createJwt(REFRESH.getType(), testUser.getId(), testUser.getNickname(),
-                testUser.getRole().name(), REFRESH.getExpiration() * 1000L);
-        refreshTokenService.addRefreshToken(testUser, value, REFRESH.getExpiration() * 1000L);
+        String value = jwtUtil.createRefreshToken(testUser.getId(), testUser.getNickname(), testUser.getPicture(),
+                testUser.getRole().name());
+        refreshTokenService.addRefreshToken(testUser, value);
 
         originalRefreshTokenId = testUser.getRefreshToken().getId();
     }

@@ -38,15 +38,14 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class DeactivateTeatimeReplyTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final UserRepository userRepository;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeCommentRepository teatimeCommentRepository;
     private final TeatimeReplyRepository teatimeReplyRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -77,7 +76,7 @@ public class DeactivateTeatimeReplyTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -242,7 +241,7 @@ public class DeactivateTeatimeReplyTest {
     public void deactivateTeatimeReply_Forbidden_Fail() throws Exception {
 
         // given
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 

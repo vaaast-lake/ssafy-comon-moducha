@@ -91,7 +91,7 @@ public class CreateShareReplyTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -217,7 +217,7 @@ public class CreateShareReplyTest {
     @Test
     public void createShareReply_Fail_DeactivatedBoardWriter() throws Exception {
         // given
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User boardWriter = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         ShareBoard shareBoard = createShareBoard(boardWriter);
@@ -250,7 +250,7 @@ public class CreateShareReplyTest {
     @Test
     public void createShareReply_Fail_DeactivatedReplyWriter() throws Exception {
         // given
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User boardWriter = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         ShareBoard shareBoard = createShareBoard(boardWriter);
