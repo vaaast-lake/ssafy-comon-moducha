@@ -44,16 +44,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String authId = AuthIdCreator.getAuthId(oAuth2Response);
         Optional<User> optionalUser = userRepository.findByAuthIdAndActivated(authId, true);
 
+        String picture = oAuth2Response.getPicture();
+
         // 기존에 존재하는 유저는 handleExistingUser
         // 새로 가입한 유저는 handleNewUser
-        return optionalUser.map(this::handleExistingUser)
-                .orElseGet(() -> handleNewUser(authId, authValue));
+        return optionalUser.map(existUser -> handleExistingUser(existUser, picture))
+                .orElseGet(() -> handleNewUser(authId, authValue, picture));
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public CustomOAuth2User handleNewUser(String authId, String authValue) {
+    public CustomOAuth2User handleNewUser(String authId, String authValue, String picture) {
         AuthToken authToken = createAuthToken(authValue); // AuthToken 생성
-        User user = createNewUser(authId, authToken); // User 생성
+        User user = createNewUser(authId, authToken, picture); // User 생성
 
         userRepository.save(user); // User 저장
         authTokenRepository.save(authToken); // AuthToken 저장
@@ -64,10 +66,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return new CustomOAuth2User(oAuth2JwtMemberDTO);
     }
 
-    private User createNewUser(String authId, AuthToken authToken) {
+    private User createNewUser(String authId, AuthToken authToken, String picture) {
         String nickname = getUniqueNickname();
         return User.builder()
                 .nickname(nickname)
+                .picture(picture)
                 .authId(authId)
                 .authToken(authToken)
                 .build();
@@ -97,14 +100,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         return OAuth2JwtMemberDTO.builder()
                 .nickname(user.getNickname())
+                .picture(user.getPicture())
                 .userId(user.getId())
                 .role(role)
                 .build();
     }
 
-    private CustomOAuth2User handleExistingUser(User existUser) {
+    private CustomOAuth2User handleExistingUser(User existUser, String picture) {
+        existUser.updatePicture(picture);
+        userRepository.save(existUser);
+
         OAuth2JwtMemberDTO oAuth2JwtMemberDTO = OAuth2JwtMemberDTO.builder()
                 .nickname(existUser.getNickname())
+                .picture(existUser.getPicture())
                 .userId(existUser.getId())
                 .role(existUser.getRole().name())
                 .build();
