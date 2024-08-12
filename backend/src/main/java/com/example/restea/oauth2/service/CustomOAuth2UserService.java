@@ -42,7 +42,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         // DB 저장 구현
         // 전달받은 데이터에서 username으로 지칭할 수 있는 것이 없기에 별도의 메소드를 구현한다.
         String authId = AuthIdCreator.getAuthId(oAuth2Response);
-        Optional<User> optionalUser = userRepository.findByAuthId(authId);
+        Optional<User> optionalUser = userRepository.findByAuthIdAndActivated(authId, true);
 
         // 기존에 존재하는 유저는 handleExistingUser
         // 새로 가입한 유저는 handleNewUser

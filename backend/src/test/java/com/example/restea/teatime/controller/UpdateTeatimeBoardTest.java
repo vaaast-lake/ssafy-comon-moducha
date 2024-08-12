@@ -18,6 +18,7 @@ import com.example.restea.user.repository.UserRepository;
 import com.example.restea.util.SecurityTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,14 +42,13 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class UpdateTeatimeBoardTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeParticipantRepository teatimeParticipantRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -162,7 +162,7 @@ public class UpdateTeatimeBoardTest {
     void updateTeatime_Success(String testName, String title, String content, LocalDateTime endDate,
                                LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -176,7 +176,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -204,7 +204,7 @@ public class UpdateTeatimeBoardTest {
         // given
         final String url = "/api/v1/shares/999";
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -225,7 +225,7 @@ public class UpdateTeatimeBoardTest {
                                              LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -244,7 +244,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -266,7 +266,7 @@ public class UpdateTeatimeBoardTest {
 
         // given
         customOAuth2UserService.handleNewUser("authId2", "authToken2");
-        User user = userRepository.findByAuthId("authId2")
+        User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -280,7 +280,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -303,7 +303,7 @@ public class UpdateTeatimeBoardTest {
             throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -319,7 +319,7 @@ public class UpdateTeatimeBoardTest {
         User participant;
         for (int i = 0; i < 3; i++) {
             customOAuth2UserService.handleNewUser("authId" + i, "authToken" + i);
-            participant = userRepository.findByAuthId("authId" + i)
+            participant = userRepository.findByAuthIdAndActivated("authId" + i, true)
                     .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
             teatimeParticipantRepository.save(TeatimeParticipant.builder()
@@ -333,7 +333,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 
@@ -353,7 +353,7 @@ public class UpdateTeatimeBoardTest {
     void updateTeatime_Failure(String testName, String title, String content, LocalDateTime endDate,
                                LocalDateTime broadcastDate, Integer maxParticipants) throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -367,7 +367,7 @@ public class UpdateTeatimeBoardTest {
 
         final String url = "/api/v1/teatimes/" + teatimeBoard.getId();
         final TeatimeUpdateRequest teatimeUpdateRequest = new TeatimeUpdateRequest(
-                title, content, endDate, broadcastDate, maxParticipants
+                title, content, endDate, broadcastDate, maxParticipants, new ArrayList<>()
         );
         final String requestBody = objectMapper.writeValueAsString(teatimeUpdateRequest);
 

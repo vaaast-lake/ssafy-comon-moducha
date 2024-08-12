@@ -112,7 +112,7 @@ public class GetShareReplyListTest {
     public void getShareReplyListSuccessNotEmpty(String testName, int num, int page, int perPage, int expectedLength)
             throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         ShareBoard shareBoard = createShareBoard(user);
         ShareComment shareComment = createShareComment(user, shareBoard);
@@ -153,7 +153,7 @@ public class GetShareReplyListTest {
     @Test
     public void getShareReplyListSuccessEmpty() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         ShareBoard shareBoard = createShareBoard(user);
         ShareComment shareComment = createShareComment(user, shareBoard);
@@ -174,7 +174,7 @@ public class GetShareReplyListTest {
     @Test
     public void getShareReplyListFailNoComment() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         ShareBoard shareBoard = createShareBoard(user);
         ShareComment shareComment = createShareComment(user, shareBoard);
@@ -202,7 +202,7 @@ public class GetShareReplyListTest {
     @Test
     public void getShareReplyListFailNoBoard() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         ShareBoard shareBoard = createShareBoard(user);
         ShareComment shareComment = createShareComment(user, shareBoard);
@@ -229,7 +229,7 @@ public class GetShareReplyListTest {
     @Test
     public void getShareReplyListFailBoard() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         ShareBoard shareBoard = createShareBoard(user);
         ShareComment shareComment = createShareComment(user, shareBoard);

@@ -103,7 +103,7 @@ public class DeactivateShareReplyTest {
     public void deactivateShareReply_Success() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = createShareBoard(user);
@@ -134,7 +134,7 @@ public class DeactivateShareReplyTest {
     public void deactivateShareReply_FailNoComment() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = createShareBoard(user);
@@ -165,7 +165,7 @@ public class DeactivateShareReplyTest {
     public void deactivateShareReply_Fail_AlreadyDeactivated() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = createShareBoard(user);
@@ -200,7 +200,7 @@ public class DeactivateShareReplyTest {
     public void deactivateShareReply_Fail_NoComment() throws Exception {
 
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         ShareBoard shareBoard = createShareBoard(user);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import TextEditor from '../../utils/TextEditor/TextEditor';
 import axiosInstance from '../../api/axiosInstance';
@@ -19,9 +19,10 @@ const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState<string>('');
   const [maxParticipants, setMaxParticipants] = useState<number>(1);
-  const navigate = useNavigate();
   const { boardId } = useParams<{ boardId: string }>();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const images = useRef<string[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 비로그인 상태인 경우 로그인 페이지로 리디렉션
@@ -65,6 +66,7 @@ const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
         broadcastDate: formData.get('broadcastDate') + 'Z',
       }),
       content,
+      images: images.current,
     };
 
     try {
@@ -88,18 +90,24 @@ const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {error && <InputError error={error} />}
           <InputTitle title={title} setTitle={setTitle} />
-          <InputDate pickedDate={pickedDate} setPickedDate={setPickedDate} />
+          <InputDate
+            pickedDate={pickedDate}
+            setPickedDate={setPickedDate}
+            setBroadcastDate={setBroadcastDate}
+          />
           {boardType === 'teatimes' && (
             <InputBroadcastDate
+              pickedDate={pickedDate}
               broadcastDate={broadcastDate}
               setBroadcastDate={setBroadcastDate}
             />
           )}
           <InputParticipants
+            boardType={boardType}
             maxParticipants={maxParticipants}
             setMaxParticipants={setMaxParticipants}
           />
-          <TextEditor content={content} setInput={setContent} />
+          <TextEditor images={images} content={content} setInput={setContent} />
         </form>
       </main>
       <aside className="hidden lg:flex col-span-3"></aside>

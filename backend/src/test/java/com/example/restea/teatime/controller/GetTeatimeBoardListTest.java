@@ -17,10 +17,14 @@ import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,13 +39,12 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 class GetTeatimeBoardListTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -80,7 +83,7 @@ class GetTeatimeBoardListTest {
     @Test
     public void getTeatimeBoardList_10_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<TeatimeBoard> teatimeBoards = new ArrayList<>();
@@ -131,7 +134,7 @@ class GetTeatimeBoardListTest {
     @Test
     public void getTeatimeBoardList_5_latest_Success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<TeatimeBoard> teatimeBoards = new ArrayList<>();
@@ -187,7 +190,7 @@ class GetTeatimeBoardListTest {
     @Test
     public void getTeatimeBoardList_5_urgent_success() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         List<TeatimeBoard> teatimeBoards = new ArrayList<>();
@@ -233,25 +236,212 @@ class GetTeatimeBoardListTest {
                     .andExpect(jsonPath(("$.data[" + i + "].nickname")).value(user.getNickname()))
                     .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
         }
+    }
 
-        // TODO : 일부 endDate가 지난 티타임 게시판이 있을 때 (임박 순)
-        // TODO : 티타임 게시판이 1개일 때 (임박 순)
-        // TODO : 아무런 티타임 게시판이 없을 때 (임박 순)
-        // TODO : 활성화된 티타임 게시판이 없을 때 (임박 순)
-        // TODO : endDate가 지난 티타임 게시판만 있을 때 (임박 순)
+    // TODO : 일부 endDate가 지난 티타임 게시판이 있을 때 (임박 순)
+    // TODO : 티타임 게시판이 1개일 때 (임박 순)
+    // TODO : 아무런 티타임 게시판이 없을 때 (임박 순)
+    // TODO : 활성화된 티타임 게시판이 없을 때 (임박 순)
+    // TODO : endDate가 지난 티타임 게시판만 있을 때 (임박 순)
 
-        // TODO : sort가 null일 때
-        // TODO : sort가 latest 또는 urgent가 아닐 때
+    // TODO : sort가 null일 때
+    // TODO : sort가 latest 또는 urgent가 아닐 때
 
-        // TODO : perPage 음수
-        // TODO : perPage 0
-        // TODO : perPage가 9999일 때
-        // TODO : perPage가 null일 때
+    // TODO : perPage 음수
+    // TODO : perPage 0
+    // TODO : perPage가 9999일 때
+    // TODO : perPage가 null일 때
 
-        // TODO : page가 음수일 때
-        // TODO : page가 0일 때
-        // TODO : page가 9999일 때
-        // TODO : page가 null일 때
+    // TODO : page가 음수일 때
+    // TODO : page가 0일 때
+    // TODO : page가 9999일 때
+    // TODO : page가 null일 때
 
+    private static Stream<Arguments> keywordSearchParameters() {
+        return Stream.of(
+                Arguments.of("title", "Title1", 1, 5, 1),
+                Arguments.of("content", "Content2", 1, 5, 1),
+                Arguments.of("title", "Title", 1, 5, 5)
+        );
+    }
+
+    @DisplayName("getTeatimeBoardList : 키워드 검색 테스트")
+    @ParameterizedTest(name = "{index} => searchBy={0}, keyword={1}, page={2}, perPage={3}, expectedCount={4}")
+    @MethodSource("keywordSearchParameters")
+    public void getTeatimeBoardList_keywordSearch(String searchBy, String keyword, int page, int perPage,
+                                                  int expectedCount) throws Exception {
+        // given
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+        List<TeatimeBoard> teatimeBoards = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            final String title = "Title" + i;
+            final String content = "Content" + i;
+            final Integer maxParticipants = 10 + i;
+            final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L + i);
+            final LocalDateTime broadcastDate = LocalDateTime.now().plusWeeks(1L + 2 * i);
+            teatimeBoards.add(teatimeBoardRepository.save(TeatimeBoard.builder()
+                    .title(title)
+                    .content(content)
+                    .maxParticipants(maxParticipants)
+                    .endDate(endDate)
+                    .broadcastDate(broadcastDate)
+                    .user(user)
+                    .build()));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        final String url = "/api/v1/teatimes";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "latest")
+                .param("perPage", String.valueOf(perPage))
+                .param("page", String.valueOf(page))
+                .param("searchBy", searchBy)
+                .param("keyword", keyword)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.data.length()").value(expectedCount));
+        for (int i = 0; i < expectedCount; i++) {
+            TeatimeBoard expectedBoard = teatimeBoards.stream()
+                    .filter(board -> (searchBy.equals("title") && board.getTitle().contains(keyword)) ||
+                            (searchBy.equals("content") && board.getContent().contains(keyword)))
+                    .sorted((b1, b2) -> b2.getCreatedDate().compareTo(b1.getCreatedDate()))
+                    .skip((long) (page - 1) * perPage)
+                    .skip(i)
+                    .findFirst()
+                    .orElse(null);
+            if (expectedBoard != null) {
+                resultActions.andExpect(jsonPath("$.data[" + i + "].boardId").value(expectedBoard.getId()))
+                        .andExpect(jsonPath("$.data[" + i + "].title").value(expectedBoard.getTitle()))
+                        .andExpect(
+                                jsonPath("$.data[" + i + "].maxParticipants").value(expectedBoard.getMaxParticipants()))
+                        .andExpect(jsonPath("$.data[" + i + "].participants").value(0))
+                        .andExpect(jsonPath("$.data[" + i + "].nickname").value(user.getNickname()))
+                        .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
+            }
+        }
+    }
+
+    @DisplayName("getTeatimeBoardList : endDate 임박 순으로 정렬된 데이터와 키워드 및 searchBy 검색")
+    @ParameterizedTest(name = "{index} => searchBy={0}, keyword={1}, page={2}, perPage={3}, expectedCount={4}")
+    @MethodSource("keywordSearchParameters")
+    public void getTeatimeBoardList_sortedByEndDate_withKeywordAndSearchBy(String searchBy, String keyword, int page,
+                                                                           int perPage, int expectedCount)
+            throws Exception {
+        // given
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+        // Prepare test data
+        List<TeatimeBoard> teatimeBoards = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            final String title = "SpecialTitle" + i;
+            final String content = "Content" + i;
+            final Integer maxParticipants = 10 + i;
+            final LocalDateTime endDate = LocalDateTime.now().plusDays(10 - i);
+            final LocalDateTime broadcastDate = LocalDateTime.now().plusDays(10 - i);
+            teatimeBoards.add(teatimeBoardRepository.save(TeatimeBoard.builder()
+                    .title(title)
+                    .content(content)
+                    .maxParticipants(maxParticipants)
+                    .endDate(endDate)
+                    .broadcastDate(broadcastDate)
+                    .user(user)
+                    .build()));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String url = "/api/v1/teatimes";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "urgent")
+                .param("perPage", String.valueOf(perPage))
+                .param("page", String.valueOf(page))
+                .param("searchBy", searchBy)
+                .param("keyword", keyword)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isOk());
+
+        resultActions.andExpect(jsonPath("$.data.length()").value(expectedCount));
+        for (int i = 0; i < expectedCount; i++) {
+            TeatimeBoard expectedBoard = teatimeBoards.stream()
+                    .filter(board -> (searchBy.equals("title") && board.getTitle().contains(keyword)) ||
+                            (searchBy.equals("content") && board.getContent().contains(keyword)))
+                    .sorted((b1, b2) -> -b2.getEndDate().compareTo(b1.getEndDate()))
+                    .skip((long) (page - 1) * perPage)
+                    .skip(i)
+                    .findFirst()
+                    .orElse(null);
+            if (expectedBoard != null) {
+                resultActions.andExpect(jsonPath("$.data[" + i + "].boardId").value(expectedBoard.getId()))
+                        .andExpect(jsonPath("$.data[" + i + "].title").value(expectedBoard.getTitle()))
+                        .andExpect(
+                                jsonPath("$.data[" + i + "].maxParticipants").value(expectedBoard.getMaxParticipants()))
+                        .andExpect(jsonPath("$.data[" + i + "].participants").value(0))
+                        .andExpect(jsonPath("$.data[" + i + "].nickname").value(user.getNickname()))
+                        .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("getTeatimeBoardList : 잘못된 검색 기준")
+    public void getTeatimeBoardList_InvalidSearchBy_Fail() throws Exception {
+        // given
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+        // Prepare test data
+        List<TeatimeBoard> teatimeBoards = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            final String title = "SpecialTitle" + i;
+            final String content = "Content" + i;
+            final Integer maxParticipants = 10 + i;
+            final LocalDateTime endDate = LocalDateTime.now().plusDays(10 - i);
+            final LocalDateTime broadcastDate = LocalDateTime.now().plusDays(10 - i);
+            teatimeBoards.add(teatimeBoardRepository.save(TeatimeBoard.builder()
+                    .title(title)
+                    .content(content)
+                    .maxParticipants(maxParticipants)
+                    .endDate(endDate)
+                    .broadcastDate(broadcastDate)
+                    .user(user)
+                    .build()));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String url = "/api/v1/teatimes";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "urgent")
+                .param("perPage", "2")
+                .param("page", "1")
+                .param("searchBy", "search")
+                .param("keyword", "keyword")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        resultActions.andExpect(status().isBadRequest());
     }
 }

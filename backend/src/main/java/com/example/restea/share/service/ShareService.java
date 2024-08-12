@@ -72,7 +72,7 @@ public class ShareService {
     @Transactional
     public ShareViewResponse getShareBoard(Integer shareBoardId) {
 
-        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        ShareBoard activatedShareBoard = getOnlyShareBoard(shareBoardId);
         Integer participants = shareParticipantRepository.countByShareBoard(activatedShareBoard).intValue();
 
         activatedShareBoard.addViewCount();
@@ -80,10 +80,14 @@ public class ShareService {
         return ShareViewResponse.of(activatedShareBoard, participants);
     }
 
+    public ShareBoard getOnlyShareBoard(Integer shareBoardId) {
+        return getActivatedShareBoard(shareBoardRepository, shareBoardId);
+    }
+
     @Transactional
     public ShareUpdateResponse updateShareBoard(Integer shareBoardId, ShareUpdateRequest request, Integer userId) {
 
-        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        ShareBoard activatedShareBoard = getOnlyShareBoard(shareBoardId);
         User activatedUser = ShareUtil.getActivatedUser(userRepository, userId);
         checkAuthorized(activatedShareBoard, activatedUser);
         checkLessThanCurrentParticipants(request, activatedShareBoard);
@@ -97,7 +101,7 @@ public class ShareService {
     @Transactional
     public ShareDeleteResponse deactivateShareBoard(Integer shareBoardId, Integer userId) {
 
-        ShareBoard activatedShareBoard = getActivatedShareBoard(shareBoardRepository, shareBoardId);
+        ShareBoard activatedShareBoard = getOnlyShareBoard(shareBoardId);
         User activatedUser = ShareUtil.getActivatedUser(userRepository, userId);
         checkAuthorized(activatedShareBoard, activatedUser);
 

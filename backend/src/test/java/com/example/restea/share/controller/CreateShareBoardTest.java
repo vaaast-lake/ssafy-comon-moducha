@@ -15,6 +15,7 @@ import com.example.restea.util.SecurityTestUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,19 +36,18 @@ import org.springframework.web.context.WebApplicationContext;
 @AutoConfigureMockMvc
 public class CreateShareBoardTest {
 
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
     public CreateShareBoardTest(MockMvc mockMvc, ObjectMapper objectMapper,
-                                   WebApplicationContext context,
-                                   ShareBoardRepository shareBoardRepository, UserRepository userRepository
+                                WebApplicationContext context,
+                                ShareBoardRepository shareBoardRepository, UserRepository userRepository
             , CustomOAuth2UserService custumOAuth2UserService) {
         this.mockMvc = mockMvc;
         this.objectMapper = objectMapper;
@@ -88,7 +88,7 @@ public class CreateShareBoardTest {
         final String title = "TestTitle";
         final String content = "TestContent";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-                LocalDateTime.now().plusWeeks(1L), 10);
+                LocalDateTime.now().plusWeeks(1L), 10, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
 
         // when
@@ -112,7 +112,7 @@ public class CreateShareBoardTest {
         final String url = "/api/v1/shares";
         final String title = "TestTitle";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, null,
-                LocalDateTime.now().plusWeeks(1L), 10);
+                LocalDateTime.now().plusWeeks(1L), 10, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
         // when
         ResultActions result = mockMvc.perform(post(url)
@@ -133,7 +133,7 @@ public class CreateShareBoardTest {
         final String title = "";
         final String content = "TestContent";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-                LocalDateTime.now().plusWeeks(1L), 10);
+                LocalDateTime.now().plusWeeks(1L), 10, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
 
         // when
@@ -159,7 +159,7 @@ public class CreateShareBoardTest {
                         + "TitleTestTitleTestTitle";
         final String content = "TestContent";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-                LocalDateTime.now().plusWeeks(1L), 10);
+                LocalDateTime.now().plusWeeks(1L), 10, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
         // when
         ResultActions result = mockMvc.perform(post(url)
@@ -180,7 +180,7 @@ public class CreateShareBoardTest {
         final String title = "TestTitle";
         final String content = "";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-                LocalDateTime.now().plusWeeks(1L), 10);
+                LocalDateTime.now().plusWeeks(1L), 10, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
         // when
         ResultActions result = mockMvc.perform(post(url)
@@ -201,7 +201,7 @@ public class CreateShareBoardTest {
         final String title = "TestTitle";
         final String content = "TestContent";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-                LocalDateTime.now().plusWeeks(1L), 0);
+                LocalDateTime.now().plusWeeks(1L), 0, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
         // when
         ResultActions result = mockMvc.perform(post(url)
@@ -222,7 +222,7 @@ public class CreateShareBoardTest {
         final String title = "TestTitle";
         final String content = "TestContent";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-                LocalDateTime.now().plusWeeks(1L), -1);
+                LocalDateTime.now().plusWeeks(1L), -1, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
         // when
         ResultActions result = mockMvc.perform(post(url)
@@ -243,7 +243,7 @@ public class CreateShareBoardTest {
         final String title = "TestTitle";
         final String content = "TestContent";
         final ShareCreationRequest shareCreationRequest = new ShareCreationRequest(title, content,
-                LocalDateTime.now().minusDays(1L), 10);
+                LocalDateTime.now().minusDays(1L), 10, new ArrayList<>());
         final String requestBody = objectMapper.writeValueAsString(shareCreationRequest);
         // when
         ResultActions result = mockMvc.perform(post(url)

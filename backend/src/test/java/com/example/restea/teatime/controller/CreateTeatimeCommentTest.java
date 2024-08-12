@@ -43,15 +43,29 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @ContextConfiguration(classes = ResteaApplication.class)
 @AutoConfigureMockMvc
 public class CreateTeatimeCommentTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeCommentRepository teatimeCommentRepository;
     private final UserRepository userRepository;
     private final CustomOAuth2UserService custumOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
+
+    @Autowired
+    public CreateTeatimeCommentTest(MockMvc mockMvc, ObjectMapper objectMapper,
+                                    WebApplicationContext context,
+                                    TeatimeBoardRepository teatimeBoardRepository,
+                                    TeatimeCommentRepository teatimeCommentRepository, UserRepository userRepository,
+                                    CustomOAuth2UserService custumOAuth2UserService) {
+        this.mockMvc = mockMvc;
+        this.objectMapper = objectMapper;
+        this.context = context;
+        this.teatimeBoardRepository = teatimeBoardRepository;
+        this.teatimeCommentRepository = teatimeCommentRepository;
+        this.userRepository = userRepository;
+        this.custumOAuth2UserService = custumOAuth2UserService;
+    }
 
     /**
      * testName, content
@@ -76,21 +90,6 @@ public class CreateTeatimeCommentTest {
 
                 Arguments.of("내용이 100 초과인 경우", "저".repeat(101))
         );
-    }
-
-    @Autowired
-    public CreateTeatimeCommentTest(MockMvc mockMvc, ObjectMapper objectMapper,
-                                    WebApplicationContext context,
-                                    TeatimeBoardRepository teatimeBoardRepository,
-                                    TeatimeCommentRepository teatimeCommentRepository, UserRepository userRepository,
-                                    CustomOAuth2UserService custumOAuth2UserService) {
-        this.mockMvc = mockMvc;
-        this.objectMapper = objectMapper;
-        this.context = context;
-        this.teatimeBoardRepository = teatimeBoardRepository;
-        this.teatimeCommentRepository = teatimeCommentRepository;
-        this.userRepository = userRepository;
-        this.custumOAuth2UserService = custumOAuth2UserService;
     }
 
     @Transactional
@@ -123,7 +122,7 @@ public class CreateTeatimeCommentTest {
     @DisplayName("[Created] createTeatimeComment : 티타임 게시글 댓글 작성")
     void createTeatimeComment_Success(String testName, String content) throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -157,7 +156,7 @@ public class CreateTeatimeCommentTest {
     @DisplayName("[BadRequest] createTeatimeComment : 티타임 게시글 댓글 작성")
     void createTeatimeComment_Failure(String testName, String content) throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -189,7 +188,7 @@ public class CreateTeatimeCommentTest {
     @Test
     public void createTeatimeComment_deactivatedCommentBoard_Failure() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         TeatimeBoard teatimeBoard = teatimeBoardRepository.save(TeatimeBoard.builder()
@@ -220,7 +219,7 @@ public class CreateTeatimeCommentTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<TeatimeComment> teatimeComments = teatimeCommentRepository.findAll();
         assertThat(teatimeComments.size()).isEqualTo(0);
     }
@@ -282,7 +281,7 @@ public class CreateTeatimeCommentTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isNotFound());
         List<TeatimeComment> teatimeComments = teatimeCommentRepository.findAll();
         assertThat(teatimeComments.size()).isEqualTo(0);
     }
@@ -291,7 +290,7 @@ public class CreateTeatimeCommentTest {
     @Test
     public void createTeatimeComment_deactivatedUser_Failure() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
         user.deactivate();
@@ -326,7 +325,7 @@ public class CreateTeatimeCommentTest {
                 .content(requestBody));
 
         // then
-        result.andExpect(status().isBadRequest());
+        result.andExpect(status().isUnauthorized());
         List<TeatimeComment> teatimeComments = teatimeCommentRepository.findAll();
         assertThat(teatimeComments.size()).isEqualTo(0);
     }
@@ -335,9 +334,9 @@ public class CreateTeatimeCommentTest {
     @Test
     public void createTeatimeComment_NotFoundUser_Failure() throws Exception {
         // given
-        User user = userRepository.findByAuthId("authId")
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
-        
+
         userRepository.delete(user);
 
         User user2 = userRepository.save(User.builder()

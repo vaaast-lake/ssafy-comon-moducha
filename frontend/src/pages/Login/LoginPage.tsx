@@ -1,6 +1,6 @@
 import './LoginPage.css';
 import LoginModal from './LoginModal';
-import LoginImg from '/LoginImg.png';
+import loginImage from '../../assets/login/login-splash.webp';
 import useAuthStore from '../../stores/authStore';
 import { Navigate } from 'react-router-dom';
 const LoginPage = () => {
@@ -13,7 +13,7 @@ const LoginPage = () => {
     <>
       <div className="login-container">
         <div className="image-container">
-          <img src={LoginImg} alt="Login Background" />
+          <img src={loginImage} alt="Login Background" />
         </div>
         <div className="button-container">
           <div className="login-title">Login</div>
