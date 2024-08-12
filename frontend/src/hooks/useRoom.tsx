@@ -49,12 +49,14 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
       publication: TrackPublication
     ): GroupedTracks => {
       const newGroupedTracks = { ...remoteTracks };
-      newGroupedTracks[participant.identity][publication.kind as TrackKind] = {
-        ...newGroupedTracks[participant.identity][
-          publication.kind as TrackKind
-        ],
-        isMute: publication.isMuted,
-      };
+      if(newGroupedTracks[participant.identity]) {
+        newGroupedTracks[participant.identity][publication.kind as TrackKind] = {
+          ...newGroupedTracks[participant.identity][
+            publication.kind as TrackKind
+          ],
+          isMute: publication.isMuted,
+        };
+      }
       return newGroupedTracks;
     },
     []
@@ -88,6 +90,7 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
             console.log('*************************');
             console.log(participant);
             console.log(publication);
+            console.log(newGroupedTracks);
             console.log('*************************');
             console.log('*************************');
             return newGroupedTracks;

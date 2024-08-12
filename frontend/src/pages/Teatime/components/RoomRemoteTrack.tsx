@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { GroupedTracks } from '../../../types/WebRTCType';
 import RoomAudio from './RoomAudio';
 import RoomVideo from './RoomVideo';
@@ -6,7 +5,7 @@ import { GoMute, GoUnmute } from 'react-icons/go';
 import { IoVideocamOffOutline, IoVideocamOutline } from 'react-icons/io5';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { useMemo, useState } from 'react';
-import useAuthStore from '../../../stores/authStore';
+import axiosInstance from '../../../api/axiosInstance';
 
 interface RoomRemoteTrackProps {
   remoteTracks: GroupedTracks;
@@ -19,7 +18,6 @@ export default function RoomRemoteTrack({
 }: RoomRemoteTrackProps) {
   const [showFirstGroup, setShowFirstGroup] = useState<boolean>(true);
   const { roomName, boardId, boardType } = apiData;
-  const { userId } = useAuthStore((state) => state.currentUserId);
   const remoteTrackArray = useMemo(
     () => Object.entries(remoteTracks),
     [remoteTracks]
@@ -33,17 +31,10 @@ export default function RoomRemoteTrack({
     trackSid: string | undefined,
     isMute: boolean
   ) => {
-    axios({
-      method: 'post',
-      url: `${import.meta.env.BASE_URL}/${boardType}/${boardId}/lives/mute/${userId}`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        userId: `${participantIdentity}`,
-        trackSid: `${trackSid}`,
-        isMute: `${!isMute}`,
-      },
+    axiosInstance.post(`${boardType}/${boardId}/lives/mute`, {
+      userId: `${participantIdentity}`,
+      trackSid: `${trackSid}`,
+      isMute: `${!isMute}`
     })
       .then((res) => {
         console.log(res);
@@ -58,17 +49,10 @@ export default function RoomRemoteTrack({
     trackSid: string | undefined,
     isMute: boolean
   ) => {
-    axios({
-      method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/mute/1`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        userId: `${participantIdentity}`,
-        trackSid: `${trackSid}`,
-        isMute: `${!isMute}`,
-      },
+    axiosInstance.post(`${boardType}/${boardId}/lives/mute`, {
+      userId: `${participantIdentity}`,
+      trackSid: `${trackSid}`,
+      isMute: `${!isMute}`
     })
       .then((res) => {
         console.log(res);
@@ -79,14 +63,9 @@ export default function RoomRemoteTrack({
   };
 
   const handleKickUser = (participantIdentity: string) => {
-    axios({
-      method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/kick/1`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: `${participantIdentity}`,
-    })
+    axiosInstance.post(`${boardType}/${boardId}/lives/kick`, (
+      `${participantIdentity}`
+    ))
       .then((res) => {
         console.log(res);
       })

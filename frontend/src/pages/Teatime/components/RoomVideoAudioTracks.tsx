@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import RoomSharingButton from './RoomSharingButton';
 import { GoUnmute, GoMute } from 'react-icons/go';
 import RoomRemoteTrack from './RoomRemoteTrack';
+import { IoVideocamOffOutline, IoVideocamOutline } from 'react-icons/io5';
 
 interface RoomVideoAudioProps {
   room: Room;
@@ -86,6 +87,9 @@ const RoomVideoAudioTracks = ({
                 participantIdentity={
                   screenShare.screenShareTrack!.video!.participantIdentity
                 }
+                participantName={
+                  screenShare.screenShareTrack?.video?.participantName
+                }
               />
             </div>
           )}
@@ -115,10 +119,7 @@ const RoomVideoAudioTracks = ({
         </div>
 
         {/* remote video start */}
-        <RoomRemoteTrack 
-          remoteTracks={remoteTracks}
-          apiData={apiData} 
-        />
+        <RoomRemoteTrack remoteTracks={remoteTracks} apiData={apiData} />
         {/* remote video end */}
       </div>
 
@@ -143,6 +144,21 @@ const RoomVideoAudioTracks = ({
           >
             {!isAudioMuted ? <GoUnmute /> : <GoMute />}
           </button>
+          <button
+            onClick={handleLocalVideo}
+            className={`
+                ${
+                  !isVideoMuted
+                    ? 'bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600'
+                    : 'bg-red-500 text-white px-4 py-1 rounded ml-2 hover:bg-red-600'
+                }
+                px-2 py-3
+                text-3xl
+              `}
+          >
+            {!isVideoMuted ? <IoVideocamOutline /> : <IoVideocamOffOutline />}
+          </button>
+
           <RoomSharingButton room={room} isScreenSharing={isScreenSharing} />
         </div>
         <button
