@@ -14,6 +14,9 @@ interface AuthState {
   //setCurrentUserId, setCurrentUserRole은 만들면 안됩니다.
   currentUserId: string;
   currentUserRole: string;
+  token: string | null;
+  teatimeToken: string;
+  setTeatimeToken: (token: string) => void;
 }
 
 interface TokenType {
@@ -25,17 +28,19 @@ interface TokenType {
 const useAuthStore = create<AuthState>()(
   devtools((set) => {
     const token = localStorage.getItem('authorization');
-    const isLoggedIn = token ? true : false;
-    const currentUsername = token ? jwtDecode<TokenType>(token).nickname : '';
-    const currentUserId = token ? jwtDecode<TokenType>(token).userId : '';
-    const currentUserRole = token ? jwtDecode<TokenType>(token).role : '';
+    const tokenData = token ? jwtDecode<TokenType>(token) : null;
+    const teatimeToken = '';
+    
     return {
-      isLoggedIn,
+      token,
+      isLoggedIn: !!tokenData,
       setLoggedIn: (status) => set({ isLoggedIn: status }),
-      currentUsername,
+      currentUsername: tokenData?.nickname ?? '',
       setCurrentUsername: (username) => set({ currentUsername: username }),
-      currentUserId,
-      currentUserRole,
+      currentUserId: tokenData?.userId ?? '',
+      currentUserRole: tokenData?.role ?? '',
+      teatimeToken,
+      setTeatimeToken: (token) => set({ teatimeToken: token })
     };
   })
 );

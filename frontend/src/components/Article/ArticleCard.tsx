@@ -1,7 +1,9 @@
 import useAuthStore from '../../stores/authStore';
 import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
+import TeatimeButton from '../../pages/Teatime/components/TeatimeButton';
 const ArticleCard = ({
+  title,
   boardType,
   nickname,
   createdDate,
@@ -10,9 +12,12 @@ const ArticleCard = ({
   participants,
   maxParticipants,
 }: ArticleDetail) => {
+  const { userName } = useAuthStore((state) => ({
+    userName: state.currentUsername,
+  }));
+
   const shareHandler = () => {};
-  const teatimeHandler = () => {};
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
       <figure
@@ -34,13 +39,20 @@ const ArticleCard = ({
           )}
         </div>
       </div>
-      {isLoggedIn && (
+      {boardType === 'shares' ? (
         <button
-          onClick={boardType === 'shares' ? shareHandler : teatimeHandler}
+          onClick={shareHandler}
           className="btn rounded bg-tea hover:bg-rose-400 text-white"
         >
-          {boardType === 'shares' ? '나눔 참여하기' : '티타임 참여하기'}
+          나눔 참여하기
         </button>
+      ) : (
+        <TeatimeButton
+          title={title}
+          boardType={boardType}
+          nickname={nickname}
+          userName={userName}
+        />
       )}
     </div>
   );

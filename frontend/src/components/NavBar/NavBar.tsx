@@ -47,14 +47,6 @@ const NavBar = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  to="/webrtc"
-                  className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
-                >
-                  WebRTC
-                </Link>
-              </li>
-              <li>
                 <button
                   onClick={handleLoginClick}
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
@@ -80,14 +72,6 @@ const NavBar = () => {
                   className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
                 >
                   나눔
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/webrtc"
-                  className="text-center text-[#6d6d6d] text-lg font-medium hover:text-black"
-                >
-                  WebRTC
                 </Link>
               </li>
               <li>
