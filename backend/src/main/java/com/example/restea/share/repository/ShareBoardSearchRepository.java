@@ -30,37 +30,36 @@ public class ShareBoardSearchRepository {
 
     public Page<ShareBoard> findAllBySortAndKeyword(
             String sort, Integer page, Integer perPage, String searchBy, String keyword) {
-        List<ShareBoard> reultls = queryFactory
+        List<ShareBoard> results = queryFactory
                 .selectFrom(shareBoard)
                 .where(createWhereCondition(sort, searchBy, keyword))
                 .orderBy(getOrderSpecifier(sort))
                 .offset((long) (page - 1) * perPage)
                 .limit(perPage)
                 .fetch();
-        return new PageImpl<>(reultls, PageRequest.of(page - 1, perPage), reultls.size());
+        return new PageImpl<>(results, PageRequest.of(page - 1, perPage), results.size());
     }
 
     private Predicate createWhereCondition(String sort, String searchBy, String keyword) {
 
         BooleanExpression baseCondition = shareBoard.activated.isTrue();
 
-        // sort가 urgent일 때는 마감일이 가까운 순으로 정렬
         if ("urgent".equals(sort)) {
             baseCondition.and(shareBoard.endDate.gt(LocalDateTime.now()));
         }
-        // searchBy가 title일 때는 제목에 keyword가 포함된 게시글
-        // searchBy가 content일 때는 내용에 keyword가 포함된 게시글
-        // searchBy가 writer일 때는 작성자 이름에 keyword가 포함된 게시글
-        switch (searchBy) {
-            case "title":
-                baseCondition.and(shareBoard.title.contains(keyword));
-                break;
-            case "content":
-                baseCondition.and(shareBoard.content.contains(keyword));
-                break;
-            case "writer":
-                baseCondition.and(shareBoard.user.nickname.contains(keyword));
-                break;
+
+        if (searchBy != null && keyword != null) {
+            switch (searchBy) {
+                case "title":
+                    baseCondition.and(shareBoard.title.contains(keyword));
+                    break;
+                case "content":
+                    baseCondition.and(shareBoard.content.contains(keyword));
+                    break;
+                case "writer":
+                    baseCondition.and(shareBoard.user.nickname.contains(keyword));
+                    break;
+            }
         }
         return baseCondition;
     }

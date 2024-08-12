@@ -1,5 +1,6 @@
 package com.example.restea.share.service;
 
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_KEYWORD;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_SEARCH_BY;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_SORT;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
@@ -48,7 +49,10 @@ public class ShareService {
             String sort, Integer page, Integer perPage, String searchBy, String keyword) {
 
         checkSort(sort);
-        checkSearchBy(searchBy);
+        if (searchBy != null || keyword != null) {
+            checkSearchBy(searchBy);
+            checkKeyword(keyword);
+        }
 
         // data
         Page<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage, searchBy,
@@ -126,8 +130,17 @@ public class ShareService {
     }
 
     private void checkSearchBy(String searchBy) {
+        if (searchBy == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_SEARCH_BY.getMessage());
+        }
         if (!List.of("title", "content", "writer").contains(searchBy)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_SEARCH_BY.getMessage());
+        }
+    }
+
+    private void checkKeyword(String keyword) {
+        if (keyword == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_KEYWORD.getMessage());
         }
     }
 
