@@ -1,23 +1,11 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import MyTeatimeCarousel from './MyTeatimeCarousel';
-import { TeatimeListItem } from '../../../types/TeatimeType';
-import { fetchMyParticipatedList } from '../../../api/fetchArticle';
-import useAuthStore from '../../../stores/authStore';
 import NotFound from './NotFound';
+import useFetchMyList from '../../../hooks/useFetchMyList';
 
 const MyTeatime = ({ ...props }) => {
-  const [myTeatimeList, setMyTeatime] = useState<TeatimeListItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { userId } = useAuthStore((state) => ({ userId: state.currentUserId }));
-  useEffect(() => {
-    fetchMyParticipatedList({ userId, boardType: 'teatimes' })
-      .then((res) => {
-        setMyTeatime(res.data.data);
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
-  }, [userId]);
+  const { myArticleList: myTeatimeList, isLoading } =
+    useFetchMyList('teatimes');
   return (
     <section {...props}>
       <header className="flex justify-between items-center">
