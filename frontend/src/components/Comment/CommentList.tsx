@@ -12,17 +12,16 @@ interface Board {
 }
 
 const CommentList = ({ boardType, boardId }: Board) => {
-  const sentinel = useRef(null);
+  const sentinel = useRef<HTMLDivElement | null>(null);
   const { currentUserId, isLoggedIn } = useAuthStore((state) => ({
     currentUserId: state.currentUserId,
     isLoggedIn: state.isLoggedIn,
   }));
-
   const { commentList, setCommentList } = useFetchCommentList(
     boardType,
-    boardId
+    boardId,
+    sentinel
   );
-
   return (
     <div>
       <header>
@@ -37,7 +36,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
         {!!commentList.length && (
           <ul>
             {commentList.map((el: Comment) => (
-              <li key={el.commentId}>
+              <li key={`commentkey${el.commentId}`}>
                 <CommentListItem
                   {...{
                     ...el,
@@ -53,7 +52,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
           </ul>
         )}
       </main>
-      <footer className="h-0.5" ref={sentinel} />
+      <div className="h-0.5" ref={sentinel} />
     </div>
   );
 };
