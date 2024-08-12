@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Room } from 'livekit-client';
 import { Message } from '../../../types/WebRTCType';
 import { RiMailSendLine } from 'react-icons/ri';
@@ -6,23 +6,15 @@ import { RiMailSendLine } from 'react-icons/ri';
 interface RoomChattingProps {
   room: Room;
   messages: Message[];
-  inputMessage: string;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  setInputMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const RoomChatting = ({
-  room,
-  messages,
-  inputMessage,
-  setMessages,
-  setInputMessage,
-}: RoomChattingProps) => {
+const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
   const messageEndRef = useRef<HTMLDivElement | null>(null);
-
+  const [inputMessage, setInputMessage] = useState<string>('');
   useEffect(() => {
     messageEndRef.current?.scrollIntoView();
-  }, [messages])
+  }, [messages]);
 
   const sendMessage = () => {
     if (inputMessage.trim() && room) {
@@ -76,14 +68,17 @@ const RoomChatting = ({
         "
       >
         {messages.map((msg, index) => (
-          <div 
-            key={index} 
+          <div
+            key={index}
             className={`
               px-1 w-full my-2 flex items-center
               ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}
             `}
           >
-            {msg.sender !== 'Me' && <strong className='pe-1'>{msg.sender}:</strong>} <span className='bg-white m-1 p-2 rounded-xl'>{msg.content}</span>
+            {msg.sender !== 'Me' && (
+              <strong className="pe-1">{msg.sender}:</strong>
+            )}{' '}
+            <span className="bg-white m-1 p-2 rounded-xl">{msg.content}</span>
           </div>
         ))}
         <div ref={messageEndRef}></div>
