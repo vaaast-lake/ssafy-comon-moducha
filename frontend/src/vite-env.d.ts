@@ -5,6 +5,10 @@
 /// <reference types="vite/client" />
 interface ImportMetaEnv {
   readonly VITE_API_URL: string;
+  readonly VITE_DOCK_APP_SERVER_URL: string;
+  readonly VITE_DOCK_LIVEKIT_URL: string;
+  readonly VITE_DP_APP_SERVER_URL: string;
+  readonly VITE_DP_LIVETKIT_URL: string;
 }
 
 interface ImportMeta {

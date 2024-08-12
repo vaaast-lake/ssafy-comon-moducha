@@ -45,7 +45,7 @@ public class ShareCommentService {
         Page<ShareComment> shareComments = getShareComments(activatedShareBoard, page, perPage);
         List<ShareCommentViewResponse> data = createResponseFromShareComments(shareComments.getContent());
 
-        PaginationDTO pagination = PaginationDTO.of(shareComments.getTotalPages(), page, perPage);
+        PaginationDTO pagination = PaginationDTO.of((int) shareComments.getTotalElements(), page, perPage);
 
         return ResponseDTO.of(data, pagination);
     }
