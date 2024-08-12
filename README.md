@@ -207,6 +207,8 @@
 
 [와이어프레임](https://www.figma.com/design/yAiuzxtFcEmW74QVPnrLpC/%EB%A7%88%EC%9E%90%EC%9A%A9_%EC%9C%A0%EB%A3%8C?node-id=88-6950&t=KvEZ74r3O2vZagS6-1)
 
+<br>
+
 ### <ins>서비스 아키텍처
 
 ![서비스 아키텍처 이미지]()
@@ -231,7 +233,6 @@
 
 <br>
 <br>
-
 
 <!-- ## 팀 소개
 * 김봉상: 팀장, 프론트엔드 개발
