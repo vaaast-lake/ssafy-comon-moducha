@@ -14,6 +14,7 @@ public class ShareReplyViewResponse {
     private final LocalDateTime createdDate;
     private final Integer userId;
     private final String nickname;
+    private final String picture;
 
     public static ShareReplyViewResponse of(ShareReply shareReply) {
         return ShareReplyViewResponse.builder()
@@ -23,6 +24,7 @@ public class ShareReplyViewResponse {
                 .createdDate(shareReply.getCreatedDate())
                 .userId(shareReply.getUser().getId())
                 .nickname(shareReply.getExposedNickname())
+                .picture(shareReply.getUser().getPicture())
                 .build();
     }
 

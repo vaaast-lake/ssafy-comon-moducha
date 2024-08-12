@@ -14,6 +14,7 @@ public class TeatimeReplyViewResponse {
     private final LocalDateTime createdDate;
     private final Integer userId;
     private final String nickname;
+    private final String picture;
 
     public static TeatimeReplyViewResponse of(TeatimeReply teatimeReply) {
         return TeatimeReplyViewResponse.builder()
@@ -23,6 +24,7 @@ public class TeatimeReplyViewResponse {
                 .createdDate(teatimeReply.getCreatedDate())
                 .userId(teatimeReply.getUser().getId())
                 .nickname(teatimeReply.getExposedNickname())
+                .picture(teatimeReply.getUser().getPicture())
                 .build();
     }
 }
