@@ -14,6 +14,8 @@
   <a href="https://www.figma.com/design/kZUTKdWf5ARZF35fuIjVdW/%EB%A7%88%EC%9E%90%EC%9A%A9-%ED%94%BC%EA%B7%B8%EB%A7%88?node-id=0-1&t=z6e2psECzDWzvf0l-0">피그마</a>
   &nbsp; | &nbsp; 
   <a href="https://miro.com/app/board/uXjVK2ZTE6M=/">미로</a>
+  &nbsp; | &nbsp;
+  <a href="https://hub.docker.com/u/ramen4598"> dockerhub
 </p>
 
 <hr>
@@ -139,7 +141,8 @@
 
 - CI/CD 파이프라인 구축 및 배포 자동화
 - WebRTC & WebSocket 기반의 실시간 스트리밍 및 채팅 기능 제공
-- Nginx를 사용하여 응답속도 최적화
+- Nginx Reverse Proxy 사용
+- Nginx SSL Termination을 통한 백엔드 서버 부하 감소
 - FE, BE, MediaServer, DB를 각 docker 컨테이너로 관리하여 빌드 및 배포. 안정적인 CI / CD 구축
 - Google OAuth2 + Spring Security + JWT 를 통한 로그인 로직 구현으로 안정적이며 stateless한 인증/인가 구현
 - ~~생성형 AI를 사용한 맞춤형 차 추천 기능 제공~~
@@ -178,7 +181,7 @@
 - Java 17
 - MySQL
 - Redis
-- Grable
+- Gradle
 
 🛠️**Frontend**
 - Visual Studio Code
