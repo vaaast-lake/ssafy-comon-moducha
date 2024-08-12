@@ -15,7 +15,7 @@ public enum TeatimeBoardMessage {
     TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS("Less than current participants."),
     TEATIME_BOARD_USER_NOT_ACTIVATED("TeatimeBoard User not activated"),
     TEATIME_BOARD_WRITER("TeatimeBoard Writer"),
-    ;
+    TEATIME_BOARD_INVALID_SEARCH_BY("Invalid search by.");
 
     private final String message;
 }

@@ -1,5 +1,6 @@
 package com.example.restea.teatime.service;
 
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_INVALID_SEARCH_BY;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_INVALID_SORT;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_WRITER;
@@ -44,12 +45,13 @@ public class TeatimeService {
     private final TeatimeParticipantRepository teatimeParticipantRepository;
 
     @Transactional
-    public ResponseDTO<List<TeatimeListResponse>> getTeatimeBoardList(String sort, Integer page, Integer perPage) {
+    public ResponseDTO<List<TeatimeListResponse>> getTeatimeBoardList(String sort, Integer page, Integer perPage,
+                                                                      String searchBy, String keyword) {
 
-        Page<TeatimeBoard> teatimeBoards = getActivatedTeatimeBoards(sort, page, perPage);
+        Page<TeatimeBoard> teatimeBoards = getActivatedTeatimeBoards(sort, page, perPage, searchBy, keyword);
         List<TeatimeListResponse> data = createResponseFormTeatimeBoards(teatimeBoards.getContent());
 
-        PaginationDTO pagination = PaginationDTO.of(teatimeBoards.getTotalPages(), page, perPage);
+        PaginationDTO pagination = PaginationDTO.of((int) teatimeBoards.getTotalElements(), page, perPage);
 
         return ResponseDTO.of(data, pagination);
     }
@@ -112,15 +114,16 @@ public class TeatimeService {
         return TeatimeDeleteResponse.from(teatimeBoardId);
     }
 
-    private Page<TeatimeBoard> getActivatedTeatimeBoards(String sort, Integer page, Integer perPage) {
+    private Page<TeatimeBoard> getActivatedTeatimeBoards(String sort, Integer page, Integer perPage, String searchBy,
+                                                         String keyword) {
         Sort sortBy = determineSort(sort);
         PageRequest pageRequest = PageRequest.of(page - 1, perPage, sortBy);
 
-        if (isUrgentSort(sort)) {
-            return teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(), pageRequest);
+        if (searchBy != null && keyword != null) {
+            return searchTeatimeBoards(searchBy, keyword, sort, pageRequest);
         }
 
-        return teatimeBoardRepository.findAllByActivated(true, pageRequest);
+        return fetchTeatimeBoards(sort, pageRequest);
     }
 
     private Sort determineSort(String sort) {
@@ -134,6 +137,49 @@ public class TeatimeService {
 
     private boolean isUrgentSort(String sort) {
         return "urgent".equals(sort);
+    }
+
+    private Page<TeatimeBoard> fetchTeatimeBoards(String sort, PageRequest pageRequest) {
+        if (isUrgentSort(sort)) {
+            return teatimeBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(), pageRequest);
+        }
+        return teatimeBoardRepository.findAllByActivated(true, pageRequest);
+    }
+
+    private Page<TeatimeBoard> searchTeatimeBoards(String searchBy, String keyword, String sort,
+                                                   PageRequest pageRequest) {
+        if (isUrgentSort(sort)) {
+            return searchTeatimeBoardsWithEndDateAfter(searchBy, keyword, pageRequest);
+        }
+        return searchTeatimeBoardsWithoutEndDateAfter(searchBy, keyword, pageRequest);
+    }
+
+    private Page<TeatimeBoard> searchTeatimeBoardsWithEndDateAfter(String searchBy, String keyword,
+                                                                   PageRequest pageRequest) {
+        return switch (searchBy) {
+            case "title" -> teatimeBoardRepository.findAllByTitleContainingAndActivatedAndEndDateAfter(keyword, true,
+                    LocalDateTime.now(), pageRequest);
+            case "writer" ->
+                    teatimeBoardRepository.findAllByUser_NicknameContainingAndActivatedAndEndDateAfter(keyword, true,
+                            LocalDateTime.now(), pageRequest);
+            case "content" ->
+                    teatimeBoardRepository.findAllByContentContainingAndActivatedAndEndDateAfter(keyword, true,
+                            LocalDateTime.now(), pageRequest);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    TEATIME_BOARD_INVALID_SEARCH_BY.getMessage());
+        };
+    }
+
+    private Page<TeatimeBoard> searchTeatimeBoardsWithoutEndDateAfter(String searchBy, String keyword,
+                                                                      PageRequest pageRequest) {
+        return switch (searchBy) {
+            case "title" -> teatimeBoardRepository.findAllByTitleContainingAndActivated(keyword, true, pageRequest);
+            case "writer" ->
+                    teatimeBoardRepository.findAllByUser_NicknameContainingAndActivated(keyword, true, pageRequest);
+            case "content" -> teatimeBoardRepository.findAllByContentContainingAndActivated(keyword, true, pageRequest);
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    TEATIME_BOARD_INVALID_SEARCH_BY.getMessage());
+        };
     }
 
     private List<TeatimeListResponse> createResponseFormTeatimeBoards(List<TeatimeBoard> teatimeBoards) {
@@ -167,5 +213,13 @@ public class TeatimeService {
     private void deactivateCommentAndReplies(TeatimeComment comment) {
         comment.deactivate();
         comment.getTeatimeReplies().forEach(TeatimeReply::deactivate);
+    }
+
+    private Long calculateCount(String sort) {
+        return switch (sort) {
+            case "latest" -> teatimeBoardRepository.countByActivated(true);
+            case "urgent" -> teatimeBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
+        };
     }
 }
