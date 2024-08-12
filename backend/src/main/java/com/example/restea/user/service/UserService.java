@@ -214,7 +214,7 @@ public class UserService {
         String role = user.getRole().name();
 
         String refreshToken = jwtUtil.createRefreshToken(userId, nickname, picture, role);
-        refreshTokenService.addRefreshToken(user, refreshToken, REFRESH.getExpiration() * MS_TO_S);
+        refreshTokenService.addRefreshToken(user, refreshToken);
 
         return cookieMethods.createCookie(REFRESH.getType(), refreshToken);
     }

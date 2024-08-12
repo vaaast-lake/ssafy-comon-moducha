@@ -51,6 +51,10 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 
+    @Column(nullable = false)
+    @ColumnDefault("'https://avatars.githubusercontent.com/u/121084350?v=4'")
+    private String picture;
+
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     @ColumnDefault("'USER'")
@@ -104,10 +108,11 @@ public class User extends BaseTimeEntity {
     private List<TeatimeParticipant> teatimeParticipants = new ArrayList<>();
 
     @Builder
-    public User(String nickname, String authId, AuthToken authToken) {
+    public User(String nickname, String authId, AuthToken authToken, String picture) {
         this.nickname = nickname;
         this.authId = authId;
         this.authToken = authToken;
+        this.picture = picture;
     }
 
     public void addRefreshToken(RefreshToken refreshToken) {
@@ -142,5 +147,9 @@ public class User extends BaseTimeEntity {
 
     public void changeNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void updatePicture(String picture) {
+        this.picture = picture;
     }
 }

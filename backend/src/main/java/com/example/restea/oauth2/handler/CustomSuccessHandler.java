@@ -66,7 +66,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
 
-        refreshTokenService.addRefreshToken(user, refreshToken, REFRESH.getExpiration() * MS_TO_S);
+        refreshTokenService.addRefreshToken(user, refreshToken);
     }
 
     private void addRefreshTokenToResponse(HttpServletResponse response, String refreshToken) {
