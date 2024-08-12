@@ -1,29 +1,19 @@
-import { useEffect, useState } from 'react';
-import { fetchArticleDetail } from '../../api/fetchArticle';
 import { useParams } from 'react-router-dom';
-import { TeatimeDetailItem } from '../../types/TeatimeType';
 import ArticleCard from '../../components/Article/ArticleCard';
 import ArticleContent from '../../components/Article/ArticleContent';
 import CommentList from '../../components/Comment/CommentList';
 import SideLayout from '../../components/Layout/SideLayout';
 import ArticleLoading from '../../components/Loading/ArticleLoading';
+import useFetchDetail from '../../hooks/useFetchDetail';
+import { TeatimeDetailItem } from '../../types/TeatimeType';
 
 const TeatimeDetail = () => {
   const { boardId } = useParams();
-  const [teatimeDetail, setsTeatimeDetail] = useState<TeatimeDetailItem | null>(
-    null
-  );
-
-  useEffect(() => {
-    if (boardId) {
-      fetchArticleDetail({ boardType: 'teatimes', boardId })
-        .then((res) => setsTeatimeDetail(res.data.data))
-        .catch((err) => console.log(err));
-    }
-  }, [boardId]);
-  // router 파라미터가 누락된 경우
   if (!boardId) return null;
-  if (!teatimeDetail) return <ArticleLoading />;
+  const { articleDetail: teatimeDetail, isLoading } =
+    useFetchDetail<TeatimeDetailItem>('teatimes', boardId);
+  if (isLoading) return <ArticleLoading />;
+  if (!teatimeDetail) return null;
   return (
     <div className="grid grid-cols-10">
       <SideLayout></SideLayout>
