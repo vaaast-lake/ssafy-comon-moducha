@@ -8,6 +8,8 @@ import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_FOUND;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_WRITER;
 import static com.example.restea.teatime.enums.TeatimeParticipantMessage.TEATIME_PARTICIPANT_NOT_FOUND;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_ACTIVATED;
+import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.live.dto.LiveMuteRequestDTO;
 import com.example.restea.live.entity.Live;
@@ -65,61 +67,46 @@ public class LiveService {
     }
 
     public boolean isLiveOpen(Integer teatimeBoardId, Integer userId) {
-        User user = userRepository.getReferenceById(userId);
 
-        // 티타임 게시글 존재 여부 확인
-        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+        User activatedUser = getActivatedUser(userId);
+        TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
-        // 티타임 방송 참가자 여부 확인
-        checkParticipant(teatimeBoard, user);
+        checkParticipant(teatimeBoard, activatedUser);
 
-        // 티타임 방송 개설 여부 확인
         return liveRepository.existsByTeatimeBoard(teatimeBoard);
     }
 
     @Transactional
     public AccessToken createLive(Integer teatimeBoardId, Integer userId) {
-        User user = userRepository.getReferenceById(userId);
 
-        // 티타임 게시글 존재 여부 확인
-        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+        User activatedUser = getActivatedUser(userId);
+        TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
-        // 티타임 게시글 작성자인지 확인
-        checkWriter(teatimeBoard, user);
-
-        // 방송 예정일인지 확인
+        checkWriter(teatimeBoard, activatedUser);
         checkBroadCastDate(teatimeBoard);
 
-        // 방송 생성
         Live live = Live.builder()
                 .teatimeBoard(teatimeBoard)
                 .build();
 
         liveRepository.save(live);
 
-        // AccessToken 발급 및 호스트 토큰 반환
-        return createToken(live.getId(), user);
+        return createToken(live.getId(), activatedUser);
     }
 
     public AccessToken liveJoin(Integer teatimeBoardId, Integer userId) {
-        User user = userRepository.getReferenceById(userId);
 
-        // 티타임 게시글 존재 여부 확인
-        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+        User activatedUser = getActivatedUser(userId);
+        TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
-        // 티타임 방송 참가자 여부 확인
-        checkParticipant(teatimeBoard, user);
-
-        // 방송 예정일인지 확인
+        checkParticipant(teatimeBoard, activatedUser);
         checkBroadCastDate(teatimeBoard);
 
-        // 방송 존재 여부 확인
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, LIVE_NOT_FOUND.getMessage()));
 
-        // AccessToken 발급 및 참가자 토큰 반환
-        return createToken(live.getId(), user);
+        return createToken(live.getId(), activatedUser);
     }
 
     public void webHook(String authHeader, String body) {
@@ -131,7 +118,6 @@ public class LiveService {
                 String liveId = event.getRoom().getName();
                 Integer userId = Integer.parseInt(event.getParticipant().getIdentity());
 
-                // liveId을 통해 티타임 게시글 찾기
                 Optional<Live> liveOptional = liveRepository.findById(liveId);
                 if (liveOptional.isEmpty()) {
                     return;
@@ -140,12 +126,10 @@ public class LiveService {
 
                 TeatimeBoard teatimeBoard = live.getTeatimeBoard();
 
-                // 게시글의 작성자와 참가자가 같은지 확인
                 if (teatimeBoard.getUser().getId() != userId) {
                     return;
                 }
 
-                // 방 지우기
                 Call<Void> deleteCall = client.deleteRoom(liveId);
                 Response<Void> deleteResponse = deleteCall.execute();
 
@@ -160,31 +144,23 @@ public class LiveService {
     }
 
     public void liveKick(Integer teatimeBoardId, Integer kickUserId, Integer userId) {
-        User user = userRepository.getReferenceById(userId);
 
-        // 티타임 게시글 존재 여부 확인
-        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
+        User activatedUser = getActivatedUser(userId);
+        TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
-        // 티타임 게시글 작성자인지 확인
-        checkWriter(teatimeBoard, user);
-
-        // 방송 예정일인지 확인
+        checkWriter(teatimeBoard, activatedUser);
         checkBroadCastDate(teatimeBoard);
 
-        // 방송 존재 여부 확인
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, LIVE_NOT_FOUND.getMessage()));
 
-        // 방송에서 강퇴
         try {
             Call<Void> deleteCall = client.removeParticipant(live.getId(), kickUserId.toString());
             Response<Void> deleteResponse = deleteCall.execute();
-
             if (deleteResponse.isSuccessful()) {
                 return;
             }
-
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, deleteResponse.errorBody().string());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST.getMessage());
@@ -192,33 +168,26 @@ public class LiveService {
     }
 
     public void liveMute(Integer teatimeBoardId, LiveMuteRequestDTO request, Integer userId) {
-        User user = userRepository.getReferenceById(userId);
-        // 티타임 게시글 존재 여부 확인
-        TeatimeBoard teatimeBoard = checkTeatimeBoard(teatimeBoardId);
 
-        // 티타임 게시글 작성자인지 확인
-        checkWriter(teatimeBoard, user);
+        User activatedUser = getActivatedUser(userId);
+        TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
-        // 방송 예정일인지 확인
+        checkWriter(teatimeBoard, activatedUser);
         checkBroadCastDate(teatimeBoard);
 
-        // 방송 존재 여부 확인
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, LIVE_NOT_FOUND.getMessage()));
 
-        // trackSid에 해당하는 track 음소거
         try {
             Call<LivekitModels.TrackInfo> muteCall = client.mutePublishedTrack(live.getId(),
                     request.getUserId().toString(),
                     request.getTrackSid(),
                     request.getIsMute());
             Response<LivekitModels.TrackInfo> muteResponse = muteCall.execute();
-
             if (muteResponse.isSuccessful()) {
                 return;
             }
-
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, muteResponse.errorBody().string());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, LIVEKIT_BAD_REQUEST.getMessage());
@@ -238,8 +207,7 @@ public class LiveService {
             return;
         }
 
-        boolean isTeatimeParticipant = teatimeParticipantRepository.existsByTeatimeBoardAndUser(teatimeBoard, user);
-        if (!isTeatimeParticipant) {
+        if (!teatimeParticipantRepository.existsByTeatimeBoardAndUser(teatimeBoard, user)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_PARTICIPANT_NOT_FOUND.getMessage());
         }
     }
@@ -261,15 +229,14 @@ public class LiveService {
     }
 
     // 티타임 게시글 존재하는지 확인하는 메소드
-    private TeatimeBoard checkTeatimeBoard(Integer teatimeBoardId) {
-        // 티타임 게시글 존재하는지 확인하는 메소드
-        TeatimeBoard teatimeBoard = teatimeBoardRepository.findById(teatimeBoardId)
+    private TeatimeBoard getActivatedTeatimeBoardAndWriter(Integer teatimeBoardId) {
+        TeatimeBoard teatimeBoard = teatimeBoardRepository.findByIdAndActivated(teatimeBoardId, true)
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIME_BOARD_NOT_FOUND.getMessage()));
 
         // 티타임 게시글 삭제 여부 확인
         if (!teatimeBoard.getActivated()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, TEATIME_BOARD_NOT_ACTIVATED.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, TEATIME_BOARD_NOT_ACTIVATED.getMessage());
         }
 
         return teatimeBoard;
@@ -285,4 +252,12 @@ public class LiveService {
         return token;
     }
 
+    public User getActivatedUser(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, USER_NOT_FOUND.getMessage()));
+        if (!user.getActivated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, USER_NOT_ACTIVATED.getMessage());
+        }
+        return user;
+    }
 }
