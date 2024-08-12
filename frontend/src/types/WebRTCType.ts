@@ -4,6 +4,7 @@ export type TrackKind = 'video' | 'audio';
 
 export interface TrackInfo {
   participantIdentity: string;
+  participantName?: string;
   trackPublication: RemoteTrackPublication;
   isMute: boolean;
 };

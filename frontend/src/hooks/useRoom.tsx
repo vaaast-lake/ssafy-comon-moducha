@@ -80,9 +80,16 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
               publication.kind as TrackKind
             ] = {
               participantIdentity: participant.identity,
+              participantName: participant.name,
               trackPublication: publication,
               isMute: publication.isMuted,
             };
+            console.log('*************************');
+            console.log('*************************');
+            console.log(participant);
+            console.log(publication);
+            console.log('*************************');
+            console.log('*************************');
             return newGroupedTracks;
           });
         }
