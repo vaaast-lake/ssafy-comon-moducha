@@ -1,6 +1,5 @@
 package com.example.restea.user.service;
 
-import static com.example.restea.oauth2.enums.TokenType.ACCESS;
 import static com.example.restea.oauth2.enums.TokenType.BEARER;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
@@ -34,7 +33,6 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private static final Long MS_TO_S = 1000L;
     private static final String GOOGLE_REVOKE_URL = "https://accounts.google.com/o/oauth2/revoke?token=";
 
     private final UserRepository userRepository;
@@ -197,14 +195,10 @@ public class UserService {
     public String getAccessToken(User user) {
         Integer userId = user.getId();
         String nickname = user.getNickname();
+        String picture = user.getPicture();
         String role = user.getRole().name();
 
-        return createAccessToken(userId, nickname, role);
-    }
-
-    private String createAccessToken(Integer userId, String nickname, String role) {
-        return BEARER.getType() + jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role,
-                ACCESS.getExpiration() * MS_TO_S);
+        return BEARER.getType() + jwtUtil.createAccessToken(userId, nickname, picture, role);
     }
 
     /**
@@ -216,15 +210,12 @@ public class UserService {
     public Cookie getRefreshToken(User user) {
         Integer userId = user.getId();
         String nickname = user.getNickname();
+        String picture = user.getPicture();
         String role = user.getRole().name();
 
-        String refreshToken = createRefreshToken(userId, nickname, role);
+        String refreshToken = jwtUtil.createRefreshToken(userId, nickname, picture, role);
         refreshTokenService.addRefreshToken(user, refreshToken, REFRESH.getExpiration() * MS_TO_S);
 
         return cookieMethods.createCookie(REFRESH.getType(), refreshToken);
-    }
-
-    private String createRefreshToken(Integer userId, String nickname, String role) {
-        return jwtUtil.createJwt(REFRESH.getType(), userId, nickname, role, REFRESH.getExpiration() * MS_TO_S);
     }
 }

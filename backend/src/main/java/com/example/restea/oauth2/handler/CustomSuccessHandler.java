@@ -1,7 +1,6 @@
 package com.example.restea.oauth2.handler;
 
 
-import static com.example.restea.oauth2.enums.TokenType.ACCESS;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
@@ -29,7 +28,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 @RequiredArgsConstructor
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-    private static final Long MS_TO_S = 1000L;
     private final JWTUtil jwtUtil;
     private final CookieMethods cookieMethods;
     private final RefreshTokenService refreshTokenService;
@@ -44,11 +42,12 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
         String nickname = customUserDetails.getNickname();
         Integer userId = customUserDetails.getUserId();
+        String picture = customUserDetails.getPicture();
         String role = extractUserRole(authentication);
 
         // 토큰 생성
-        String accessToken = createAccessToken(userId, nickname, role);
-        String refreshToken = createRefreshToken(userId, nickname, role);
+        String accessToken = jwtUtil.createAccessToken(userId, nickname, picture, role);
+        String refreshToken = jwtUtil.createRefreshToken(userId, nickname, picture, role);
 
         // Refresh 토큰 저장
         saveRefreshToken(userId, refreshToken);
@@ -61,14 +60,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private String extractUserRole(Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         return authorities.iterator().next().getAuthority();
-    }
-
-    private String createAccessToken(Integer userId, String nickname, String role) {
-        return jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role, ACCESS.getExpiration() * MS_TO_S);
-    }
-
-    private String createRefreshToken(Integer userId, String nickname, String role) {
-        return jwtUtil.createJwt(REFRESH.getType(), userId, nickname, role, REFRESH.getExpiration() * MS_TO_S);
     }
 
     private void saveRefreshToken(Integer userId, String refreshToken) {

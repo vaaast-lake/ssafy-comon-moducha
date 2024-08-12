@@ -3,7 +3,6 @@ package com.example.restea.oauth2.service;
 import static com.example.restea.oauth2.enums.ReissueStatus.REFRESH_EXPIRED;
 import static com.example.restea.oauth2.enums.ReissueStatus.REFRESH_INVALID;
 import static com.example.restea.oauth2.enums.ReissueStatus.REFRESH_NULL;
-import static com.example.restea.oauth2.enums.TokenType.ACCESS;
 import static com.example.restea.oauth2.enums.TokenType.BEARER;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 
@@ -21,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class ReissueService {
 
-    private static final Long MS_TO_S = 1000L;
     private final JWTUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
     private final CookieMethods cookieMethods;
@@ -70,10 +68,10 @@ public class ReissueService {
     public String createNewAccessToken(String refresh) {
         String nickname = jwtUtil.getNickname(refresh);
         Integer userId = jwtUtil.getUserId(refresh);
+        String picture = jwtUtil.getPicture(refresh);
         String role = jwtUtil.getRole(refresh);
 
-        return BEARER.getType() + jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role,
-                ACCESS.getExpiration() * MS_TO_S);
+        return BEARER.getType() + jwtUtil.createAccessToken(userId, nickname, picture, role);
     }
 
     // RefreshToken이 존재하는지 확인
