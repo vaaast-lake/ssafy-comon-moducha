@@ -1,15 +1,17 @@
 import { MutableRefObject, useEffect, useState } from 'react';
-import { fetchCommentList } from '../api/fetchComment';
+import { fetchReplyList } from '../api/fetchComment';
 import { BoardType } from '../types/BoardType';
 import { Comment } from '../types/CommentType';
 import useIntersectionObserver from './useIntersectionObserver';
 
-const useFetchCommentList = (
+const useFetchReplyList = (
   boardType: BoardType,
   boardId: number,
+  commentId: number,
+  replyCount: number | undefined,
   sentinel: MutableRefObject<HTMLDivElement | null>
 ) => {
-  const [commentList, setCommentList] = useState<Comment[]>([]);
+  const [replyList, setReplyList] = useState<Comment[]>([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
   const handleObserver = () => {
@@ -18,17 +20,20 @@ const useFetchCommentList = (
   const [observe, unobserve] = useIntersectionObserver(handleObserver);
 
   useEffect(() => {
-    fetchCommentList({
-      boardType,
-      boardId,
-      page,
-      perPage: 10,
-    }).then((res) => {
-      if (res.status === 200) {
-        setCommentList((prev) => [...prev, ...res.data.data]);
-        setTotalPage(res.data.pagination.total);
-      }
-    });
+    if (replyCount) {
+      fetchReplyList({
+        boardType: boardType,
+        boardId,
+        commentId,
+        page,
+        perPage: 10,
+      }).then((res) => {
+        if (res.status === 200) {
+          setReplyList((prev) => [...prev, ...res.data.data]);
+          setTotalPage(res.data.pagination.total);
+        }
+      });
+    }
   }, [page]);
 
   useEffect(() => {
@@ -41,7 +46,7 @@ const useFetchCommentList = (
       unobserve(sentinel.current);
     }
   });
-  return { commentList, setCommentList };
+  return { replyList, setReplyList };
 };
 
-export default useFetchCommentList;
+export default useFetchReplyList;
