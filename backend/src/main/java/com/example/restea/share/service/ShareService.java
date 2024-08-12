@@ -23,13 +23,13 @@ import com.example.restea.share.util.ShareUtil;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,13 +51,12 @@ public class ShareService {
         checkSearchBy(searchBy);
 
         // data
-        List<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage, searchBy,
+        Page<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage, searchBy,
                 keyword); // 아직 기간이 지나지 않고 활성화된 게시글
-        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards);
-        Long count = calculateCount(sort); // latest, urgent 처리방식에 따라 달라질 수 있음
+        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards.getContent());
 
         // pagination info
-        PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
+        PaginationDTO pagination = PaginationDTO.of((int) shareBoards.getTotalElements(), page, perPage);
 
         return Map.of("data", data, "pagination", pagination);
     }
@@ -128,15 +127,7 @@ public class ShareService {
         }
     }
 
-    private Long calculateCount(String sort) {
-        return switch (sort) {
-            case "latest" -> shareBoardRepository.countByActivated(true);
-            case "urgent" -> shareBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
-        };
-    }
-
-    private @NotNull List<ShareBoard> getActivatedShareBoards(
+    private @NotNull Page<ShareBoard> getActivatedShareBoards(
             String sort, Integer page, Integer perPage, String searchBy, String keyword) {
 
         return shareBoardSearchRepository.findAllBySortAndKeyword(

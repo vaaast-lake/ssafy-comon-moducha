@@ -11,6 +11,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,15 +28,16 @@ public class ShareBoardSearchRepository {
 
     QShareBoard shareBoard = QShareBoard.shareBoard;
 
-    public List<ShareBoard> findAllBySortAndKeyword(
+    public Page<ShareBoard> findAllBySortAndKeyword(
             String sort, Integer page, Integer perPage, String searchBy, String keyword) {
-        return queryFactory
+        List<ShareBoard> reultls = queryFactory
                 .selectFrom(shareBoard)
                 .where(createWhereCondition(sort, searchBy, keyword))
                 .orderBy(getOrderSpecifier(sort))
                 .offset((long) (page - 1) * perPage)
                 .limit(perPage)
                 .fetch();
+        return new PageImpl<>(reultls, PageRequest.of(page - 1, perPage), reultls.size());
     }
 
     private Predicate createWhereCondition(String sort, String searchBy, String keyword) {
