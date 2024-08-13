@@ -212,6 +212,23 @@ public class UserController {
                 .body(recordList);
     }
 
+    @GetMapping("/{user_id}/my-teatimes")
+    public ResponseEntity<ResponseDTO<?>> getMyTeatimeList(
+            @AuthenticationPrincipal CustomOAuth2User customOAuth2User,
+            @PathVariable("user_id") Integer userId) {
+
+        validateUser(customOAuth2User, userId);
+
+        List<TeatimeListResponse> teatimeList =
+                userMyPageTeatimeService.getMyTeatimeList(customOAuth2User.getUserId());
+
+        HttpStatus status = teatimeList.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return ResponseEntity.status(status)
+                .body(ResponseDTO.builder()
+                        .data(teatimeList)
+                        .build());
+    }
+
     // 사용자 검증을 별도 메소드로 분리
     private User validateUser(CustomOAuth2User customOAuth2User, Integer userId) {
         return userService.checkValidUser(customOAuth2User.getUserId(), userId);

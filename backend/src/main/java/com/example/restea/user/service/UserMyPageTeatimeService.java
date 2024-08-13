@@ -8,6 +8,7 @@ import com.example.restea.teatime.repository.TeatimeBoardRepository;
 import com.example.restea.teatime.repository.TeatimeParticipantRepository;
 import com.example.restea.user.repository.ParticipatedTeatimeBoardRepository;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -144,5 +145,35 @@ public class UserMyPageTeatimeService {
      */
     private Long calculateParticipatedCount(Integer userId, String sort) {
         return participatedTeatimeBoardRepository.countParticipatedTeatimeBoardsBySort(userId, sort, true);
+    }
+
+    /**
+     * 내가 작성하거나 참여한 티타임 리스트를 불러오는 메소드
+     *
+     * @param userId 사용자 id
+     * @return 내가 작성하거나 참여한 티타임 리스트
+     */
+    @Transactional
+    public List<TeatimeListResponse> getMyTeatimeList(Integer userId) {
+
+        LocalDateTime timeOffsetMinutes = LocalDateTime.now().minusMinutes(30);
+        Page<TeatimeBoard> teatimeBoards = teatimeBoardRepository.findMyTeatimeList(
+                userId, timeOffsetMinutes, PageRequest.of(0, 12, Sort.by("broadcastDate").ascending()));
+        return createResponseFormTeatimeBoards(teatimeBoards);
+    }
+
+    /**
+     * 내가 쓴 티타임 글 Page 객체 생성
+     *
+     * @param teatimeBoards 티타임 글
+     * @return 티타임 글 Response List
+     */
+    private List<TeatimeListResponse> createResponseFormTeatimeBoards(Page<TeatimeBoard> teatimeBoards) {
+        List<TeatimeListResponse> data = new ArrayList<>();
+        teatimeBoards.getContent().forEach(teatimeBoard -> {
+            Integer participant = teatimeParticipantRepository.countByTeatimeBoard(teatimeBoard).intValue();
+            data.add(TeatimeListResponse.of(teatimeBoard, participant));
+        });
+        return data;
     }
 }

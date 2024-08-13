@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -47,4 +49,12 @@ public interface TeatimeBoardRepository extends JpaRepository<TeatimeBoard, Inte
 
     Page<TeatimeBoard> findAllByContentContainingAndActivated(String content, boolean activated,
                                                               PageRequest pageRequest);
+
+    @Query(value = "select t from TeatimeBoard t "
+            + "join fetch TeatimeParticipant p on t.id = p.teatimeBoard.id "
+            + "where t.activated = true and t.broadcastDate > :timeOffsetMinutes "
+            + "and (t.user.id = :userId or p.user.id = :userId)")
+    Page<TeatimeBoard> findMyTeatimeList(@Param("userId") Integer userId,
+                                         @Param("timeOffsetMinutes") LocalDateTime timeOffsetMinutes,
+                                         Pageable pageable);
 }

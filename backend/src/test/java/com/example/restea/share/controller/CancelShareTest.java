@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -66,11 +64,11 @@ class CancelShareTest {
         userRepository.deleteAll();
     }
 
-    @DisplayName("")
-    @Test
-    void test1() throws Exception {
-    }
-
+//    @DisplayName("")
+//    @Test
+//    void test1() throws Exception {
+//    }
+//
     // 나눔 참가 취소 성공
     // 나눔 참가 취소 실패 - 다른 사람에 대한 취소
     // 나눔 참가 취소 실패 - 유효하지 않은 사용자
