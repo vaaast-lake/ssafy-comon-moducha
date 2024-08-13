@@ -234,12 +234,12 @@ class LiveServiceTest {
     }
 
     @Test
-    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 방송 예정일보다 전인 경우")
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 방송 예정일보다 31분전인 경우")
     void createLiveFailBeforeBroadcastDate() {
 
         // Given
         when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
-        ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusMinutes(5));
+        ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusMinutes(31));
         when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
                 Optional.of(testTeatimeBoard));
 
@@ -247,7 +247,24 @@ class LiveServiceTest {
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
                 liveService.createLive(1, 1));
 
-        assertEquals("403 FORBIDDEN \"Before the broadcast date.\"", exception.getMessage());
+        assertEquals("403 FORBIDDEN \"Before 30minutes the broadcast date.\"", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("방송 생성 여부 조회 테스트 - 실패 : 방송 예정일보다 31분후인 경우")
+    void createLiveFailAfterBroadcastDate() {
+
+        // Given
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().minusMinutes(31));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard));
+
+        // When & Then
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
+                liveService.createLive(1, 1));
+
+        assertEquals("403 FORBIDDEN \"After 30minutes the broadcast date.\"", exception.getMessage());
     }
 
     @Test
