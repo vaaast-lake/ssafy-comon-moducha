@@ -84,9 +84,9 @@ export const useTeatime = (
   const startTeatime = async () => {
     const isOpen = await teatimeIsOpen();
     if (isOpen) {
-      getRoomToken();
+      await getRoomToken();
     } else {
-      createRoomToken();
+      await createRoomToken();
     }
     joinTeatime();
   };

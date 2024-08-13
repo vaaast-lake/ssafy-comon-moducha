@@ -29,6 +29,7 @@ export default function TeatimeRoom() {
     roomName,
     participantName: userName,
     teatimeToken,
+    boardId
   });
 
   useEffect(() => {

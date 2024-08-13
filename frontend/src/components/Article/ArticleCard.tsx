@@ -1,4 +1,3 @@
-import useAuthStore from '../../stores/authStore';
 import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 import TeatimeButton from '../../pages/Teatime/components/TeatimeButton';
@@ -12,9 +11,7 @@ const ArticleCard = ({
   participants,
   maxParticipants,
 }: ArticleDetail) => {
-  const { userName } = useAuthStore((state) => ({
-    userName: state.currentUsername,
-  }));
+  
 
   const shareHandler = () => {};
 
@@ -51,7 +48,6 @@ const ArticleCard = ({
           title={title}
           boardType={boardType}
           nickname={nickname}
-          userName={userName}
         />
       )}
     </div>

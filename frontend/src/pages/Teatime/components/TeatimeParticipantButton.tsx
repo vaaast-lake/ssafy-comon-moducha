@@ -17,15 +17,13 @@ export default function TeatimeParticipantButton({
   }));
   const [isApplied, setIsApplied] = useState<boolean>(false);
   const [isRoomOpen, setIsRoomOpen] = useState<boolean>(false);
-  const { applyTeatime, startTeatime, teatimeIsOpen, teatimeIsApplied } = useTeatime(
-    boardType,
-    title
-  );
+  const { applyTeatime, startTeatime, teatimeIsOpen, teatimeIsApplied } =
+    useTeatime(boardType, title);
 
   useEffect(() => {
     async function getOpenData() {
       const isOpen = await teatimeIsOpen();
-      setIsRoomOpen(isOpen)
+      setIsRoomOpen(isOpen);
     }
     async function getAppliedData() {
       const applied = await teatimeIsApplied();
@@ -33,19 +31,23 @@ export default function TeatimeParticipantButton({
     }
     getOpenData();
     getAppliedData();
-  }, [])
+  }, []);
 
+  const checkDisableButton = () => {
+    if (!isLogin) return true;
+    if (isApplied && !isRoomOpen) return true;
+    return false;
+  };
 
   return (
     <>
       <button
         className="btn rounded bg-tea hover:bg-rose-400 text-white"
         onClick={isApplied ? startTeatime : applyTeatime}
-        disabled={!isLogin}
+        disabled={checkDisableButton()}
       >
         {isApplied ? '티타임 시작하기' : '티타임 참여하기'}
       </button>
-      <button onClick={startTeatime}>111</button>
       <form action="">
         <label htmlFor="">이름</label>
         <input type="text" />
