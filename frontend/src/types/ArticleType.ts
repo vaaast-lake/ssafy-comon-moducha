@@ -19,4 +19,5 @@ export interface ArticleDetail {
   nickname: string;
   viewCount: number;
   picture: string;
+  userId: string;
 }
