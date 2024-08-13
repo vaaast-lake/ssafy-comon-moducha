@@ -15,11 +15,13 @@ const useIntersectionObserver = (callback: () => void) => {
   );
 
   const observe = (element: HTMLDivElement | null) => {
-    if (element) observer.current.observe(element);
+    if (!element) return;
+    observer.current.observe(element);
   };
 
   const unobserve = (element: HTMLDivElement | null) => {
-    if (element) observer.current.unobserve(element);
+    if (!element) return;
+    observer.current.unobserve(element);
   };
 
   return [observe, unobserve];

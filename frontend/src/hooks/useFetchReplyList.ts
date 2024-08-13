@@ -14,10 +14,9 @@ const useFetchReplyList = (
   const [replyList, setReplyList] = useState<Comment[]>([]);
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
-  const handleObserver = () => {
-    setPage((prev) => prev + 1);
-  };
-  const [observe, unobserve] = useIntersectionObserver(handleObserver);
+  const [observe, unobserve] = useIntersectionObserver(() =>
+    setPage((prev) => prev + 1)
+  );
 
   useEffect(() => {
     if (replyCount) {
@@ -34,16 +33,15 @@ const useFetchReplyList = (
         }
       });
     }
-  }, [page]);
+  }, [boardId, boardType, commentId, page, replyCount]);
 
   useEffect(() => {
-    if (!totalPage) {
-      unobserve(sentinel.current);
-    } else {
-      observe(sentinel.current);
-    }
-    if (totalPage && page >= totalPage) {
-      unobserve(sentinel.current);
+    if (replyCount) {
+      if (!totalPage || page >= totalPage) {
+        unobserve(sentinel.current);
+      } else {
+        observe(sentinel.current);
+      }
     }
   });
   return { replyList, setReplyList };

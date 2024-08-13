@@ -19,7 +19,7 @@ const useFetchList = (boardType: BoardType, perPage = 12) => {
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
-  }, [sort, page]);
+  }, [sort, page, boardType, perPage]);
 
   return {
     articleList,
