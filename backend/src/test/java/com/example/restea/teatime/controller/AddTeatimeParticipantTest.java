@@ -93,7 +93,7 @@ public class AddTeatimeParticipantTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -108,7 +108,7 @@ public class AddTeatimeParticipantTest {
     @DisplayName("[Create] addParticipant : 참가자 추가")
     void addParticipant_Success() throws Exception {
         // given
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
@@ -149,7 +149,7 @@ public class AddTeatimeParticipantTest {
     void addParticipant_BadRequest_Failure(String testName, String name, String phone, String address)
             throws Exception {
         // given
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
@@ -217,7 +217,7 @@ public class AddTeatimeParticipantTest {
     @DisplayName("[NotFound] addParticipant 실패 - 비활성화 된 게시글")
     void addParticipant_DeactivatedTeatimeBoard_Failure() throws Exception {
         // given
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
@@ -258,7 +258,7 @@ public class AddTeatimeParticipantTest {
     @DisplayName("[BadRequest] addParticipant 실패 - 비활성화 된 게시글 작성자")
     void addParticipant_DeactivatedWriter_Failure() throws Exception {
         // given
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
@@ -300,7 +300,7 @@ public class AddTeatimeParticipantTest {
         User testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 

@@ -15,6 +15,7 @@ public class ShareCommentViewResponse {
     private final Integer userId;
     private final String nickname;
     private final Integer replyCount;
+    private final String picture;
 
     public static ShareCommentViewResponse of(ShareComment shareComment, Integer replyCount) {
         return ShareCommentViewResponse.builder()
@@ -25,6 +26,7 @@ public class ShareCommentViewResponse {
                 .userId(shareComment.getUser().getId())
                 .nickname(shareComment.getExposedNickname())
                 .replyCount(replyCount)
+                .picture(shareComment.getUser().getPicture())
                 .build();
     }
 }

@@ -73,7 +73,9 @@ public class TeatimeService {
 
         teatimeBoard.addViewCount();
 
-        return TeatimeViewResponse.of(teatimeBoard, participants);
+        String picture = teatimeBoard.getUser().getPicture(); // 프로필 사진 가져오기
+
+        return TeatimeViewResponse.of(teatimeBoard, participants, picture);
     }
 
     public TeatimeBoard getOnlyTeatimeBoard(Integer teatimeBoardId) {

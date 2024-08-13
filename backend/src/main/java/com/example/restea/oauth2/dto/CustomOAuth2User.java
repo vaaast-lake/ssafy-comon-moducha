@@ -40,4 +40,8 @@ public class CustomOAuth2User implements OAuth2User {
     public String getRole() {
         return oAuth2JwtMemberDTO.getRole();
     }
+
+    public String getPicture() {
+        return oAuth2JwtMemberDTO.getPicture();
+    }
 }

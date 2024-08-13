@@ -59,6 +59,14 @@ class GetTeatimeBoardListTest {
         this.customOAuth2UserService = customOAuth2UserService;
     }
 
+    private static Stream<Arguments> keywordSearchParameters() {
+        return Stream.of(
+                Arguments.of("title", "Title1", 1, 5, 1),
+                Arguments.of("content", "Content2", 1, 5, 1),
+                Arguments.of("title", "Title", 1, 5, 5)
+        );
+    }
+
     @Transactional
     @BeforeEach
     public void mockMvcSetUp() {
@@ -69,7 +77,7 @@ class GetTeatimeBoardListTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -130,6 +138,11 @@ class GetTeatimeBoardListTest {
         }
     }
 
+    // TODO : 티타임 게시판이 1개일 때 (최신 순)
+    // TODO : 아무런 티타임 게시판이 없을 때 (최신 순)
+    // TODO : 활성화된 티타임 게시판이 없을 때 (최신 순)
+    // TODO : endDate가 지난 티타임 게시판만 있을 때 (최신 순)
+
     @DisplayName("getTeatimeBoardList : 티타임 게시판 목록 조회 성공 - perPage가 5일 때 (최신 순)")
     @Test
     public void getTeatimeBoardList_5_latest_Success() throws Exception {
@@ -181,10 +194,24 @@ class GetTeatimeBoardListTest {
         }
     }
 
-    // TODO : 티타임 게시판이 1개일 때 (최신 순)
-    // TODO : 아무런 티타임 게시판이 없을 때 (최신 순)
-    // TODO : 활성화된 티타임 게시판이 없을 때 (최신 순)
-    // TODO : endDate가 지난 티타임 게시판만 있을 때 (최신 순)
+    // TODO : 일부 endDate가 지난 티타임 게시판이 있을 때 (임박 순)
+    // TODO : 티타임 게시판이 1개일 때 (임박 순)
+    // TODO : 아무런 티타임 게시판이 없을 때 (임박 순)
+    // TODO : 활성화된 티타임 게시판이 없을 때 (임박 순)
+    // TODO : endDate가 지난 티타임 게시판만 있을 때 (임박 순)
+
+    // TODO : sort가 null일 때
+    // TODO : sort가 latest 또는 urgent가 아닐 때
+
+    // TODO : perPage 음수
+    // TODO : perPage 0
+    // TODO : perPage가 9999일 때
+    // TODO : perPage가 null일 때
+
+    // TODO : page가 음수일 때
+    // TODO : page가 0일 때
+    // TODO : page가 9999일 때
+    // TODO : page가 null일 때
 
     @DisplayName("getTeatimeBoardList : 티타임 게시판 목록 조회 성공 - perPage가 5일 때 (임박 순)")
     @Test
@@ -236,33 +263,6 @@ class GetTeatimeBoardListTest {
                     .andExpect(jsonPath(("$.data[" + i + "].nickname")).value(user.getNickname()))
                     .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
         }
-    }
-
-    // TODO : 일부 endDate가 지난 티타임 게시판이 있을 때 (임박 순)
-    // TODO : 티타임 게시판이 1개일 때 (임박 순)
-    // TODO : 아무런 티타임 게시판이 없을 때 (임박 순)
-    // TODO : 활성화된 티타임 게시판이 없을 때 (임박 순)
-    // TODO : endDate가 지난 티타임 게시판만 있을 때 (임박 순)
-
-    // TODO : sort가 null일 때
-    // TODO : sort가 latest 또는 urgent가 아닐 때
-
-    // TODO : perPage 음수
-    // TODO : perPage 0
-    // TODO : perPage가 9999일 때
-    // TODO : perPage가 null일 때
-
-    // TODO : page가 음수일 때
-    // TODO : page가 0일 때
-    // TODO : page가 9999일 때
-    // TODO : page가 null일 때
-
-    private static Stream<Arguments> keywordSearchParameters() {
-        return Stream.of(
-                Arguments.of("title", "Title1", 1, 5, 1),
-                Arguments.of("content", "Content2", 1, 5, 1),
-                Arguments.of("title", "Title", 1, 5, 5)
-        );
     }
 
     @DisplayName("getTeatimeBoardList : 키워드 검색 테스트")

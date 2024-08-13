@@ -66,7 +66,7 @@ public class DeactivateTeatimeBoardTest {
     // mockMvc에서 @AuthenticationPrincipal CustomOAuth2User를 사용하기 위해
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -161,7 +161,7 @@ public class DeactivateTeatimeBoardTest {
     public void deactivateTeatimeBoard_Unauthorized_Fail() throws Exception {
 
         // given
-        customOAuth2UserService.handleNewUser("authId2", "authToken2");
+        customOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 

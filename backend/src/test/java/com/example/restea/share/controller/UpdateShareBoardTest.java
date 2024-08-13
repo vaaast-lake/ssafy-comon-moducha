@@ -75,7 +75,7 @@ public class UpdateShareBoardTest {
     // mockMvc에서 @AuthenticationPrincipal CustomOAuth2User를 사용하기 위해
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -206,7 +206,7 @@ public class UpdateShareBoardTest {
     public void updateShare_Unauthorized_Fail() throws Exception {
 
         // given
-        custumOAuth2UserService.handleNewUser("authId2", "authToken2");
+        custumOAuth2UserService.handleNewUser("authId2", "authToken2", "picture");
         User user = userRepository.findByAuthIdAndActivated("authId2", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
@@ -257,7 +257,7 @@ public class UpdateShareBoardTest {
         // 참여자 추가
         User participant;
         for (int i = 0; i < 3; i++) {
-            custumOAuth2UserService.handleNewUser("authId" + i, "authToken" + i);
+            custumOAuth2UserService.handleNewUser("authId" + i, "authToken" + i, "picture");
             participant = userRepository.findByAuthIdAndActivated("authId" + i, true)
                     .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
