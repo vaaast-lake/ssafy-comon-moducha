@@ -1,4 +1,4 @@
-import { createContext, useRef } from 'react';
+import { useRef } from 'react';
 import CommentListItem from './CommentListItem';
 import { BoardType } from '../../types/BoardType';
 import { CommentReplyType } from '../../types/CommentType';

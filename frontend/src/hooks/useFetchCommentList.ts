@@ -29,16 +29,13 @@ const useFetchCommentList = (
         setTotalPage(res.data.pagination.total);
       }
     });
-  }, [page]);
+  }, [boardId, boardType, page]);
 
   useEffect(() => {
-    if (!totalPage) {
+    if (!totalPage || page >= totalPage) {
       unobserve(sentinel.current);
     } else {
       observe(sentinel.current);
-    }
-    if (totalPage && page >= totalPage) {
-      unobserve(sentinel.current);
     }
   });
   return { commentList, setCommentList };
