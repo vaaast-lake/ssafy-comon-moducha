@@ -43,12 +43,12 @@ const ArticleCard = ({
       </div>
       {boardType === 'teatimes' ? (
         <TeatimeButton
-        title={title}
-        boardType={boardType}
-        nickname={nickname}
+          title={title}
+          boardType={boardType}
+          nickname={nickname}
         />
       ) : (
-        <ApplyButton {...{ boardId, boardType, isEnded, isLoggedIn }} />
+        <ApplyButton {...{ boardId, boardType, isEnded, userId }} />
       )}
     </div>
   );
