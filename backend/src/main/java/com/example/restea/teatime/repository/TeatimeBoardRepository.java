@@ -51,7 +51,7 @@ public interface TeatimeBoardRepository extends JpaRepository<TeatimeBoard, Inte
                                                               PageRequest pageRequest);
 
     @Query(value = "select t from TeatimeBoard t "
-            + "join fetch TeatimeParticipant p on t.id = p.teatimeBoard.id "
+            + "left join fetch TeatimeParticipant p on t.id = p.teatimeBoard.id "
             + "where t.activated = true and t.broadcastDate > :timeOffsetMinutes "
             + "and (t.user.id = :userId or p.user.id = :userId)")
     Page<TeatimeBoard> findMyTeatimeList(@Param("userId") Integer userId,
