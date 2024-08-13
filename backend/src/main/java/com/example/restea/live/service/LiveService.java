@@ -2,6 +2,7 @@ package com.example.restea.live.service;
 
 import static com.example.restea.live.enums.LiveMessage.LIVEKIT_BAD_REQUEST;
 import static com.example.restea.live.enums.LiveMessage.LIVE_NOT_FOUND;
+import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_AFTER_BROADCAST_DATE;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_BEFORE_BROADCAST_DATE;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_ACTIVATED;
 import static com.example.restea.teatime.enums.TeatimeBoardMessage.TEATIME_BOARD_NOT_BROADCAST_DATE;
@@ -100,7 +101,6 @@ public class LiveService {
         TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
         checkParticipant(teatimeBoard, activatedUser);
-        checkBroadCastDate(teatimeBoard);
 
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
@@ -149,7 +149,6 @@ public class LiveService {
         TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
         checkWriter(teatimeBoard, activatedUser);
-        checkBroadCastDate(teatimeBoard);
 
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
@@ -173,7 +172,6 @@ public class LiveService {
         TeatimeBoard teatimeBoard = getActivatedTeatimeBoardAndWriter(teatimeBoardId);
 
         checkWriter(teatimeBoard, activatedUser);
-        checkBroadCastDate(teatimeBoard);
 
         Live live = liveRepository.findByTeatimeBoard(teatimeBoard)
                 .orElseThrow(
@@ -222,9 +220,14 @@ public class LiveService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_NOT_BROADCAST_DATE.getMessage());
         }
 
-        // 방송 예정일보다 현재 시간이 전인 경우
-        if (now.isBefore(broadcastDate)) {
+        // 방송 예정일보다 현재 시간보다 30분전인 경우
+        if (now.isBefore(broadcastDate.minusMinutes(30))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_BEFORE_BROADCAST_DATE.getMessage());
+        }
+
+        // 방송 예정일보다 현재 시간보다 30분후인 경우
+        if (now.isAfter(broadcastDate.plusMinutes(30))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, TEATIME_BOARD_AFTER_BROADCAST_DATE.getMessage());
         }
     }
 
