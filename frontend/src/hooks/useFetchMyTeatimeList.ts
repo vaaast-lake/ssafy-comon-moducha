@@ -17,7 +17,7 @@ const useFetchMyTeatimeList = (boardType: 'teatimes', perPage = 12) => {
           perPage,
           sort, // sort 값을 추가
         });
-        setArticleList(response.data); 
+        setArticleList(response.data);
         setTotalPage(Math.ceil(response.pagination.total / perPage));
       } catch (error) {
         console.error('티타임 목록을 가져오는 데 실패했습니다:', error);
