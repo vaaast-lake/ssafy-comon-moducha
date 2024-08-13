@@ -71,14 +71,17 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
           <div
             key={index}
             className={`
-              px-1 w-full my-2 flex items-center
-              ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}
+              px-1 w-full my-2
             `}
           >
             {msg.sender !== 'Me' && (
-              <strong className="pe-1">{msg.sender}:</strong>
+              <div className=''>
+                <strong className="pe-1">{msg.sender}:</strong>
+              </div> 
             )}{' '}
-            <span className="bg-white m-1 p-2 rounded-xl">{msg.content}</span>
+            <div className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}>
+              <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">{msg.content}</div>
+            </div>
           </div>
         ))}
         <div ref={messageEndRef}></div>
