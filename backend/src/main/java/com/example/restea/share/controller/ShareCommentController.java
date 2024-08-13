@@ -47,12 +47,8 @@ public class ShareCommentController {
         ResponseDTO<List<ShareCommentViewResponse>> result =
                 shareCommentService.getShareCommentList(shareBoardId, page, perPage);
 
-        if (result.getData().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
-        }
-
-        // TODO : emtpy list
-        return ResponseEntity.status(HttpStatus.OK)
+        HttpStatus status = result.getData().isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return ResponseEntity.status(status)
                 .body(result);
     }
 

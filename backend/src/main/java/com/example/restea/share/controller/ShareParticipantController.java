@@ -74,10 +74,10 @@ public class ShareParticipantController {
             @PathVariable("share_board_id") Integer shareBoardId,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
 
-        // TODO : empty list
         List<ShareJoinListResponse> data = service.getShareParticipants(
                 shareBoardId, customOAuth2User.getUserId());
-        return ResponseEntity.status(HttpStatus.OK)
+        HttpStatus status = data.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return ResponseEntity.status(status)
                 .body(ResponseDTO.builder()
                         .data(data)
                         .build());

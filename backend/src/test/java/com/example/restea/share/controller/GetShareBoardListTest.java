@@ -190,7 +190,7 @@ public class GetShareBoardListTest {
         // then
         int leftover = num - (Integer.parseInt(page) - 1) * Integer.parseInt(perPage);
         int end = Math.min(leftover, Integer.parseInt(perPage));
-        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(num == 0 ? status().isNoContent() : status().isOk());
         resultActions.andExpect(jsonPath("$.data.length()").value(end));
         for (int i = 0; i < end; i++) {
             resultActions.andExpect(
@@ -247,7 +247,7 @@ public class GetShareBoardListTest {
         // then
         int precedingElement = (Integer.parseInt(page) - 1) * Integer.parseInt(perPage);
         int end = Math.min(num - precedingElement, Integer.parseInt(perPage));
-        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(num == 0 ? status().isNoContent() : status().isOk());
         resultActions.andExpect(jsonPath("$.data.length()").value(end));
         for (int i = 0; i < end; i++) {
             resultActions.andExpect(

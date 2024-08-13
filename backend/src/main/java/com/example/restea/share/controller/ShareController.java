@@ -6,11 +6,13 @@ import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
 import com.example.restea.s3.service.S3ServiceImpl;
 import com.example.restea.share.dto.ShareCreationRequest;
+import com.example.restea.share.dto.ShareListResponse;
 import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.dto.ShareUpdateResponse;
 import com.example.restea.share.service.ShareService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,7 @@ public class ShareController {
     public ResponseEntity<ResponseDTO<?>> getShareBoardList(
             @Valid @ModelAttribute PaginationAndSearchDto dto) {
 
+        // data, pagination
         Map<String, Object> result = shareService.getShareBoardList(
                 dto.getSort(),
                 dto.getPage(),
@@ -43,8 +46,9 @@ public class ShareController {
                 dto.getSearchBy(),
                 dto.getKeyword());
 
-        // TODO : emtpy list
-        return ResponseEntity.status(HttpStatus.OK)
+        HttpStatus status =
+                ((List<ShareListResponse>) result.get("data")).isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return ResponseEntity.status(status)
                 .body(ResponseDTO.builder()
                         .data(result.get("data"))
                         .pagination((PaginationDTO) result.get("pagination"))
