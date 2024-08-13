@@ -38,6 +38,8 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
 
   const leaveRoom = useCallback(async () => {
     await room?.disconnect();
+    await room?.localParticipant.setCameraEnabled(false);
+    await room?.localParticipant.setMicrophoneEnabled(false);
     setRoom(undefined);
     setRemoteTracks({});
     setMessages([]);
