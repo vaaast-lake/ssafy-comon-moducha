@@ -49,10 +49,10 @@ async function getMyTeatimeWriteList({
         },
       });
 
-    console.log(
-      'getMyTeatimeWriteList response.data is: ' +
-        JSON.stringify(response.data, null, 2)
-    );
+    // console.log(
+    //   'getMyTeatimeWriteList response.data is: ' +
+    //     JSON.stringify(response.data, null, 2)
+    // );
 
     return response.data;
   } catch (error) {
