@@ -12,12 +12,13 @@ const ArticleCard = ({
   broadcastDate,
   participants,
   maxParticipants,
+  picture,
 }: ArticleDetail) => {
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
       <figure
         className="bg-contain bg-center bg-no-repeat h-48"
-        style={{ backgroundImage: `url(/logo.png)` }}
+        style={{ backgroundImage: `url(${picture})` }}
       />
       <div id="card-body" className="text-disabled">
         <header>
@@ -44,7 +45,7 @@ const ArticleCard = ({
             }
             className="btn rounded-sm font-bold bg-green-500 hover:bg-green-600 text-white"
           >
-            나눔 참여하기
+            {'나눔 참여하기'}
           </button>
           <ApplyModal {...{ boardType, boardId }} />
         </>

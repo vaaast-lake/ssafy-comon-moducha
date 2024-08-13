@@ -18,4 +18,5 @@ export interface ArticleDetail {
   participants: number;
   nickname: string;
   viewCount: number;
+  picture: string;
 }

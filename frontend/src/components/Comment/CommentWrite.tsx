@@ -21,10 +21,11 @@ const CommentWrite = ({
 }: CommentWriteProp) => {
   const [content, setContent] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const { isLoggedIn, userId, nickname } = useAuthStore((state) => ({
+  const { isLoggedIn, userId, nickname, picture } = useAuthStore((state) => ({
     isLoggedIn: state.isLoggedIn,
     userId: state.currentUserId,
     nickname: state.currentUsername,
+    picture: state.currentUserPicture,
   }));
   const replyOrComment = commentType === 'comment' ? '댓글' : '답글';
 
@@ -45,6 +46,7 @@ const CommentWrite = ({
           ...prev,
           {
             ...res.data.data,
+            picture,
             replyCount: 0,
             userId,
             nickname,

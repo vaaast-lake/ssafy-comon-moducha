@@ -1,6 +1,5 @@
 import { Comment, CommentReplyType } from '../../types/CommentType';
 import { BoardType } from '../../types/BoardType';
-import avatarUrl from '../../assets/avatar/test_avatar.png';
 import dateParser from '../../utils/dateParser';
 import CommentReply from './CommentReply';
 import axiosInstance from '../../api/axiosInstance';
@@ -27,6 +26,7 @@ const CommentListItem = ({
   userId,
   isLoggedIn = false,
   currentUserId,
+  picture,
   setCommentList,
 }: CommentListItemProps) => {
   const [isReplyWrite, setIsReplyWrite] = useState(false);
@@ -91,8 +91,12 @@ const CommentListItem = ({
   return (
     <>
       <div className="flex py-4">
-        <figure className="w-1/12">
-          <img src={avatarUrl} alt={`${nickname}'s avatar`} />
+        <figure className="w-1/12 overflow-hidden">
+          <img
+            className="rounded-full"
+            src={picture}
+            alt={`${nickname}'s avatar`}
+          />
         </figure>
         <main className="w-11/12 px-2 flex flex-col justify-between">
           <header className="flex justify-between">

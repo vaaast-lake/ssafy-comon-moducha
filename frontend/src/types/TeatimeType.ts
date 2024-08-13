@@ -24,4 +24,5 @@ export interface TeatimeDetailItem extends TeatimeListItem {
   participants: number;
   nickname: string;
   title: string;
+  picture: string;
 }

@@ -9,6 +9,7 @@ export interface Comment {
   nickname?: string;
   replyCount?: number;
   userId: string;
+  picture: string;
 }
 
 export interface CommentDTO {

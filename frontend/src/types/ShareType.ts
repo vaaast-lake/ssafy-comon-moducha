@@ -23,6 +23,7 @@ export interface ShareDTO {
 export interface ShareDetailItem extends ShareListItem {
   content: string;
   userId: string;
+  picture: string;
 }
 
 export interface ShareDetail {
