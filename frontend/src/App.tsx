@@ -27,6 +27,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -80,7 +81,6 @@ const router = createBrowserRouter([
         path: 'notifications',
         element: <Notifications />,
       },
-      { path: 'error', element: <ErrorPage /> },
     ],
   },
   { path: 'access', element: <AccessPage /> }, // access token 처리용 더미 페이지
