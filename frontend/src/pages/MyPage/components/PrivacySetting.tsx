@@ -33,11 +33,11 @@ const AccountDeactivation = () => {
         handleLogout(setLoggedIn, setCurrentUsername);
       } else {
         console.error('Unexpected response status: ', response.status);
-        alert('[debug]: 알 수 없는 response 에러');
+        console.log('[debug]: 알 수 없는 response 에러');
       }
     } catch (error) {
       console.error('Network error: ', error.message);
-      alert('[debug]: 네트워크 오류');
+      console.log('[debug]: 네트워크 오류');
     }
   };
 
