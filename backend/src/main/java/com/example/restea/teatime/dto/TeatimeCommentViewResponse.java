@@ -15,6 +15,7 @@ public class TeatimeCommentViewResponse {
     private final Integer userId;
     private final String nickname;
     private final Integer replyCount;
+    private final String picture;
 
     public static TeatimeCommentViewResponse of(TeatimeComment teatimeComment, Integer replyCount) {
         return TeatimeCommentViewResponse.builder()
@@ -25,6 +26,7 @@ public class TeatimeCommentViewResponse {
                 .userId(teatimeComment.getUser().getId())
                 .nickname(teatimeComment.getExposedNickname())
                 .replyCount(replyCount)
+                .picture(teatimeComment.getUser().getPicture())
                 .build();
     }
 }

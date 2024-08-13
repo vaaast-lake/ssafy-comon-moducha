@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Comment } from '../../types/CommentType';
 import CommentListItem from './CommentListItem';
-import { fetchCommentList } from '../../api/fetchComment';
 import { BoardType } from '../../types/BoardType';
 import CommentWrite from './CommentWrite';
 import useAuthStore from '../../stores/authStore';
+import useFetchCommentList from '../../hooks/useFetchCommentList';
 
 interface Board {
   boardType: BoardType;
@@ -12,29 +12,16 @@ interface Board {
 }
 
 const CommentList = ({ boardType, boardId }: Board) => {
-  const [commentList, setCommentList] = useState<Comment[]>([]);
-  const [fetchParams, setFetchParams] = useState({
-    boardType,
-    boardId,
-    page: 1,
-    perPage: 10,
-  });
-  const sentinel = useRef(null);
+  const sentinel = useRef<HTMLDivElement | null>(null);
   const { currentUserId, isLoggedIn } = useAuthStore((state) => ({
     currentUserId: state.currentUserId,
     isLoggedIn: state.isLoggedIn,
   }));
-
-  useEffect(() => {
-    fetchCommentList(fetchParams)
-      .then((res) => {
-        setCommentList(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-  }, [fetchParams]);
-
+  const { commentList, setCommentList } = useFetchCommentList(
+    boardType,
+    boardId,
+    sentinel
+  );
   return (
     <div>
       <header>
@@ -49,7 +36,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
         {!!commentList.length && (
           <ul>
             {commentList.map((el: Comment) => (
-              <li key={el.commentId}>
+              <li key={`commentkey${el.commentId}`}>
                 <CommentListItem
                   {...{
                     ...el,
@@ -65,7 +52,7 @@ const CommentList = ({ boardType, boardId }: Board) => {
           </ul>
         )}
       </main>
-      <footer className="h-0.5" ref={sentinel} />
+      <div className="h-0.5" ref={sentinel} />
     </div>
   );
 };

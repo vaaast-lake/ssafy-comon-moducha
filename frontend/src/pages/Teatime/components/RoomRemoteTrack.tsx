@@ -1,21 +1,23 @@
-import axios from 'axios';
 import { GroupedTracks } from '../../../types/WebRTCType';
 import RoomAudio from './RoomAudio';
 import RoomVideo from './RoomVideo';
-import useConfigureUrls from '../../../hooks/useConfigureUrls';
 import { GoMute, GoUnmute } from 'react-icons/go';
 import { IoVideocamOffOutline, IoVideocamOutline } from 'react-icons/io5';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { useMemo, useState } from 'react';
+import axiosInstance from '../../../api/axiosInstance';
 
 interface RoomRemoteTrackProps {
   remoteTracks: GroupedTracks;
+  apiData: { roomName: string; boardId: string; boardType: string };
 }
 
-export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) {
+export default function RoomRemoteTrack({
+  remoteTracks,
+  apiData,
+}: RoomRemoteTrackProps) {
   const [showFirstGroup, setShowFirstGroup] = useState<boolean>(true);
-  const { APPLICATION_SERVER_URL } = useConfigureUrls();
-
+  const { roomName, boardId, boardType } = apiData;
   const remoteTrackArray = useMemo(
     () => Object.entries(remoteTracks),
     [remoteTracks]
@@ -27,19 +29,12 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
   const handleMuteAudioRemoteUser = (
     participantIdentity: string,
     trackSid: string | undefined,
-    isMute: boolean,
+    isMute: boolean
   ) => {
-    axios({
-      method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/mute/1`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        userId: `${participantIdentity}`,
-        trackSid: `${trackSid}`,
-        isMute: `${!isMute}`
-      },
+    axiosInstance.post(`${boardType}/${boardId}/lives/mute`, {
+      userId: `${participantIdentity}`,
+      trackSid: `${trackSid}`,
+      isMute: `${!isMute}`
     })
       .then((res) => {
         console.log(res);
@@ -54,17 +49,10 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
     trackSid: string | undefined,
     isMute: boolean
   ) => {
-    axios({
-      method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/mute/1`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: {
-        userId: `${participantIdentity}`,
-        trackSid: `${trackSid}`,
-        isMute: `${!isMute}`
-      },
+    axiosInstance.post(`${boardType}/${boardId}/lives/mute`, {
+      userId: `${participantIdentity}`,
+      trackSid: `${trackSid}`,
+      isMute: `${!isMute}`
     })
       .then((res) => {
         console.log(res);
@@ -75,14 +63,9 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
   };
 
   const handleKickUser = (participantIdentity: string) => {
-    axios({
-      method: 'post',
-      url: `${APPLICATION_SERVER_URL}/teatimes/1/lives/kick/1`,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: `${participantIdentity}`,
-    })
+    axiosInstance.post(`${boardType}/${boardId}/lives/kick`, (
+      `${participantIdentity}`
+    ))
       .then((res) => {
         console.log(res);
       })
@@ -93,7 +76,7 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
 
   const toggleGroup = (isFirst: boolean) => {
     setShowFirstGroup(() => isFirst);
-  }
+  };
 
   return (
     <div
@@ -122,7 +105,7 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                       rounded-2xl overflow-hidden
                     "
                 >
-                  <div 
+                  <div
                     className={`
                       participant-screen w-full h-full
                       ${tracks.video?.isMute && 'bg-black bg-opacity-40'}
@@ -134,6 +117,7 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                         <RoomVideo
                           key={videoTrackSid}
                           track={tracks!.video!.trackPublication.videoTrack!}
+                          participantName={tracks!.video!.participantName}
                           participantIdentity={participantIdentity}
                         />
                       )}
@@ -155,20 +139,21 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                           text-xl
                         "
                     >
-                      <div 
-                        className='
+                      <div
+                        className="
                           button-container 
                           flex justify-center items-center
                           opacity-0 hover:opacity-100 transition-all
                           w-full h-full 
-                        '
+                        "
                       >
                         <button
                           className={`
                             text-white text-3xl px-5 py-2 rounded ml-2 transition-all
-                            ${tracks.audio?.isMute ? 
-                              'bg-red-500 hover:bg-red-600' 
-                              : 'bg-yellow-500 hover:bg-yellow-600'
+                            ${
+                              tracks.audio?.isMute
+                                ? 'bg-red-500 hover:bg-red-600'
+                                : 'bg-yellow-500 hover:bg-yellow-600'
                             }
                           `}
                           onClick={() =>
@@ -180,14 +165,14 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                           }
                         >
                           {tracks.audio?.isMute ? <GoMute /> : <GoUnmute />}
-                          
                         </button>
                         <button
                           className={`
                             text-white text-3xl px-5 py-2 rounded ml-2 transition-all
-                            ${tracks.video?.isMute ? 
-                              'bg-red-500 hover:bg-red-600' 
-                              : 'bg-yellow-500 hover:bg-yellow-600'
+                            ${
+                              tracks.video?.isMute
+                                ? 'bg-red-500 hover:bg-red-600'
+                                : 'bg-yellow-500 hover:bg-yellow-600'
                             }
                           `}
                           onClick={() =>
@@ -198,7 +183,11 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
                             )
                           }
                         >
-                          {tracks.video?.isMute ? <IoVideocamOffOutline /> : <IoVideocamOutline />}
+                          {tracks.video?.isMute ? (
+                            <IoVideocamOffOutline />
+                          ) : (
+                            <IoVideocamOutline />
+                          )}
                         </button>
                         <button
                           className="bg-gray-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-gray-600"
@@ -233,4 +222,4 @@ export default function RoomRemoteTrack({ remoteTracks }: RoomRemoteTrackProps) 
       </div>
     </div>
   );
-};
+}

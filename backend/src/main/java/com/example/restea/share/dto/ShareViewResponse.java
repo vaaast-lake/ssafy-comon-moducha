@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class ShareViewResponse {
-    
+
     private final Integer boardId;
     private final String title;
     private final String content;
@@ -19,28 +19,13 @@ public class ShareViewResponse {
     private final Integer viewCount;
     private final String nickname;
     private final Integer userId;
-
-    public static ShareViewResponse of(ShareBoard shareBoard, Integer participants) {
-        return ShareViewResponse.builder()
-                .boardId(shareBoard.getId())
-                .title(shareBoard.getTitle())
-                .content(shareBoard.getContent())
-                .createdDate(shareBoard.getCreatedDate())
-                .lastUpdated(shareBoard.getLastUpdated())
-                .endDate(shareBoard.getEndDate())
-                .maxParticipants(shareBoard.getMaxParticipants())
-                .participants(participants)
-                .viewCount(shareBoard.getViewCount())
-                .nickname(shareBoard.getUser().getExposedNickname())
-                .userId(shareBoard.getUser().getId())
-                .build();
-    }
+    private final String picture;
 
     @Builder
     public ShareViewResponse(Integer boardId, String title, String content,
                              LocalDateTime createdDate, LocalDateTime lastUpdated, LocalDateTime endDate,
                              Integer maxParticipants, Integer participants, Integer viewCount,
-                             String nickname, Integer userId) {
+                             String nickname, Integer userId, String picture) {
 
         this.boardId = boardId;
         this.title = title;
@@ -53,6 +38,24 @@ public class ShareViewResponse {
         this.viewCount = viewCount;
         this.nickname = nickname;
         this.userId = userId;
+        this.picture = picture;
+    }
+
+    public static ShareViewResponse of(ShareBoard shareBoard, Integer participants, String picture) {
+        return ShareViewResponse.builder()
+                .boardId(shareBoard.getId())
+                .title(shareBoard.getTitle())
+                .content(shareBoard.getContent())
+                .createdDate(shareBoard.getCreatedDate())
+                .lastUpdated(shareBoard.getLastUpdated())
+                .endDate(shareBoard.getEndDate())
+                .maxParticipants(shareBoard.getMaxParticipants())
+                .participants(participants)
+                .viewCount(shareBoard.getViewCount())
+                .nickname(shareBoard.getUser().getExposedNickname())
+                .userId(shareBoard.getUser().getId())
+                .picture(picture)
+                .build();
     }
 
 }

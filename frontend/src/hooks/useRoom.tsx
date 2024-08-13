@@ -12,11 +12,13 @@ import {
 } from 'livekit-client';
 import { GroupedTracks, TrackKind } from '../types/WebRTCType';
 import { liveKitURL } from '../api/mediaServer';
+import { useNavigate } from 'react-router-dom';
 
 interface UseRoomProps {
   roomName: string;
   participantName: string;
   teatimeToken: string;
+  boardId: string;
 }
 
 interface Message {
@@ -24,7 +26,7 @@ interface Message {
   content: string;
 }
 
-export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProps) => {
+export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: UseRoomProps) => {
   const [room, setRoom] = useState<Room | undefined>(undefined);
   const [remoteTracks, setRemoteTracks] = useState<GroupedTracks>({});
   const [messages, setMessages] = useState<Message[]>([]);
@@ -32,6 +34,7 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
   const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
     undefined
   );
+  const navigate = useNavigate();
 
   const leaveRoom = useCallback(async () => {
     await room?.disconnect();
@@ -40,6 +43,7 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
     setMessages([]);
     setIsScreenSharing(false);
     setLocalTrack(undefined);
+    navigate(`/teatimes/${boardId}`)
   }, [room]);
 
   const setMuteInfo = useCallback(
@@ -49,12 +53,14 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
       publication: TrackPublication
     ): GroupedTracks => {
       const newGroupedTracks = { ...remoteTracks };
-      newGroupedTracks[participant.identity][publication.kind as TrackKind] = {
-        ...newGroupedTracks[participant.identity][
-          publication.kind as TrackKind
-        ],
-        isMute: publication.isMuted,
-      };
+      if(newGroupedTracks[participant.identity]) {
+        newGroupedTracks[participant.identity][publication.kind as TrackKind] = {
+          ...newGroupedTracks[participant.identity][
+            publication.kind as TrackKind
+          ],
+          isMute: publication.isMuted,
+        };
+      }
       return newGroupedTracks;
     },
     []
@@ -80,9 +86,17 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
               publication.kind as TrackKind
             ] = {
               participantIdentity: participant.identity,
+              participantName: participant.name,
               trackPublication: publication,
               isMute: publication.isMuted,
             };
+            console.log('*************************');
+            console.log('*************************');
+            console.log(participant);
+            console.log(publication);
+            console.log(newGroupedTracks);
+            console.log('*************************');
+            console.log('*************************');
             return newGroupedTracks;
           });
         }
@@ -106,7 +120,7 @@ export const useRoom = ({ roomName, participantName, teatimeToken }: UseRoomProp
         const message = decoder.decode(payload);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { sender: participant?.identity, content: message },
+          { sender: participant?.name, content: message },
         ]);
       })
       .on(RoomEvent.LocalTrackPublished, (publication) => {

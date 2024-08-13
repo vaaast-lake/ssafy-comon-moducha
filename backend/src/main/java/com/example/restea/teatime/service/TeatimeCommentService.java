@@ -45,7 +45,7 @@ public class TeatimeCommentService {
         Page<TeatimeComment> teatimeComments = getTeatimeComments(activatedTeatimeBoard, page, perPage);
         List<TeatimeCommentViewResponse> data = createResponseFromTeatimeComments(teatimeComments.getContent());
 
-        PaginationDTO pagination = PaginationDTO.of(teatimeComments.getTotalPages(), page, perPage);
+        PaginationDTO pagination = PaginationDTO.of((int) teatimeComments.getTotalElements(), page, perPage);
 
         return ResponseDTO.of(data, pagination);
     }

@@ -42,15 +42,14 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes = {ResteaApplication.class})
 @AutoConfigureMockMvc
 public class GetTeatimeReplyListTest {
-    protected MockMvc mockMvc;
-    protected ObjectMapper objectMapper;
     private final WebApplicationContext context;
     private final UserRepository userRepository;
     private final TeatimeBoardRepository teatimeBoardRepository;
     private final TeatimeCommentRepository teatimeCommentRepository;
     private final TeatimeReplyRepository teatimeReplyRepository;
     private final CustomOAuth2UserService customOAuth2UserService;
-
+    protected MockMvc mockMvc;
+    protected ObjectMapper objectMapper;
     private CustomOAuth2User customOAuth2User;
 
     @Autowired
@@ -90,7 +89,7 @@ public class GetTeatimeReplyListTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 

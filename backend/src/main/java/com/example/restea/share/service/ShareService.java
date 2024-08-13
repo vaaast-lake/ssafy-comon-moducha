@@ -81,7 +81,9 @@ public class ShareService {
 
         activatedShareBoard.addViewCount();
 
-        return ShareViewResponse.of(activatedShareBoard, participants);
+        String picture = activatedShareBoard.getUser().getPicture(); // 프로필 사진 가져오기
+
+        return ShareViewResponse.of(activatedShareBoard, participants, picture);
     }
 
     public ShareBoard getOnlyShareBoard(Integer shareBoardId) {

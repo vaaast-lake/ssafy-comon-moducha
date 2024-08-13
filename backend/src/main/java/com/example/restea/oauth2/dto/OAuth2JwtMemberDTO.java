@@ -9,5 +9,6 @@ public class OAuth2JwtMemberDTO {
 
     private Integer userId;
     private String nickname;
+    private String picture;
     private String role;
 }

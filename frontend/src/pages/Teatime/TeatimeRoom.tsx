@@ -7,7 +7,11 @@ import RoomVideoAudioTracks from './components/RoomVideoAudioTracks';
 import RoomChatting from './components/RoomChatting';
 
 export default function TeatimeRoom() {
-  const location = useLocation();
+  const { state: {
+    roomName,
+    boardId,
+    boardType
+  }} = useLocation();
   const { userName, teatimeToken } = useAuthStore((state) => ({
     userName: state.currentUsername,
     teatimeToken: state.teatimeToken,
@@ -22,20 +26,27 @@ export default function TeatimeRoom() {
     setMessages,
     leaveRoom,
   } = useRoom({
-    roomName: location.state.roomName,
+    roomName,
     participantName: userName,
     teatimeToken,
+    boardId
   });
 
   useEffect(() => {
     joinRoom();
   }, []);
 
+  const apiData = {
+    roomName,
+    boardId,
+    boardType
+  }
+
   return (
     <div className="room-wrapper grid grid-cols-12">
       {room && (
         <div id="room" className="lg:col-span-8 lg:col-start-3 col-span-12">
-          <RoomHeader roomName={location.state.roomName} />
+          <RoomHeader roomName={roomName} />
           <div
             className="
               room-container 
@@ -49,6 +60,7 @@ export default function TeatimeRoom() {
               remoteTracks={remoteTracks}
               participantName={userName}
               leaveRoom={leaveRoom}
+              apiData={apiData}
             />
             <RoomChatting
               room={room}

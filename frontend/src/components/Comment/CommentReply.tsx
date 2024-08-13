@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import CommentListItem from './CommentListItem';
-import { fetchReplyList } from '../../api/fetchComment';
 import { BoardType } from '../../types/BoardType';
-import { Comment, CommentReplyType } from '../../types/CommentType';
+import { CommentReplyType } from '../../types/CommentType';
 import CommentReplyWrite from './CommentReplyWrite';
+import useFetchReplyList from '../../hooks/useFetchReplyList';
 
 interface ReplyType {
   isReplyWrite: boolean;
@@ -19,24 +19,18 @@ const CommentReply = ({
   isReplyWrite,
   boardType,
   boardId,
+  replyCount,
   commentId,
   currentUserId,
 }: ReplyType) => {
-  const [replyList, setReplyList] = useState<Comment[]>([]);
-  const [fetchParams, setFetchParams] = useState({
-    boardType: boardType,
+  const sentinel = useRef(null);
+  const { replyList, setReplyList } = useFetchReplyList(
+    boardType,
     boardId,
     commentId,
-    page: 1,
-    perPage: 10,
-  });
-
-  useEffect(() => {
-    fetchReplyList(fetchParams).then((res) => {
-      setReplyList(res.data.data);
-    });
-  }, [fetchParams]);
-
+    replyCount,
+    sentinel
+  );
   return (
     <ul id="reply-list">
       {isReplyWrite && (
@@ -64,6 +58,7 @@ const CommentReply = ({
           </div>
         </li>
       ))}
+      <div className="h-0.5" ref={sentinel} />
     </ul>
   );
 };

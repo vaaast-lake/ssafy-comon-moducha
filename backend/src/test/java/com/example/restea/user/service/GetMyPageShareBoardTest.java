@@ -124,7 +124,7 @@ public class GetMyPageShareBoardTest {
     // mockMvc에서 @AuthenticaionPrincipal CustomOAuth2User를 사용하기 위한 세팅
     @BeforeEach
     void OAuth2UserSetup() {
-        CustomOAuth2User customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken");
+        CustomOAuth2User customOAuth2User = customOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
         testUser = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));

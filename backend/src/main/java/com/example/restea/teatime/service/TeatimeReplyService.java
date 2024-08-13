@@ -48,7 +48,7 @@ public class TeatimeReplyService {
         Page<TeatimeReply> teatimeReplies = getTeatimeReplies(teatimeComment, page, perPage);
         List<TeatimeReplyViewResponse> data = createResponseFromTeatimeReplies(teatimeReplies.getContent());
 
-        PaginationDTO pagination = PaginationDTO.of(teatimeReplies.getTotalPages(), page, perPage);
+        PaginationDTO pagination = PaginationDTO.of((int) teatimeReplies.getTotalElements(), page, perPage);
 
         return ResponseDTO.of(data, pagination);
     }

@@ -1,20 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ShareListCard from './ShareListCard';
-import { fetchArticleList } from '../../../api/fetchArticle';
+import useFetchList from '../../../hooks/useFetchList';
 import { ShareListItem } from '../../../types/ShareType';
 const ShareList = ({ ...props }) => {
-  const [shareList, setShareList] = useState<ShareListItem[]>([]);
-  useEffect(() => {
-    fetchArticleList({
-      boardType: 'shares',
-      sort: 'latest',
-      page: 1,
-      perPage: 4,
-    }).then((res) => {
-      setShareList(res.data.data);
-    });
-  }, []);
+  const { articleList: shareList }: { articleList: ShareListItem[] } =
+    useFetchList('shares', 4);
   return (
     <section {...props}>
       <header className="flex justify-between items-center">

@@ -1,6 +1,5 @@
 package com.example.restea.user.service;
 
-import static com.example.restea.oauth2.enums.TokenType.ACCESS;
 import static com.example.restea.oauth2.enums.TokenType.BEARER;
 import static com.example.restea.oauth2.enums.TokenType.REFRESH;
 import static com.example.restea.user.enums.UserMessage.USER_ALREADY_WITHDRAWN;
@@ -34,7 +33,6 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private static final Long MS_TO_S = 1000L;
     private static final String GOOGLE_REVOKE_URL = "https://accounts.google.com/o/oauth2/revoke?token=";
 
     private final UserRepository userRepository;
@@ -69,6 +67,7 @@ public class UserService {
     }
 
     private void performUserDeactivation(User user) {
+        user.changeDeactivatedPicture(); // 프로필 사진 삭제
         deleteRecords(user); // 기록 삭제
         deleteParticipants(user); // 참여기록 clear 및 삭제
         revokeRefreshToken(user); // RefreshToken를 지운 후 Revoke 처리
@@ -197,14 +196,10 @@ public class UserService {
     public String getAccessToken(User user) {
         Integer userId = user.getId();
         String nickname = user.getNickname();
+        String picture = user.getPicture();
         String role = user.getRole().name();
 
-        return createAccessToken(userId, nickname, role);
-    }
-
-    private String createAccessToken(Integer userId, String nickname, String role) {
-        return BEARER.getType() + jwtUtil.createJwt(ACCESS.getType(), userId, nickname, role,
-                ACCESS.getExpiration() * MS_TO_S);
+        return BEARER.getType() + jwtUtil.createAccessToken(userId, nickname, picture, role);
     }
 
     /**
@@ -216,15 +211,12 @@ public class UserService {
     public Cookie getRefreshToken(User user) {
         Integer userId = user.getId();
         String nickname = user.getNickname();
+        String picture = user.getPicture();
         String role = user.getRole().name();
 
-        String refreshToken = createRefreshToken(userId, nickname, role);
-        refreshTokenService.addRefreshToken(user, refreshToken, REFRESH.getExpiration() * MS_TO_S);
+        String refreshToken = jwtUtil.createRefreshToken(userId, nickname, picture, role);
+        refreshTokenService.addRefreshToken(user, refreshToken);
 
         return cookieMethods.createCookie(REFRESH.getType(), refreshToken);
-    }
-
-    private String createRefreshToken(Integer userId, String nickname, String role) {
-        return jwtUtil.createJwt(REFRESH.getType(), userId, nickname, role, REFRESH.getExpiration() * MS_TO_S);
     }
 }

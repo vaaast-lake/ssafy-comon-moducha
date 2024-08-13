@@ -20,8 +20,9 @@ public class TeatimeViewResponse {
     private final Integer viewCount;
     private final String nickname;
     private final Integer userId;
+    private final String picture;
 
-    public static TeatimeViewResponse of(TeatimeBoard teatimeBoard, Integer participants) {
+    public static TeatimeViewResponse of(TeatimeBoard teatimeBoard, Integer participants, String picture) {
         return TeatimeViewResponse.builder()
                 .boardId(teatimeBoard.getId())
                 .title(teatimeBoard.getTitle())
@@ -35,6 +36,7 @@ public class TeatimeViewResponse {
                 .viewCount(teatimeBoard.getViewCount())
                 .nickname(teatimeBoard.getUser().getExposedNickname())
                 .userId(teatimeBoard.getUser().getId())
+                .picture(picture)
                 .build();
     }
 }

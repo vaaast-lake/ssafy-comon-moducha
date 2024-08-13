@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -73,6 +74,7 @@ class LiveServiceTest {
     private User createUser(int id) {
         User user = User.builder().build();
         ReflectionTestUtils.setField(user, "id", id);
+        ReflectionTestUtils.setField(user, "activated", true);
         return user;
     }
 
@@ -104,8 +106,8 @@ class LiveServiceTest {
     void isLiveOpenSuccess(boolean liveExists) throws Exception {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
-        when(teatimeBoardRepository.findById(1)).thenReturn(Optional.of(testTeatimeBoard));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(1, true)).thenReturn(Optional.of(testTeatimeBoard));
         when(liveRepository.existsByTeatimeBoard(testTeatimeBoard)).thenReturn(liveExists);
 
         // When
@@ -120,7 +122,8 @@ class LiveServiceTest {
     void isLiveOpenFailTeatimeBoardNotFound() {
 
         // Given
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(Optional.empty());
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
@@ -134,13 +137,15 @@ class LiveServiceTest {
     void isLiveOpenFailTeatimeBoardNotActivated() {
 
         // Given
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard2));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard2));
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
                 liveService.isLiveOpen(10, 1));
 
-        assertEquals("404 NOT_FOUND \"TeatimeBoard not activated.\"", exception.getMessage());
+        assertEquals("400 BAD_REQUEST \"TeatimeBoard not activated.\"", exception.getMessage());
     }
 
     @Test
@@ -148,8 +153,9 @@ class LiveServiceTest {
     void isLiveOpenFailNotTeatimeBoardParticipant() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser2);
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser2));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard));
         when(teatimeParticipantRepository.existsByTeatimeBoardAndUser(testTeatimeBoard, testUser2))
                 .thenReturn(false);
 
@@ -165,8 +171,9 @@ class LiveServiceTest {
     void createLiveSuccess() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard));
         when(liveRepository.save(any(Live.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
@@ -184,7 +191,8 @@ class LiveServiceTest {
     void createLiveFailTeatimeBoardNotFound() {
 
         // Given
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(Optional.empty());
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
@@ -198,13 +206,15 @@ class LiveServiceTest {
     void createLiveFailTeatimeBoardNotActivated() {
 
         // Given
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard2));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard2));
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
                 liveService.createLive(10, 1));
 
-        assertEquals("404 NOT_FOUND \"TeatimeBoard not activated.\"", exception.getMessage());
+        assertEquals("400 BAD_REQUEST \"TeatimeBoard not activated.\"", exception.getMessage());
     }
 
     @Test
@@ -212,8 +222,9 @@ class LiveServiceTest {
     void createLiveFailNotTeatimeBoardWriter() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser2);
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser2));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard));
 
         // When $ Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
@@ -227,9 +238,10 @@ class LiveServiceTest {
     void createLiveFailBeforeBroadcastDate() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
         ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusMinutes(5));
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard));
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
@@ -243,9 +255,9 @@ class LiveServiceTest {
     void createLiveFailDifferentBroadcastDate() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
         ReflectionTestUtils.setField(testTeatimeBoard, "broadcastDate", LocalDateTime.now().plusDays(5));
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(teatimeBoardRepository.findByIdAndActivated(1, true)).thenReturn(Optional.of(testTeatimeBoard));
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
@@ -259,14 +271,16 @@ class LiveServiceTest {
     void liveJoinSuccess() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
         Live live = Live.builder()
                 .teatimeBoard(testTeatimeBoard)
                 .build();
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard));
         when(liveRepository.findByTeatimeBoard(any(TeatimeBoard.class))).thenReturn(Optional.of(live));
 
         // When
+
         AccessToken token = liveService.liveJoin(testTeatimeBoard.getId(), 1);
 
         // Then
@@ -280,7 +294,8 @@ class LiveServiceTest {
     void liveJoinFailTeatimeBoardNotFound() {
 
         // Given
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.empty());
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(Optional.empty());
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
@@ -294,13 +309,15 @@ class LiveServiceTest {
     void liveJoinFailTeatimeBoardNotActivated() {
 
         // Given
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard2));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard2));
 
         // When & Then
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () ->
                 liveService.liveJoin(10, 1));
 
-        assertEquals("404 NOT_FOUND \"TeatimeBoard not activated.\"", exception.getMessage());
+        assertEquals("400 BAD_REQUEST \"TeatimeBoard not activated.\"", exception.getMessage());
     }
 
     @Test
@@ -308,8 +325,9 @@ class LiveServiceTest {
     void liveJoinFailNotTeatimeBoardParticipant() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser2);
-        when(teatimeBoardRepository.findById(anyInt())).thenReturn(Optional.of(testTeatimeBoard));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser2));
+        when(teatimeBoardRepository.findByIdAndActivated(anyInt(), anyBoolean())).thenReturn(
+                Optional.of(testTeatimeBoard));
         when(teatimeParticipantRepository.existsByTeatimeBoardAndUser(testTeatimeBoard, testUser2))
                 .thenReturn(false);
 
@@ -325,8 +343,8 @@ class LiveServiceTest {
     void liveJoinFailLiveNotFound() {
 
         // Given
-        when(userRepository.getReferenceById(anyInt())).thenReturn(testUser);
-        when(teatimeBoardRepository.findById(1)).thenReturn(Optional.of(testTeatimeBoard));
+        when(userRepository.findById(anyInt())).thenReturn(Optional.of(testUser));
+        when(teatimeBoardRepository.findByIdAndActivated(1, true)).thenReturn(Optional.of(testTeatimeBoard));
         when(liveRepository.findByTeatimeBoard(testTeatimeBoard)).thenReturn(Optional.empty());
 
         // When & Then
