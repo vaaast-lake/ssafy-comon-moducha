@@ -42,13 +42,14 @@ const ArticleCard = ({
           )}
         </div>
       </div>
-      <ApplyButton {...{ boardId, boardType, isEnded, isLoggedIn }} />
-      {boardType === 'teatimes' && (
+      {boardType === 'teatimes' ? (
         <TeatimeButton
-          title={title}
-          boardType={boardType}
-          nickname={nickname}
+        title={title}
+        boardType={boardType}
+        nickname={nickname}
         />
+      ) : (
+        <ApplyButton {...{ boardId, boardType, isEnded, isLoggedIn }} />
       )}
     </div>
   );
