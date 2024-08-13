@@ -31,7 +31,6 @@ public class ShareReplyController {
 
     private final ShareReplyService shareReplyService;
 
-    // GET /api/v1/shares/{share_board_id}/comments/{share_comment_id}/replies
     @GetMapping("/replies")
     public ResponseEntity<ResponseDTO<?>> getShareReplyList(
             @PathVariable("shareBoardId") Integer shareBoardId,
@@ -39,6 +38,7 @@ public class ShareReplyController {
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
+        // TODO : emtpy list
         ResponseDTO<List<ShareReplyViewResponse>> result
                 = shareReplyService.getShareReplyList(shareBoardId, shareCommentId, page, perPage);
 
@@ -46,7 +46,6 @@ public class ShareReplyController {
                 .body(result);
     }
 
-    // POST /api/v1/shares/{share_board_id}/comments/{share_comment_id}/replies
     @PostMapping("/replies")
     public ResponseEntity<ResponseDTO<?>> createShareReply(
             @PathVariable("shareBoardId") Integer shareBoardId,
@@ -62,7 +61,6 @@ public class ShareReplyController {
                 .body(ResponseDTO.from(result));
     }
 
-    // PATCH /api/v1/shares/{share_board_id}/comments/{share_comment_id}/deactivated-replies/{share_reply_id}
     @PatchMapping("/deactivated-replies/{shareReplyId}")
     public ResponseEntity<ResponseDTO<?>> deactivateShareReply(
             @PathVariable("shareBoardId") Integer shareBoardId,

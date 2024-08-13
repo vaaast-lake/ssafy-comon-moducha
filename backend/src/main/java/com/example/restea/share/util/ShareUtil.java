@@ -8,7 +8,9 @@ import static com.example.restea.user.enums.UserMessage.USER_NOT_FOUND;
 
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareComment;
+import com.example.restea.share.entity.ShareParticipant;
 import com.example.restea.share.entity.ShareReply;
+import com.example.restea.share.enums.ShareParticipantMessage;
 import com.example.restea.share.repository.ShareBoardRepository;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
@@ -63,6 +65,14 @@ public class ShareUtil {
                 .findFirst()
                 .orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, SHARE_REPLY_NOT_FOUND.getMessage()));
+    }
+
+    public static ShareParticipant getShareParticipant(User activatedUser, ShareBoard shareBoard) {
+        return shareBoard.getShareParticipants().stream()
+                .filter(participant -> Objects.equals(participant.getUser(), activatedUser))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, ShareParticipantMessage.SHARE_PARTICIPANT_NOT_FOUND.getMessage()));
     }
 
 }

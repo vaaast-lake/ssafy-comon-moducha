@@ -19,10 +19,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,6 +66,16 @@ public class GetShareBoardListTest {
         this.shareParticipantRepository = shareParticipantRepository;
     }
 
+    private static Stream<Arguments> ValidParameter() {
+        return Stream.of(
+                // String testName, int num, String sort, String perPage, String page
+                Arguments.of("게시글이 0개, 페이지 당 5개, 1page", 0, "5", "1"),
+                Arguments.of("게시글이 10개, 페이지 당 5개, 1page", 10, "5", "1"),
+                Arguments.of("게시글이 10개, 페이지 당 3개, 2page", 10, "3", "2"),
+                Arguments.of("게시글이 50개, 페이지 당 12개, 3page", 50, "12", "3")
+        );
+    }
+
     // nickname : "TestUser", authId : "authId", authToken : "authToken"
     @Transactional
     @BeforeEach
@@ -85,7 +99,7 @@ public class GetShareBoardListTest {
         userRepository.deleteAll();
     }
 
-    @DisplayName("getShareBoardList : 나눔 게시판 목록 조회 성공.")
+    @DisplayName("getShareBoardList : 나눔 게시판 목록 조회 성공 - perPage가 10일")
     @Test
     public void getShareBoardList_10_Success() throws Exception {
         // given
@@ -130,6 +144,121 @@ public class GetShareBoardListTest {
 //                    .andExpect(jsonPath("$.data[" + i + "].endDate").value(shareBoards.get(9 - i).getEndDate()))
                     .andExpect(jsonPath("$.data[" + i + "].maxParticipants").value(
                             shareBoards.get(9 - i).getMaxParticipants()))
+                    .andExpect(jsonPath(("$.data[" + i + "].participants")).value(0))
+                    .andExpect(jsonPath(("$.data[" + i + "].nickname")).value(user.getNickname()))
+                    .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
+        }
+    }
+
+    @DisplayName("getShareBoardList : 나눔 게시판 목록 조회 성공 - sort가 latest일 때")
+    @ParameterizedTest(name = "i{index} : {0}")
+    @MethodSource("ValidParameter")
+    public void getShareBoardList_latest_Success(String testName, int num, String perPage, String page)
+            throws Exception {
+        // given
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+        List<ShareBoard> shareBoards = new ArrayList<>();
+        for (int i = 0; i < num; i++) {
+            final String title = "Title" + i;
+            final String content = "Content" + i;
+            final Integer maxParticipants = 10 + i;
+            final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L + i);
+            shareBoards.add(shareBoardRepository.save(ShareBoard.builder()
+                    .title(title)
+                    .content(content)
+                    .maxParticipants(maxParticipants)
+                    .endDate(endDate)
+                    .user(user)
+                    .build()));
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        final String url = "/api/v1/shares";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "latest")
+                .param("perPage", perPage)
+                .param("page", page)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        int leftover = num - (Integer.parseInt(page) - 1) * Integer.parseInt(perPage);
+        int end = Math.min(leftover, Integer.parseInt(perPage));
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.data.length()").value(end));
+        for (int i = 0; i < end; i++) {
+            resultActions.andExpect(
+                            jsonPath("$.data[" + i + "].boardId").value(shareBoards.get(leftover - 1 - i).getId()))
+                    .andExpect(jsonPath("$.data[" + i + "].title").value(shareBoards.get(leftover - 1 - i).getTitle()))
+                    .andExpect(
+                            jsonPath("$.data[" + i + "].content").value(shareBoards.get(leftover - 1 - i).getContent()))
+//                    .andExpect(jsonPath("$.data[" + i + "].endDate").value(shareBoards.get(9 - i).getEndDate()))
+                    .andExpect(jsonPath("$.data[" + i + "].maxParticipants").value(
+                            shareBoards.get(leftover - 1 - i).getMaxParticipants()))
+                    .andExpect(jsonPath(("$.data[" + i + "].participants")).value(0))
+                    .andExpect(jsonPath(("$.data[" + i + "].nickname")).value(user.getNickname()))
+                    .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
+        }
+    }
+
+    @DisplayName("getShareBoardList : 나눔 게시판 목록 조회 성공 - sort가 urgent일 때")
+    @ParameterizedTest(name = "i{index} : {0}")
+    @MethodSource("ValidParameter")
+    public void getShareBoardList_urgent_Success(String testName, int num, String perPage, String page)
+            throws Exception {
+        // given
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
+
+        List<ShareBoard> shareBoards = new ArrayList<>();
+        for (int i = 0; i < num; i++) {
+            final String title = "Title" + i;
+            final String content = "Content" + i;
+            final Integer maxParticipants = 10 + i;
+            final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L + i);
+            shareBoards.add(shareBoardRepository.save(ShareBoard.builder()
+                    .title(title)
+                    .content(content)
+                    .maxParticipants(maxParticipants)
+                    .endDate(endDate)
+                    .user(user)
+                    .build()));
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        final String url = "/api/v1/shares";
+
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "urgent")
+                .param("perPage", perPage)
+                .param("page", page)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        int precedingElement = (Integer.parseInt(page) - 1) * Integer.parseInt(perPage);
+        int end = Math.min(num - precedingElement, Integer.parseInt(perPage));
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.data.length()").value(end));
+        for (int i = 0; i < end; i++) {
+            resultActions.andExpect(
+                            jsonPath("$.data[" + i + "].boardId").value(shareBoards.get(precedingElement + i).getId()))
+                    .andExpect(
+                            jsonPath("$.data[" + i + "].title").value(shareBoards.get(precedingElement + i).getTitle()))
+                    .andExpect(jsonPath("$.data[" + i + "].content").value(
+                            shareBoards.get(precedingElement + i).getContent()))
+//                    .andExpect(jsonPath("$.data[" + i + "].endDate").value(shareBoards.get(9 - i).getEndDate()))
+                    .andExpect(jsonPath("$.data[" + i + "].maxParticipants").value(
+                            shareBoards.get(precedingElement + i).getMaxParticipants()))
                     .andExpect(jsonPath(("$.data[" + i + "].participants")).value(0))
                     .andExpect(jsonPath(("$.data[" + i + "].nickname")).value(user.getNickname()))
                     .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
@@ -186,10 +315,6 @@ public class GetShareBoardListTest {
                     .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
         }
     }
-    // TODO : 나눔 게시판이 1개일 때 (최신 순)
-    // TODO : 아무런 나눔 게시판이 없을 때 (최신 순)
-    // TODO : 활성화된 나눔 게시판이 없을 때 (최신 순)
-    // TODO : endDate가 지난 나눔 게시판만 있을 때 (최신 순)
 
     @DisplayName("getShareBoardList : 나눔 게시판 목록 조회 성공 - perPage가 5일 때 (임박 순)")
     @Test
@@ -242,23 +367,81 @@ public class GetShareBoardListTest {
         }
     }
 
-    // TODO : 일부 endDate가 지난 나눔 게시판이 있을 때 (임박 순)
-    // TODO : 나눔 게시판이 1개일 때 (임박 순)
-    // TODO : 아무런 나눔 게시판이 없을 때 (임박 순)
-    // TODO : 활성화된 나눔 게시판이 없을 때 (임박 순)
-    // TODO : endDate가 지난 나눔 게시판만 있을 때 (임박 순)
+    @DisplayName("getShareBoardList : 나눔 게시판 목록 조회 성공 - perPage가 10일(title)")
+    @Test
+    public void search_Success() throws Exception {
+        // given
+        User user = userRepository.findByAuthIdAndActivated("authId", true)
+                .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
 
-    // TODO : sort가 null일 때
-    // TODO : sort가 latest 또는 urgent가 아닐 때
+        List<ShareBoard> shareBoards = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            final String title = "Title" + i;
+            final String content = "Content" + i;
+            final Integer maxParticipants = 10 + i;
+            final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L + i);
+            shareBoards.add(shareBoardRepository.save(ShareBoard.builder()
+                    .title(title)
+                    .content(content)
+                    .maxParticipants(maxParticipants)
+                    .endDate(endDate)
+                    .user(user)
+                    .build()));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        final String url = "/api/v1/shares";
 
-    // TODO : perPage 음수
-    // TODO : perPage 0
-    // TODO : perPage가 9999일 때
-    // TODO : perPage가 null일 때
+        // when
+        ResultActions resultActions = mockMvc.perform(get(url)
+                .param("sort", "latest")
+                .param("perPage", "10")
+                .param("page", "1")
+                .param("searchBy", "title")
+                .param("keyword", "Title")
+                .contentType(MediaType.APPLICATION_JSON));
 
-    // TODO : page가 음수일 때
-    // TODO : page가 0일 때
-    // TODO : page가 9999일 때
-    // TODO : page가 null일 때
+        // then
+        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(jsonPath("$.data.length()").value(10));
+        for (int i = 0; i < 10; i++) {
+            resultActions.andExpect(jsonPath("$.data[" + i + "].boardId").value(shareBoards.get(9 - i).getId()))
+                    .andExpect(jsonPath("$.data[" + i + "].title").value(shareBoards.get(9 - i).getTitle()))
+                    .andExpect(jsonPath("$.data[" + i + "].content").value(shareBoards.get(9 - i).getContent()))
+//                    .andExpect(jsonPath("$.data[" + i + "].endDate").value(shareBoards.get(9 - i).getEndDate()))
+                    .andExpect(jsonPath("$.data[" + i + "].maxParticipants").value(
+                            shareBoards.get(9 - i).getMaxParticipants()))
+                    .andExpect(jsonPath(("$.data[" + i + "].participants")).value(0))
+                    .andExpect(jsonPath(("$.data[" + i + "].nickname")).value(user.getNickname()))
+                    .andExpect(jsonPath("$.data[" + i + "].viewCount").value(0));
+        }
+    }
+
+    //  나눔 게시판이 1개일 때 (최신 순)
+    //  아무런 나눔 게시판이 없을 때 (최신 순)
+    //  활성화된 나눔 게시판이 없을 때 (최신 순)
+    //  endDate가 지난 나눔 게시판만 있을 때 (최신 순)
+
+    //  일부 endDate가 지난 나눔 게시판이 있을 때 (임박 순)
+    //  나눔 게시판이 1개일 때 (임박 순)
+    //  아무런 나눔 게시판이 없을 때 (임박 순)
+    //  활성화된 나눔 게시판이 없을 때 (임박 순)
+    //  endDate가 지난 나눔 게시판만 있을 때 (임박 순)
+
+    //  sort가 null일 때
+    //  sort가 latest 또는 urgent가 아닐 때
+
+    //  perPage 음수
+    //  perPage 0
+    //  perPage가 9999일 때
+    //  perPage가 null일 때
+
+    //  page가 음수일 때
+    //  page가 0일 때
+    //  page가 9999일 때
+    //  page가 null일 때
 
 }

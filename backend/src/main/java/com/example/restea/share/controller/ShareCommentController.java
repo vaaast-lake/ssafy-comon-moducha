@@ -51,6 +51,7 @@ public class ShareCommentController {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(result);
         }
 
+        // TODO : emtpy list
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
     }

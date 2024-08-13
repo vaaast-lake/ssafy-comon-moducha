@@ -1,5 +1,9 @@
 package com.example.restea.share.service;
 
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_KEYWORD;
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_SEARCH_BY;
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_INVALID_SORT;
+import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_LESS_THAN_CURRENT_PARTICIPANTS;
 import static com.example.restea.share.enums.ShareBoardMessage.SHARE_BOARD_NOT_WRITER;
 import static com.example.restea.share.util.ShareUtil.getActivatedShareBoard;
 
@@ -14,12 +18,12 @@ import com.example.restea.share.dto.ShareViewResponse;
 import com.example.restea.share.entity.ShareBoard;
 import com.example.restea.share.entity.ShareReply;
 import com.example.restea.share.repository.ShareBoardRepository;
+import com.example.restea.share.repository.ShareBoardSearchRepository;
 import com.example.restea.share.repository.ShareParticipantRepository;
 import com.example.restea.share.util.ShareUtil;
 import com.example.restea.user.entity.User;
 import com.example.restea.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +31,6 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,17 +42,25 @@ public class ShareService {
     private final ShareBoardRepository shareBoardRepository;
     private final UserRepository userRepository;
     private final ShareParticipantRepository shareParticipantRepository;
+    private final ShareBoardSearchRepository shareBoardSearchRepository;
 
     @Transactional
-    public Map<String, Object> getShareBoardList(String sort, Integer page, Integer perPage) {
+    public Map<String, Object> getShareBoardList(
+            String sort, Integer page, Integer perPage, String searchBy, String keyword) {
+
+        checkSort(sort);
+        if (searchBy != null || keyword != null) {
+            checkSearchBy(searchBy);
+            checkKeyword(keyword);
+        }
 
         // data
-        Page<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage); // 아직 기간이 지나지 않고 활성화된 게시글
+        Page<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage, searchBy,
+                keyword); // 아직 기간이 지나지 않고 활성화된 게시글
         List<ShareListResponse> data = createResponseFormShareBoards(shareBoards.getContent());
-        Long count = calculateCount(sort); // latest, urgent 처리방식에 따라 달라질 수 있음
 
         // pagination info
-        PaginationDTO pagination = PaginationDTO.of(count.intValue(), page, perPage);
+        PaginationDTO pagination = PaginationDTO.of((int) shareBoards.getTotalElements(), page, perPage);
 
         return Map.of("data", data, "pagination", pagination);
     }
@@ -115,27 +125,32 @@ public class ShareService {
                 .build();
     }
 
-    private Long calculateCount(String sort) {
-        return switch (sort) {
-            case "latest" -> shareBoardRepository.countByActivated(true);
-            case "urgent" -> shareBoardRepository.countByActivatedAndEndDateAfter(true, LocalDateTime.now());
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
-        };
+    private void checkSort(String sort) {
+        if (!List.of("urgent", "latest").contains(sort)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_SORT.getMessage());
+        }
     }
 
-    private @NotNull Page<ShareBoard> getActivatedShareBoards(String sort, Integer page, Integer perPage) {
-
-        Page<ShareBoard> shareBoards = switch (sort) {
-            case "latest" -> shareBoardRepository.findAllByActivated(true,
-                    PageRequest.of(page - 1, perPage, Sort.by("createdDate").descending()));
-            case "urgent" -> shareBoardRepository.findAllByActivatedAndEndDateAfter(true, LocalDateTime.now(),
-                    PageRequest.of(page - 1, perPage, Sort.by("endDate").ascending()));
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid sort");
-        };
-        if (shareBoards.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "ShareBoard not found");
+    private void checkSearchBy(String searchBy) {
+        if (searchBy == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_SEARCH_BY.getMessage());
         }
-        return shareBoards;
+        if (!List.of("title", "content", "writer").contains(searchBy)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_SEARCH_BY.getMessage());
+        }
+    }
+
+    private void checkKeyword(String keyword) {
+        if (keyword == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, SHARE_BOARD_INVALID_KEYWORD.getMessage());
+        }
+    }
+
+    private @NotNull Page<ShareBoard> getActivatedShareBoards(
+            String sort, Integer page, Integer perPage, String searchBy, String keyword) {
+
+        return shareBoardSearchRepository.findAllBySortAndKeyword(
+                sort, page, perPage, searchBy, keyword);
     }
 
     private List<ShareListResponse> createResponseFormShareBoards(List<ShareBoard> shareBoards) {
@@ -157,7 +172,8 @@ public class ShareService {
         boolean isLessThanCurrentParticipants =
                 request.getMaxParticipants() < shareParticipantRepository.countByShareBoard(shareBoard);
         if (isLessThanCurrentParticipants) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 신청자보다 적은 인원으로 수정할 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    SHARE_BOARD_LESS_THAN_CURRENT_PARTICIPANTS.getMessage());
         }
     }
 

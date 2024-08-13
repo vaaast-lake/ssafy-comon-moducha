@@ -1,6 +1,6 @@
 package com.example.restea.share.controller;
 
-import com.example.restea.common.dto.PaginationAndSortingDto;
+import com.example.restea.common.dto.PaginationAndSearchDto;
 import com.example.restea.common.dto.PaginationDTO;
 import com.example.restea.common.dto.ResponseDTO;
 import com.example.restea.oauth2.dto.CustomOAuth2User;
@@ -10,9 +10,9 @@ import com.example.restea.share.dto.ShareUpdateRequest;
 import com.example.restea.share.dto.ShareUpdateResponse;
 import com.example.restea.share.service.ShareService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,11 +34,16 @@ public class ShareController {
 
     @GetMapping
     public ResponseEntity<ResponseDTO<?>> getShareBoardList(
-            @Valid @ModelAttribute PaginationAndSortingDto dto) {
+            @Valid @ModelAttribute PaginationAndSearchDto dto) {
 
-        Map<String, Object> result =
-                shareService.getShareBoardList(dto.getSort(), dto.getPage(), dto.getPerPage());
+        Map<String, Object> result = shareService.getShareBoardList(
+                dto.getSort(),
+                dto.getPage(),
+                dto.getPerPage(),
+                dto.getSearchBy(),
+                dto.getKeyword());
 
+        // TODO : emtpy list
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ResponseDTO.builder()
                         .data(result.get("data"))
@@ -47,8 +52,6 @@ public class ShareController {
     }
 
     @PostMapping
-//   TODO : @PreAuthorize 어노테이션을 사용하여 권한을 확인할 것
-//   @PreAuthorize("hasRole('USER', 'ADMIN')")
     public ResponseEntity<ResponseDTO<?>> createShareBoard(
             @Valid @RequestBody ShareCreationRequest request,
             @AuthenticationPrincipal CustomOAuth2User customOAuth2User) {
