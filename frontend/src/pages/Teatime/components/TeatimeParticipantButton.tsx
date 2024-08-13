@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTeatime } from '../../../hooks/useTeatime';
 import useAuthStore from '../../../stores/authStore';
+import ApplyModal from '../../../components/Modal/ApplyModal';
+import { useParams } from 'react-router-dom';
 
 interface TeatimeParticipantButtonProps {
   boardType: string;
@@ -15,9 +17,10 @@ export default function TeatimeParticipantButton({
     teatimeToken: state.teatimeToken,
     isLogin: state.isLoggedIn,
   }));
+  const { boardId } = useParams<{ boardId: string }>();
   const [isApplied, setIsApplied] = useState<boolean>(false);
   const [isRoomOpen, setIsRoomOpen] = useState<boolean>(false);
-  const { applyTeatime, startTeatime, teatimeIsOpen, teatimeIsApplied } =
+  const { startTeatime, teatimeIsOpen, teatimeIsApplied } =
     useTeatime(boardType, title);
 
   useEffect(() => {
@@ -38,10 +41,10 @@ export default function TeatimeParticipantButton({
       await startTeatime();
       setIsRoomOpen(true);
     } else {
-      await applyTeatime();
+      (document.getElementById('apply_modal') as HTMLDialogElement)?.showModal()
       setIsApplied(true);
     }
-  }
+  };
 
   const checkDisableButton = () => {
     if (!isLogin) return true;
@@ -58,14 +61,7 @@ export default function TeatimeParticipantButton({
       >
         {isApplied ? '티타임 시작하기' : '티타임 참여하기'}
       </button>
-      <form action="">
-        <label htmlFor="">이름</label>
-        <input type="text" />
-        <label htmlFor="">휴대전화</label>
-        <input type="tel" />
-        <label htmlFor="">주소</label>
-        <input type="text" />
-      </form>
+      <ApplyModal {...{ boardType, boardId: Number(boardId) }} />
     </>
   );
 }
