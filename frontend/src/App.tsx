@@ -16,6 +16,9 @@ import TeatimeRoom from './pages/Teatime/TeatimeRoom';
 import ErrorPage from './pages/Error/ErrorPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 // Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
 // 새로운 컴포넌트를 추가하려면 children에 등록해 주세요
@@ -87,8 +90,10 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
+    <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
       <ToastContainer />
+    </QueryClientProvider>
     </>
   );
 };
