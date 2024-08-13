@@ -1,9 +1,11 @@
 import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 import TeatimeButton from '../../pages/Teatime/components/TeatimeButton';
+import ApplyModal from '../Modal/ApplyModal';
 const ArticleCard = ({
   title,
   boardType,
+  boardId,
   nickname,
   createdDate,
   endDate,
@@ -11,10 +13,6 @@ const ArticleCard = ({
   participants,
   maxParticipants,
 }: ArticleDetail) => {
-  
-
-  const shareHandler = () => {};
-
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
       <figure
@@ -37,12 +35,19 @@ const ArticleCard = ({
         </div>
       </div>
       {boardType === 'shares' ? (
-        <button
-          onClick={shareHandler}
-          className="btn rounded bg-tea hover:bg-rose-400 text-white"
-        >
-          나눔 참여하기
-        </button>
+        <>
+          <button
+            onClick={() =>
+              (
+                document.getElementById('apply_modal') as HTMLDialogElement
+              )?.showModal()
+            }
+            className="btn rounded-sm font-bold bg-green-500 hover:bg-green-600 text-white"
+          >
+            나눔 참여하기
+          </button>
+          <ApplyModal {...{ boardType, boardId }} />
+        </>
       ) : (
         <TeatimeButton
           title={title}
