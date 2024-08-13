@@ -43,20 +43,6 @@ export const useTeatime = (
     navigate('/teatimes/room', { state: { roomName: `${title}`, boardId, boardType } });
   };
 
-  const applyTeatime = async () => {
-    await axiosInstance
-      .post(`${boardType}/${boardId}/participants`, {
-        name: `${userName}`,
-        phone: '010-1234-5678',
-        address: 'home address',
-      })
-      .then((res) => {
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const createRoomToken = async () => {
     await axiosInstance
       .post(`${boardType}/${boardId}/lives`)
@@ -91,5 +77,5 @@ export const useTeatime = (
     joinTeatime();
   };
 
-  return { applyTeatime, startTeatime, joinTeatime, teatimeIsOpen, teatimeIsApplied };
+  return { startTeatime, joinTeatime, teatimeIsOpen, teatimeIsApplied };
 };
