@@ -74,7 +74,7 @@ class ParticipateShareTest {
 
     @BeforeEach
     public void OAuth2UserSetup() {
-        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken");
+        customOAuth2User = custumOAuth2UserService.handleNewUser("authId", "authToken", "picture");
         SecurityTestUtil.setUpSecurityContext(customOAuth2User);
     }
 
@@ -306,7 +306,7 @@ class ParticipateShareTest {
 
 
     private ShareBoard createShareBoard(Integer maxParticipants) {
-        custumOAuth2UserService.handleNewUser("authId-writer", "authToken-writer");
+        custumOAuth2UserService.handleNewUser("authId-writer", "authToken-writer", "picture");
         User writer = userRepository.findByAuthIdAndActivated("authId-writer", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         final String title = "Title";
@@ -323,7 +323,8 @@ class ParticipateShareTest {
 
     private void createParticipant(ShareBoard shareBoard, int count) {
         for (int i = 0; i < count; i++) {
-            CustomOAuth2User customOAuth2User = custumOAuth2UserService.handleNewUser("authId" + i, "authToken" + i);
+            CustomOAuth2User customOAuth2User = custumOAuth2UserService.handleNewUser("authId" + i, "authToken" + i,
+                    "picture");
             User user = userRepository.findByAuthIdAndActivated("authId" + i, true)
                     .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
             shareParticipantRepository.save(ShareParticipant.builder()
