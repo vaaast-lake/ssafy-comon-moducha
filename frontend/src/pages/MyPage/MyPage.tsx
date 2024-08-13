@@ -1,4 +1,4 @@
-import Records from './components/MyRecords';
+// import Records from './components/MyRecords';
 import MyShares from './components/MyShares';
 import Teatimes from './components/MyTeatimes';
 import PrivacySetting from './components/PrivacySetting';
@@ -43,9 +43,10 @@ const MyPage = () => {
         </div>
 
         <div className="content">
-          {currentTab === 'myRecords' && <Records />}
           {currentTab === 'myTeatimes' && <Teatimes />}
           {currentTab === 'myShares' && <MyShares />}
+          {/* {currentTab === 'myRecords' && <Records />} */}
+          {/* 나의 기록 기능이 구현되지 않음 */}
           {currentTab === 'privacySetting' && <PrivacySetting />}
         </div>
       </MainLayout>

@@ -1,143 +1,69 @@
-import { useState, useEffect } from 'react';
-import getMyTeatimeWriteList from '../api/getMyTeatimeWriteList'; // API 호출 함수 import
-import getMyTeatimeParticipateList from '../api/getMyTeatimeParticipateList'; // API 호출 함수 import
+import React from 'react';
+import TeatimeListToggle from '../../Home/componenets/TeatimeListToggle';
+import { Link } from 'react-router-dom';
+import TeatimeListCard from '../../Home/componenets/TeatimeListCard';
+import { ChevronRightIcon } from '@heroicons/react/16/solid';
+import useFetchMyTeatimeList from '../../../hooks/useFetchMyTeatimeList';
+import { TeatimeListItem } from '../../../types/TeatimeType';
+import { Dispatch, SetStateAction } from 'react';
 
-const Teatimes = () => {
-  const [writeList, setWriteList] = useState<any[]>([]); // 사용자 작성 티타임 목록
-  const [participateList, setParticipateList] = useState<any[]>([]); // 사용자 참여 티타임 목록
-  const [writePagination, setWritePagination] = useState<any>({
-    total: 0,
-    page: 1,
-    perPage: 12,
-  });
-  const [participatePagination, setParticipatePagination] = useState<any>({
-    total: 0,
-    page: 1,
-    perPage: 12,
-  });
-  const [sort, setSort] = useState<'before' | 'ongoing'>('before'); // 티타임 상태 필터
-  const [writeError, setWriteError] = useState<string | null>(null); // 작성 티타임 오류
-  const [participateError, setParticipateError] = useState<string | null>(null); // 참여 티타임 오류
+const TeatimeList = (props: React.HTMLProps<HTMLElement>) => {
+  interface TeatimeFetch {
+    articleList: TeatimeListItem[];
+    sort: string;
+    setSort: Dispatch<SetStateAction<string>>;
+    pageData: {
+      page: number;
+      totalPage: number;
+      setPage: Dispatch<SetStateAction<number>>;
+    };
+    isLoading: boolean;
+  }
 
-  // 티타임 작성 목록 조회
-  const fetchMyTeatimeWriteList = async () => {
-    try {
-      const response = await getMyTeatimeWriteList({
-        page: writePagination.page,
-        perPage: writePagination.perPage,
-      });
-      setWriteList(response.data.items);
-      setWritePagination(response.data.pagination);
-      setWriteError(null); // 성공 시 오류 초기화
-    } catch (error) {
-      console.error('Error fetching my teatime write list:', error);
-      setWriteError('작성한 티타임 목록을 가져오는 데 문제가 발생했습니다.');
-    }
-  };
+  const {
+    articleList: teatimeList,
+    sort,
+    setSort,
+    pageData,
+    isLoading,
+  }: TeatimeFetch = useFetchMyTeatimeList('teatimes', 12);
 
-  // 티타임 참여 목록 조회
-  const fetchMyTeatimeParticipateList = async () => {
-    try {
-      const response = await getMyTeatimeParticipateList({
-        sort,
-        page: participatePagination.page,
-        perPage: participatePagination.perPage,
-      });
-      setParticipateList(response.data.items);
-      setParticipatePagination(response.data.pagination);
-      setParticipateError(null); // 성공 시 오류 초기화
-    } catch (error) {
-      console.error('Error fetching my teatime participate list:', error);
-      setParticipateError(
-        '참여한 티타임 목록을 가져오는 데 문제가 발생했습니다.'
-      );
-    }
-  };
-
-  // 컴포넌트 마운트 시 작성 티타임 목록 조회
-  useEffect(() => {
-    fetchMyTeatimeWriteList();
-  }, [writePagination.page, writePagination.perPage]);
-
-  // 상태 변경 시 참여 티타임 목록 조회
-  useEffect(() => {
-    fetchMyTeatimeParticipateList();
-  }, [sort, participatePagination.page, participatePagination.perPage]);
+  if (isLoading) {
+    return <div>로딩 중...</div>; // 로딩 중일 때 표시할 컴포넌트
+  }
 
   return (
-    <div>
-      <h1 className="font-semibold text-2xl">나의 티타임</h1>
-
-      {/* 내가 작성한 티타임 */}
-      <div className="my-4">
-        <h3 className="font-semibold">내가 작성한 티타임</h3>
-        {writeError ? (
-          <p className="text-red-500">{writeError}</p>
-        ) : writeList.length === 0 ? (
-          <p>작성한 티타임이 없습니다.</p>
-        ) : (
-          <ul>
-            {writeList.map((item) => (
-              <li key={item.boardId} className="border-b py-2">
-                <h4 className="font-bold">{item.title}</h4>
-                <p>{item.content}</p>
-                <p>작성일: {new Date(item.createdDate).toLocaleDateString()}</p>
-                <p>
-                  방송일: {new Date(item.broadcastDate).toLocaleDateString()}
-                </p>
-                <p>마감일: {new Date(item.endDate).toLocaleDateString()}</p>
-                <p>
-                  참여자: {item.participants} / {item.maxParticipants}
-                </p>
-                <p>조회수: {item.viewCount}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-        {/* 페이지네이션 컴포넌트 추가 */}
-      </div>
-
-      {/* 참여한 티타임 */}
-      <div className="my-4">
-        <h3 className="font-semibold">참여한 티타임</h3>
-        <div className="mb-4">
-          <button
-            onClick={() => setSort('before')}
-            className={`px-4 py-2 ${sort === 'before' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+    <>
+      <section {...props}>
+        <h1 className="font-semibold text-2xl">내가 작성한 티타임</h1>
+        <section className="flex items-center justify-between">
+          <div className="flex gap-2">
+            <TeatimeListToggle sort={sort} setSort={setSort} />
+          </div>
+        </section>
+        <article className="grid grid-cols-2 grid-rows-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {teatimeList.length > 0 ? (
+            teatimeList.map((el) => (
+              <TeatimeListCard key={el.boardId} {...el} />
+            ))
+          ) : (
+            <div>등록된 티타임이 없습니다.</div>
+          )}
+        </article>
+        <footer className="flex justify-center">
+          <Link
+            to={'teatimes'}
+            className="flex justify-center items-center bg-[#F1F1F1] px-3 py-2 ps-4 rounded-full font-semibold"
           >
-            전체
-          </button>
-          <button
-            onClick={() => setSort('ongoing')}
-            className={`px-4 py-2 ${sort === 'ongoing' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          >
-            진행 중
-          </button>
-        </div>
-        {participateError ? (
-          <p className="text-red-500">{participateError}</p>
-        ) : participateList.length === 0 ? (
-          <p>참여한 티타임이 없습니다.</p>
-        ) : (
-          <ul>
-            {participateList.map((item) => (
-              <li key={item.teatimeBoardId} className="border-b py-2">
-                <h4 className="font-bold">{item.title}</h4>
-                <p>{item.content}</p>
-                <p>작성자: {item.nickname}</p>
-                <p>작성일: {new Date(item.createdDate).toLocaleDateString()}</p>
-                <p>
-                  참여자: {item.participants} / {item.maxParticipants}
-                </p>
-                <p>조회수: {item.viewCount}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-        {/* 페이지네이션 컴포넌트 추가 */}
-      </div>
-    </div>
+            <ChevronRightIcon className="size-5 text-[#A2A2A2]" />
+          </Link>
+        </footer>
+      </section>
+      <section>
+        <h1 className="font-semibold text-2xl">내가 참여한 티타임</h1>
+      </section>
+    </>
   );
 };
 
-export default Teatimes;
+export default TeatimeList;
