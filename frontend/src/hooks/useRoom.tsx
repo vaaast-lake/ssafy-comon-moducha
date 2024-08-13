@@ -120,7 +120,7 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
         const message = decoder.decode(payload);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { sender: participant?.identity, content: message },
+          { sender: participant?.name, content: message },
         ]);
       })
       .on(RoomEvent.LocalTrackPublished, (publication) => {
