@@ -23,14 +23,15 @@ const MyPageToggle = ({ currentTab, setCurrentTab }: MyPageToggle) => (
     >
       나의 나눔
     </TabButton>
-    <TabButton
+    {/* <TabButton
       className="h-8"
       onClick={() => setCurrentTab('myRecords')}
       value="myRecords"
       currentTab={currentTab}
     >
       나의 기록
-    </TabButton>
+    </TabButton> */}
+    {/* 나의 기록 기능이 구현되지 않음 */}
     <TabButton
       className="h-8"
       onClick={() => setCurrentTab('privacySetting')}
