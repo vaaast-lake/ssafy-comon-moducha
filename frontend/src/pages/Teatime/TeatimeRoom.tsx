@@ -36,15 +36,6 @@ export default function TeatimeRoom() {
     joinRoom();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      const cleanUp = async () =>{
-        await room?.disconnect();
-      }
-      cleanUp();
-    }
-  }, [room])
-
   const apiData = {
     roomName,
     boardId,

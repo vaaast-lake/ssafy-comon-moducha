@@ -52,7 +52,7 @@ const TeatimeList = (props: React.HTMLProps<HTMLElement>) => {
             /> */}
           </div>
         </section>
-        <article className="grid grid-cols-2 grid-rows-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <article className="grid grid-cols-2 grid-rows-auto lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {myTeatimeList.length > 0 ? (
             myTeatimeList.map((el) => (
               <TeatimeListCard key={el.boardId} {...el} />
@@ -82,7 +82,7 @@ const TeatimeList = (props: React.HTMLProps<HTMLElement>) => {
             />
           </div>
         </section>
-        <article className="grid grid-cols-2 grid-rows-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <article className="grid grid-cols-2 grid-rows-auto lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {participatedTeatimeList.length > 0 ? (
             participatedTeatimeList.map((el) => (
               <TeatimeListCard key={el.boardId} {...el} />
