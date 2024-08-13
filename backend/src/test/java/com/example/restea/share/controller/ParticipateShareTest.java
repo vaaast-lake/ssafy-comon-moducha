@@ -89,7 +89,7 @@ class ParticipateShareTest {
     @Test
     public void participate_success() throws Exception {
         // given
-        ShareBoard shareBoard = createShareBoard(10);
+        ShareBoard shareBoard = createShareBoard(10, LocalDateTime.now().plusWeeks(1L));
 
         final String url = "/api/v1/shares/" + shareBoard.getId() + "/participants";
         final ShareJoinRequest shareJoinRequest = new ShareJoinRequest("홍동길", "010-1234-5678",
@@ -115,7 +115,7 @@ class ParticipateShareTest {
     @Test
     public void participate_fail_already_participated() throws Exception {
         // given
-        ShareBoard shareBoard = createShareBoard(10);
+        ShareBoard shareBoard = createShareBoard(10, LocalDateTime.now().plusWeeks(1L));
 
         User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
@@ -169,7 +169,7 @@ class ParticipateShareTest {
     @Test
     public void participate_fail_invalid_user() throws Exception {
         // given
-        ShareBoard shareBoard = createShareBoard(10);
+        ShareBoard shareBoard = createShareBoard(10, LocalDateTime.now().plusWeeks(1L));
 
         User user = userRepository.findByAuthIdAndActivated("authId", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
@@ -197,10 +197,9 @@ class ParticipateShareTest {
     @Test
     public void participate_fail_end_date() throws Exception {
         // given
-        ShareBoard shareBoard = createShareBoard(10);
+        ShareBoard shareBoard = createShareBoard(10, LocalDateTime.now().minusWeeks(1L));
         shareBoard = shareBoardRepository.findById(shareBoard.getId())
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 나눔 생성 실패"));
-        shareBoard.setEndDate(LocalDateTime.now().minusDays(1L));
         shareBoardRepository.save(shareBoard);
 
         final String url = "/api/v1/shares/" + shareBoard.getId() + "/participants";
@@ -224,7 +223,7 @@ class ParticipateShareTest {
     @Test
     public void participate_fail_deactivated_writer() throws Exception {
         // given
-        ShareBoard shareBoard = createShareBoard(10);
+        ShareBoard shareBoard = createShareBoard(10, LocalDateTime.now().plusWeeks(1L));
         shareBoard.getUser().deactivate();
         userRepository.save(shareBoard.getUser());
 
@@ -250,7 +249,7 @@ class ParticipateShareTest {
     public void participate_fail_already_max() throws Exception {
         // given
         int maxParticipants = 3;
-        ShareBoard shareBoard = createShareBoard(maxParticipants);
+        ShareBoard shareBoard = createShareBoard(maxParticipants, LocalDateTime.now().plusWeeks(1L));
         createParticipant(shareBoard, maxParticipants);
 
         final String url = "/api/v1/shares/" + shareBoard.getId() + "/participants";
@@ -305,13 +304,12 @@ class ParticipateShareTest {
     }
 
 
-    private ShareBoard createShareBoard(Integer maxParticipants) {
+    private ShareBoard createShareBoard(Integer maxParticipants, LocalDateTime endDate) {
         custumOAuth2UserService.handleNewUser("authId-writer", "authToken-writer", "picture");
         User writer = userRepository.findByAuthIdAndActivated("authId-writer", true)
                 .orElseThrow(() -> new RuntimeException("테스트를 위한 유저 생성 실패"));
         final String title = "Title";
         final String shareBoardContent = "Content";
-        final LocalDateTime endDate = LocalDateTime.now().plusWeeks(1L);
         return shareBoardRepository.save(ShareBoard.builder()
                 .title(title)
                 .content(shareBoardContent)
