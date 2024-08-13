@@ -1,7 +1,9 @@
 import { ArticleDetail } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 import TeatimeButton from '../../pages/Teatime/components/TeatimeButton';
-import ApplyModal from '../Modal/ApplyModal';
+import ApplyButton from '../Button/ApplyButton';
+import dayjs from 'dayjs';
+import useAuthStore from '../../stores/authStore';
 const ArticleCard = ({
   title,
   boardType,
@@ -14,12 +16,17 @@ const ArticleCard = ({
   maxParticipants,
   picture,
 }: ArticleDetail) => {
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const isEnded = dayjs() >= dayjs(endDate);
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
-      <figure
-        className="bg-contain bg-center bg-no-repeat h-48"
-        style={{ backgroundImage: `url(${picture})` }}
-      />
+      <figure>
+        <img
+          className="rounded size-24"
+          src={picture}
+          alt={`profile_${nickname}`}
+        />
+      </figure>
       <div id="card-body" className="text-disabled">
         <header>
           <div className="flex gap-1">
@@ -35,21 +42,8 @@ const ArticleCard = ({
           )}
         </div>
       </div>
-      {boardType === 'shares' ? (
-        <>
-          <button
-            onClick={() =>
-              (
-                document.getElementById('apply_modal') as HTMLDialogElement
-              )?.showModal()
-            }
-            className="btn rounded-sm font-bold bg-green-500 hover:bg-green-600 text-white"
-          >
-            {'나눔 참여하기'}
-          </button>
-          <ApplyModal {...{ boardType, boardId }} />
-        </>
-      ) : (
+      <ApplyButton {...{ boardId, boardType, isEnded, isLoggedIn }} />
+      {boardType === 'teatimes' && (
         <TeatimeButton
           title={title}
           boardType={boardType}
