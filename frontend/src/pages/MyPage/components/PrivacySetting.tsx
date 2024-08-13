@@ -49,9 +49,8 @@ const AccountDeactivation = () => {
     try {
       const response = await updateNickname({ nickname });
 
-      // 오류 응답 처리
-      if ('status' in response) {
-        const { status, message } = response;
+      if (response.error) {
+        const { status, message } = response.error;
 
         if (status === 400) {
           if (message === '변경 전과 동일한 닉네임입니다.') {
@@ -79,21 +78,24 @@ const AccountDeactivation = () => {
         return;
       }
 
-      // 성공 응답 처리
-      const { nickname: updatedNickname } = response.data;
+      const {
+        data: { nickname: updatedNickname },
+        token,
+      } = response;
 
-      // 응답 헤더에서 액세스 토큰 추출 및 로컬 스토리지에 저장
-      const accessToken =
-        axiosInstance.defaults.headers.common['Authorization'];
-      if (accessToken) {
-        localStorage.setItem('authorization', accessToken);
+      if (token) {
+        localStorage.setItem('authorization', token);
       }
 
-      // 사용자 정보 업데이트
       setCurrentUsername(updatedNickname);
       setFeedbackMessage('닉네임이 성공적으로 수정되었습니다.');
       setFeedbackType('success');
       setIsEditing(false);
+
+      // 2초 후 페이지 새로 고침
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     } catch (error) {
       console.error('Error updating nickname: ', error.message);
       setFeedbackMessage('닉네임 수정 중 오류가 발생했습니다.');
