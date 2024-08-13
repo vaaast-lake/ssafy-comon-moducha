@@ -81,7 +81,7 @@ export default function RoomRemoteTrack({
   return (
     <div
       className="
-        remote-video-container
+        remote-camera-container
         row-span-3
         pt-2
         flex flex-col
@@ -90,8 +90,8 @@ export default function RoomRemoteTrack({
     >
       <div className="remote-video-wrapper gap-3 grid grid-cols-12 row-span-11 w-full h-full">
         {currentGroup.map(([participantIdentity, tracks]) => {
-          const videoTrackSid = tracks?.video?.trackPublication.trackSid;
-          const audioTrackSid = tracks?.audio?.trackPublication.trackSid;
+          const videoTrackSid = tracks?.camera?.trackPublication.trackSid;
+          const audioTrackSid = tracks?.microphone?.trackPublication.trackSid;
 
           return (
             <>
@@ -108,23 +108,23 @@ export default function RoomRemoteTrack({
                   <div
                     className={`
                       participant-screen w-full h-full
-                      ${tracks.video?.isMute && 'bg-black bg-opacity-40'}
+                      ${tracks.camera?.isMute && 'bg-black bg-opacity-40'}
                     `}
                   >
-                    {tracks.video &&
-                      tracks.video.trackPublication.source !==
+                    {tracks.camera &&
+                      tracks.camera.trackPublication.source !==
                         'screen_share' && (
                         <RoomVideo
                           key={videoTrackSid}
-                          track={tracks!.video!.trackPublication.videoTrack!}
-                          participantName={tracks!.video!.participantName}
+                          track={tracks!.camera!.trackPublication.videoTrack!}
+                          participantName={tracks!.camera!.participantName}
                           participantIdentity={participantIdentity}
                         />
                       )}
-                    {tracks.audio && (
+                    {tracks.microphone && (
                       <RoomAudio
                         key={audioTrackSid}
-                        track={tracks!.audio!.trackPublication.audioTrack!}
+                        track={tracks!.microphone!.trackPublication.audioTrack!}
                         participantIdentity={participantIdentity}
                       />
                     )}
@@ -151,7 +151,7 @@ export default function RoomRemoteTrack({
                           className={`
                             text-white text-3xl px-5 py-2 rounded ml-2 transition-all
                             ${
-                              tracks.audio?.isMute
+                              tracks.microphone?.isMute
                                 ? 'bg-red-500 hover:bg-red-600'
                                 : 'bg-yellow-500 hover:bg-yellow-600'
                             }
@@ -160,17 +160,17 @@ export default function RoomRemoteTrack({
                             handleMuteAudioRemoteUser(
                               participantIdentity,
                               audioTrackSid,
-                              tracks.audio!.isMute
+                              tracks.microphone!.isMute
                             )
                           }
                         >
-                          {tracks.audio?.isMute ? <GoMute /> : <GoUnmute />}
+                          {tracks.microphone?.isMute ? <GoMute /> : <GoUnmute />}
                         </button>
                         <button
                           className={`
                             text-white text-3xl px-5 py-2 rounded ml-2 transition-all
                             ${
-                              tracks.video?.isMute
+                              tracks.camera?.isMute
                                 ? 'bg-red-500 hover:bg-red-600'
                                 : 'bg-yellow-500 hover:bg-yellow-600'
                             }
@@ -179,11 +179,11 @@ export default function RoomRemoteTrack({
                             toggleMuteScreenRemoteUser(
                               participantIdentity,
                               videoTrackSid,
-                              tracks.video!.isMute
+                              tracks.camera!.isMute
                             )
                           }
                         >
-                          {tracks.video?.isMute ? (
+                          {tracks.camera?.isMute ? (
                             <IoVideocamOffOutline />
                           ) : (
                             <IoVideocamOutline />
