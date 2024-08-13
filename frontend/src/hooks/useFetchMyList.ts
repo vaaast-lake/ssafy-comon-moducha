@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { BoardType } from '../types/BoardType';
 import useAuthStore from '../stores/authStore';
-import { fetchMyParticipatedList } from '../api/fetchArticle';
+import { fetchMyList } from '../api/fetchArticle';
 
 const useFetchMyList = (boardType: BoardType) => {
   const [myArticleList, setMyArticleList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { userId } = useAuthStore((state) => ({ userId: state.currentUserId }));
   useEffect(() => {
-    fetchMyParticipatedList({ userId, boardType })
+    fetchMyList({ userId, boardType })
       .then((res) => {
         if (res.status === 200) {
           setMyArticleList(res.data.data);

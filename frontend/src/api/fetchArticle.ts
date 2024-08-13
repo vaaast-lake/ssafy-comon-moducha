@@ -44,14 +44,6 @@ export const fetchMyWriteList = ({
   });
 };
 
-export const fetchMyParticipatedList = ({
-  userId,
-  boardType,
-  sort = 'latest',
-  page = 1,
-  perPage = 12,
-}: MyTeatimeList) => {
-  return axiosInstance.get(`/users/${userId}/mypage/participated-${boardType}`, {
-    params: { sort, page, perPage },
-  });
+export const fetchMyList = ({ userId, boardType }: MyTeatimeList) => {
+  return axiosInstance.get(`/users/${userId}/my-${boardType}`);
 };
