@@ -26,7 +26,12 @@ interface Message {
   content: string;
 }
 
-export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: UseRoomProps) => {
+export const useRoom = ({
+  roomName,
+  participantName,
+  teatimeToken,
+  boardId,
+}: UseRoomProps) => {
   const [room, setRoom] = useState<Room | undefined>(undefined);
   const [remoteTracks, setRemoteTracks] = useState<GroupedTracks>({});
   const [messages, setMessages] = useState<Message[]>([]);
@@ -38,14 +43,12 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
 
   const leaveRoom = useCallback(async () => {
     await room?.disconnect();
-    await room?.localParticipant.setCameraEnabled(false);
-    await room?.localParticipant.setMicrophoneEnabled(false);
     setRoom(undefined);
     setRemoteTracks({});
     setMessages([]);
     setIsScreenSharing(false);
     setLocalTrack(undefined);
-    navigate(`/teatimes/${boardId}`)
+    navigate(`/teatimes/${boardId}`);
   }, [room]);
 
   const setMuteInfo = useCallback(
@@ -55,13 +58,14 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
       publication: TrackPublication
     ): GroupedTracks => {
       const newGroupedTracks = { ...remoteTracks };
-      if(newGroupedTracks[participant.identity]) {
-        newGroupedTracks[participant.identity][publication.kind as TrackKind] = {
-          ...newGroupedTracks[participant.identity][
-            publication.source as SourceKind
-          ],
-          isMute: publication.isMuted,
-        };
+      if (newGroupedTracks[participant.identity]) {
+        newGroupedTracks[participant.identity][publication.kind as TrackKind] =
+          {
+            ...newGroupedTracks[participant.identity][
+              publication.source as SourceKind
+            ],
+            isMute: publication.isMuted,
+          };
       }
       return newGroupedTracks;
     },
@@ -85,14 +89,14 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
             if (!newGroupedTracks[participant.identity])
               newGroupedTracks[participant.identity] = {};
 
-              newGroupedTracks[participant.identity][
-                publication.source as SourceKind
-              ] = {
-                participantIdentity: participant.identity,
-                participantName: participant.name,
-                trackPublication: publication,
-                isMute: publication.isMuted,
-              };
+            newGroupedTracks[participant.identity][
+              publication.source as SourceKind
+            ] = {
+              participantIdentity: participant.identity,
+              participantName: participant.name,
+              trackPublication: publication,
+              isMute: publication.isMuted,
+            };
 
             console.log('**********trackSubscribe*********');
             console.log('**********trackSubscribe*********');
