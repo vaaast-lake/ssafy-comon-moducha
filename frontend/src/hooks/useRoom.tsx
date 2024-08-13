@@ -44,6 +44,8 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
     setIsScreenSharing(false);
     setLocalTrack(undefined);
     navigate(`/teatimes/${boardId}`)
+    room?.localParticipant.setCameraEnabled(false);
+    room?.localParticipant.setMicrophoneEnabled(false);
   }, [room]);
 
   const setMuteInfo = useCallback(
