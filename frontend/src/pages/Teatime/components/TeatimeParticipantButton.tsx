@@ -31,7 +31,17 @@ export default function TeatimeParticipantButton({
     }
     getOpenData();
     getAppliedData();
-  }, []);
+  }, [isApplied, isRoomOpen]);
+
+  const handleButtonClick = async () => {
+    if (isApplied) {
+      await startTeatime();
+      setIsRoomOpen(true);
+    } else {
+      await applyTeatime();
+      setIsApplied(true);
+    }
+  }
 
   const checkDisableButton = () => {
     if (!isLogin) return true;
@@ -43,7 +53,7 @@ export default function TeatimeParticipantButton({
     <>
       <button
         className="btn rounded bg-tea hover:bg-rose-400 text-white"
-        onClick={isApplied ? startTeatime : applyTeatime}
+        onClick={handleButtonClick}
         disabled={checkDisableButton()}
       >
         {isApplied ? '티타임 시작하기' : '티타임 참여하기'}
