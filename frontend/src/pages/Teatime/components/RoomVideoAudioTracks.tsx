@@ -1,6 +1,6 @@
 import { LocalVideoTrack, Room } from 'livekit-client';
 import RoomVideo from './RoomVideo';
-import { GroupedTracks, TrackInfo, TrackKind } from '../../../types/WebRTCType';
+import { GroupedTracks, SourceKind, TrackInfo } from '../../../types/WebRTCType';
 import { useEffect, useState } from 'react';
 import RoomSharingButton from './RoomSharingButton';
 import { GoUnmute, GoMute } from 'react-icons/go';
@@ -20,7 +20,7 @@ interface RoomVideoAudioProps {
 interface ScreenShareTrack {
   isScreenShare: boolean;
   screenShareTrack?: {
-    [key in TrackKind]?: TrackInfo | undefined;
+    [key in SourceKind]?: TrackInfo;
   };
 }
 
@@ -41,14 +41,13 @@ const RoomVideoAudioTracks = ({
 
   useEffect(() => {
     const screenShareTrack = Object.values(remoteTracks).find(
-      (tracks) => tracks?.video?.trackPublication.source === 'screen_share'
+      (tracks) => tracks?.screen_share
     );
 
-    if (screenShareTrack) {
-      setScreenShare({ isScreenShare: true, screenShareTrack });
-    } else {
-      setScreenShare({ isScreenShare: false });
-    }
+    setScreenShare(() => ({
+      isScreenShare: !!screenShareTrack, 
+      screenShareTrack: screenShareTrack 
+    }));
   }, [remoteTracks]);
 
   const handleLocalAudio = () => {
@@ -74,21 +73,20 @@ const RoomVideoAudioTracks = ({
       <div className="local-share-bg row-span-10 bg-gray-200 grid grid-row-10 p-5">
         <div className="local-share-container relative row-span-7 rounded-2xl overflow-hidden">
           {/* screen_share video start */}
-          {screenShare.isScreenShare && (
+          {screenShare.isScreenShare && screenShare.screenShareTrack?.screen_share && (
             <div className="screen-share-container w-full h-full">
               <RoomVideo
                 key={
-                  screenShare.screenShareTrack?.video?.trackPublication.trackSid
+                  screenShare.screenShareTrack.screen_share.trackPublication.trackSid
                 }
                 track={
-                  screenShare.screenShareTrack!.video!.trackPublication
-                    .videoTrack!
+                  screenShare.screenShareTrack.screen_share.trackPublication.videoTrack!
                 }
                 participantIdentity={
-                  screenShare.screenShareTrack!.video!.participantIdentity
+                  screenShare.screenShareTrack.screen_share.participantIdentity
                 }
                 participantName={
-                  screenShare.screenShareTrack?.video?.participantName
+                  screenShare.screenShareTrack.screen_share.participantName
                 }
               />
             </div>

@@ -10,6 +10,7 @@ export default function TeatimeHostButton({
   title,
 }: TeatimeHostButtonProps) {
   const { startTeatime } = useTeatime(boardType, title);
+  // const { data: teatimeData } = 
   return (
     <button
       className="btn rounded bg-tea hover:bg-rose-400 text-white"

@@ -10,7 +10,7 @@ import {
   Participant,
   LocalVideoTrack,
 } from 'livekit-client';
-import { GroupedTracks, TrackKind } from '../types/WebRTCType';
+import { GroupedTracks, SourceKind } from '../types/WebRTCType';
 import { liveKitURL } from '../api/mediaServer';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,7 +56,7 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
       if(newGroupedTracks[participant.identity]) {
         newGroupedTracks[participant.identity][publication.kind as TrackKind] = {
           ...newGroupedTracks[participant.identity][
-            publication.kind as TrackKind
+            publication.source as SourceKind
           ],
           isMute: publication.isMuted,
         };
@@ -82,21 +82,23 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
             const newGroupedTracks = { ...prev };
             if (!newGroupedTracks[participant.identity])
               newGroupedTracks[participant.identity] = {};
-            newGroupedTracks[participant.identity][
-              publication.kind as TrackKind
-            ] = {
-              participantIdentity: participant.identity,
-              participantName: participant.name,
-              trackPublication: publication,
-              isMute: publication.isMuted,
-            };
-            console.log('*************************');
-            console.log('*************************');
+
+              newGroupedTracks[participant.identity][
+                publication.source as SourceKind
+              ] = {
+                participantIdentity: participant.identity,
+                participantName: participant.name,
+                trackPublication: publication,
+                isMute: publication.isMuted,
+              };
+
+            console.log('**********trackSubscribe*********');
+            console.log('**********trackSubscribe*********');
             console.log(participant);
             console.log(publication);
             console.log(newGroupedTracks);
-            console.log('*************************');
-            console.log('*************************');
+            console.log('***********trackSubscribe*******');
+            console.log('***********trackSubscribe*******');
             return newGroupedTracks;
           });
         }
@@ -110,7 +112,14 @@ export const useRoom = ({ roomName, participantName, teatimeToken, boardId }: Us
         ) => {
           setRemoteTracks((prev) => {
             const newGroupedTracks = { ...prev };
-            delete newGroupedTracks[participant.identity];
+            delete newGroupedTracks[participant.identity][publication.source];
+            console.log('**********trackUnSubscribe*********');
+            console.log('**********trackUnSubscribe*********');
+            console.log(participant);
+            console.log(publication);
+            console.log(newGroupedTracks);
+            console.log('***********trackUnSubscribe*******');
+            console.log('***********trackUnSubscribe*******');
             return newGroupedTracks;
           });
         }
