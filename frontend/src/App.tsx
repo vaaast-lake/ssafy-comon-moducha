@@ -14,6 +14,8 @@ import TeatimeWrite from './pages/Teatime/TeatimeWrite';
 import ArticleUpdate from './pages/Article/ArticleUpdate';
 import TeatimeRoom from './pages/Teatime/TeatimeRoom';
 import ErrorPage from './pages/Error/ErrorPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Router 인스턴스 생성, 자식인 Layout 컴포넌트로 페이지 레이아웃 세팅
 // 새로운 컴포넌트를 추가하려면 children에 등록해 주세요
@@ -83,7 +85,12 @@ const router = createBrowserRouter([
 
 // RouterProvider에 라우트 객체들이 렌더링
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </>
+  );
 };
 
 export default App;
