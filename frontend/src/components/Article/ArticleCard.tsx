@@ -3,7 +3,6 @@ import dateParser from '../../utils/dateParser';
 import TeatimeButton from '../../pages/Teatime/components/TeatimeButton';
 import ApplyButton from '../Button/ApplyButton';
 import dayjs from 'dayjs';
-import useAuthStore from '../../stores/authStore';
 const ArticleCard = ({
   title,
   boardType,
@@ -15,8 +14,8 @@ const ArticleCard = ({
   participants,
   maxParticipants,
   picture,
+  userId,
 }: ArticleDetail) => {
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const isEnded = dayjs() >= dayjs(endDate);
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
@@ -42,7 +41,7 @@ const ArticleCard = ({
           )}
         </div>
       </div>
-      <ApplyButton {...{ boardId, boardType, isEnded, isLoggedIn }} />
+      <ApplyButton {...{ userId, boardId, boardType, isEnded }} />
       {boardType === 'teatimes' && (
         <TeatimeButton
           title={title}
