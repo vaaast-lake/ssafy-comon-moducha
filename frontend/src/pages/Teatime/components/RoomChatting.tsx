@@ -72,28 +72,33 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
           bg-gray-200
         "
       >
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`
-              px-1 w-full my-2
-            `}
-          >
-            {msg.sender !== 'Me' && (
-              <div className="">
-                <strong className="pe-1">{msg.sender}:</strong>
-              </div>
-            )}{' '}
+        <>
+          {!messages && 
+            (<div> {} </div>)
+          }
+          {messages.map((msg, index) => (
             <div
-              className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}
+              key={index}
+              className={`
+                px-1 w-full my-2
+              `}
             >
-              <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">
-                {msg.content}
+              {msg.sender !== 'Me' && (
+                <div className="">
+                  <strong className="pe-1">{msg.sender}:</strong>
+                </div>
+              )}{' '}
+              <div
+                className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}
+              >
+                <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">
+                  {msg.content}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        <div ref={messageEndRef}></div>
+          ))}
+          <div ref={messageEndRef}></div>
+        </>
       </div>
       <div
         id="chat-footer"
