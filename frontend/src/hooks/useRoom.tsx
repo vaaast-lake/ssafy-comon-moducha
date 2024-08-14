@@ -59,7 +59,7 @@ export const useRoom = ({
     ): GroupedTracks => {
       const newGroupedTracks = { ...remoteTracks };
       if (newGroupedTracks[participant.identity]) {
-        newGroupedTracks[participant.identity][publication.kind as TrackKind] =
+        newGroupedTracks[participant.identity][publication.source as SourceKind] =
           {
             ...newGroupedTracks[participant.identity][
               publication.source as SourceKind
@@ -97,14 +97,6 @@ export const useRoom = ({
               trackPublication: publication,
               isMute: publication.isMuted,
             };
-
-            console.log('**********trackSubscribe*********');
-            console.log('**********trackSubscribe*********');
-            console.log(participant);
-            console.log(publication);
-            console.log(newGroupedTracks);
-            console.log('***********trackSubscribe*******');
-            console.log('***********trackSubscribe*******');
             return newGroupedTracks;
           });
         }
@@ -119,13 +111,6 @@ export const useRoom = ({
           setRemoteTracks((prev) => {
             const newGroupedTracks = { ...prev };
             delete newGroupedTracks[participant.identity][publication.source];
-            console.log('**********trackUnSubscribe*********');
-            console.log('**********trackUnSubscribe*********');
-            console.log(participant);
-            console.log(publication);
-            console.log(newGroupedTracks);
-            console.log('***********trackUnSubscribe*******');
-            console.log('***********trackUnSubscribe*******');
             return newGroupedTracks;
           });
         }

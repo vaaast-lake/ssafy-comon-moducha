@@ -22,13 +22,6 @@ export default function RoomVideo({
       // https://docs.livekit.io/realtime/client/receive/
       track.attach(videoElement.current);
     }
-    console.log('******participantName********');
-    console.log('******participantName********');
-    console.log(participantName);
-    console.log('******participantName********');
-    console.log('******participantName********');
-    
-    
     return () => {
       track.detach();
     };
