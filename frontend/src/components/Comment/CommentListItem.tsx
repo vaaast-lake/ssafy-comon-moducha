@@ -91,9 +91,9 @@ const CommentListItem = ({
   return (
     <>
       <div className="flex py-4">
-        <figure className="w-1/12 overflow-hidden">
+        <figure className="w-1/12 px-1 overflow-hidden">
           <img
-            className="rounded-full"
+            className="rounded-full w-full"
             src={picture}
             alt={`${nickname}'s avatar`}
           />

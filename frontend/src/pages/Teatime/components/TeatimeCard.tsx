@@ -1,6 +1,6 @@
 import { TeatimeListItem } from '../../../types/TeatimeType';
 import { Link } from 'react-router-dom';
-import Badge from '../../../components/Badge/Badge';
+import OutlineBadge from '../../../components/Badge/OutlineBadge';
 import { parse } from 'node-html-parser';
 import defaultTeatime from '../../../assets/defaultcard/defaultTeatime.jpg';
 
@@ -22,10 +22,10 @@ const TeatimeCard = ({ boardId, title, content }: TeatimeListItem) => {
         />
 
         <div className="flex tag-region gap-1 shrink-0">
-          <Badge color="red">나눔</Badge>
-          <Badge color="yellow">나눔</Badge>
-          <Badge color="green">나눔</Badge>
-          <Badge color="blue">나눔</Badge>
+          <OutlineBadge color="red">나눔</OutlineBadge>
+          <OutlineBadge color="yellow">나눔</OutlineBadge>
+          <OutlineBadge color="green">나눔</OutlineBadge>
+          <OutlineBadge color="blue">나눔</OutlineBadge>
         </div>
       </header>
       <article className="flex flex-col w-full overflow-hidden">
