@@ -64,15 +64,15 @@ const RoomVideoAudioTracks = ({
     <div
       className="
         screen-container 
-        col-span-9
-        grid
-        grid-rows-12
+        col-span-12
+        lg:col-span-9
+        grid grid-rows-12
         border-e-2 border-e-gray-300
-        h-[calc(100vh-230px)]
+        h-[calc(100vh-250px)]
       "
     >
       <div className="local-share-bg row-span-10 bg-gray-200 grid grid-row-10 p-5">
-        <div className="local-share-container relative row-span-7 rounded-2xl overflow-hidden">
+        <div className="local-share-container relative row-span-6 rounded-2xl overflow-hidden">
           {/* screen_share video start */}
           {screenShare.isScreenShare && screenShare.screenShareTrack?.screen_share && (
             <div className="screen-share-container w-full h-full">
@@ -122,11 +122,19 @@ const RoomVideoAudioTracks = ({
         {/* remote video end */}
       </div>
 
-      <div className="room-controller row-span-2 flex justify-center items-center relative">
+      <div 
+        className="
+          room-controller 
+          row-span-2 flex 
+          items-center relative justify-between
+          lg:justify-center 
+        "
+      >
         <div
           className="
               local-contoller 
               flex gap-3
+              ms-2
             "
         >
           <button
@@ -163,10 +171,10 @@ const RoomVideoAudioTracks = ({
         <button
           className="
               leave-room-button 
-              absolute end-1
               bg-red-500 hover:bg-red-600 rounded
               text-white text-lg
-              me-3 px-4 py-3
+              lg:absolute end-1 lg:me-3 
+              px-4 py-3 me-3
             "
           onClick={leaveRoom}
         >

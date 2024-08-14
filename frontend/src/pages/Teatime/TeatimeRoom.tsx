@@ -55,7 +55,14 @@ export default function TeatimeRoom() {
   return (
     <div className="room-wrapper grid grid-cols-12">
       {room && (
-        <div id="room" className="lg:col-span-8 lg:col-start-3 col-span-12">
+        <div 
+          id="room" 
+          className="
+            col-span-12
+            lg:col-start-2 lg:col-span-10 
+            md:col-span-12
+          "
+        >
           <RoomHeader roomName={roomName} />
           <div
             className="

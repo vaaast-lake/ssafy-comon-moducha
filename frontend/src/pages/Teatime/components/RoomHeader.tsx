@@ -20,8 +20,8 @@ const RoomHeader = ({ roomName }: RoomHeaderProps) => {
           flex justify-center items-center
         "
       >
-        <img src={roomIcon} alt="" className="w-20 h-28 pe-6 border-e-2 py-5" />
-        <h2 id="room-title" className="ps-6 text-4xl font-bold ">
+        <img src={roomIcon} alt="" className="w-16 h-16 pe-6 border-e-2" />
+        <h2 id="room-title" className="ps-6 text-3xl font-bold ">
           {roomName}
         </h2>
       </div>

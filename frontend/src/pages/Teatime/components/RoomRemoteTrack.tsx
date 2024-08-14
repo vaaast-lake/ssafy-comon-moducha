@@ -101,7 +101,7 @@ export default function RoomRemoteTrack({
     <div
       className="
         remote-camera-container
-        row-span-3
+        row-span-4
         pt-4
         flex flex-col
         w-full h-full
@@ -157,12 +157,11 @@ export default function RoomRemoteTrack({
                           absolute top-0 left-0
                           w-full h-full 
                           hover:bg-black hover:bg-opacity-40 transition-all
-                          text-xl
                         "
                     >
                       <div
                         className="
-                          button-container 
+                          button-container gap-3
                           flex justify-center items-center
                           opacity-0 hover:opacity-100 transition-all
                           w-full h-full 
@@ -170,7 +169,13 @@ export default function RoomRemoteTrack({
                       >
                         <button
                           className={`
-                            text-white text-3xl px-5 py-2 rounded ml-2 transition-all
+                            text-white 
+                            rounded 
+                            transition-all 
+                            lg:px-5 lg:py-2 lg:ml-2 lg:text-3xl
+                            md:px-3 md:py-1 md:text-xl
+                            text-lg px-3 py-2 ml-1
+
                             ${
                               tracks.microphone?.isMute
                                 ? 'bg-red-500 hover:bg-red-600'
@@ -193,7 +198,13 @@ export default function RoomRemoteTrack({
                         </button>
                         <button
                           className={`
-                            text-white text-3xl px-5 py-2 rounded ml-2 transition-all
+                             text-white 
+                            rounded 
+                            transition-all 
+                            lg:px-5 lg:py-2 lg:ml-2 lg:text-3xl
+                            md:px-3 md:py-1 md:text-xl
+                            text-lg px-3 py-2 ml-1
+
                             ${
                               tracks.camera?.isMute
                                 ? 'bg-red-500 hover:bg-red-600'
@@ -215,7 +226,12 @@ export default function RoomRemoteTrack({
                           )}
                         </button>
                         <button
-                          className="bg-gray-500 text-white text-3xl px-5 py-2 rounded ml-2 hover:bg-gray-600"
+                          className="
+                            bg-gray-500 text-white rounded hover:bg-gray-600
+                            lg:px-5 lg:py-2 lg:ml-2 lg:text-3xl
+                            md:px-3 md:py-1 md:text-xl
+                            text-lg px-3 py-2 ml-1
+                          "
                           onClick={() => handleKickUser(participantIdentity)}
                         >
                           <RiLogoutBoxRLine />
