@@ -1,4 +1,4 @@
-# <img width="35" height="35" src="./images/favicon.ico" /> Moducha (모두차, 모두를 위한 차)
+# <img width="35" height="35" src="./images/Group 5.1.svg" /> Moducha (모두차, 모두를 위한 차)
 > 마자용 (구미 2반 2조 D202)
 >
 > 모두를 위한 차
