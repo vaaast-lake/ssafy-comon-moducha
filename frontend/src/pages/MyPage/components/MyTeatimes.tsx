@@ -20,7 +20,7 @@ const TeatimeList = (props: React.HTMLProps<HTMLElement>) => {
   }
 
   const {
-    articleList: myTeatimeList,
+    articleList: myTeatimeList = [], // 기본값을 빈 배열로 설정
     sort: myTeatimeSort,
     setSort: setMyTeatimeSort,
     pageData: myTeatimePageData,
@@ -28,7 +28,7 @@ const TeatimeList = (props: React.HTMLProps<HTMLElement>) => {
   }: TeatimeFetch = useFetchMyTeatimeList('teatimes', 12);
 
   const {
-    articleList: participatedTeatimeList,
+    articleList: participatedTeatimeList = [], // 기본값을 빈 배열로 설정
     sort: participatedTeatimeSort,
     setSort: setParticipatedTeatimeSort,
     pageData: participatedTeatimePageData,
