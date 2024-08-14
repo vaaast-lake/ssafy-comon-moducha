@@ -8,11 +8,12 @@ import { BiSolidLeaf } from 'react-icons/bi';
 
 interface RoomChattingProps {
   room: Room;
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  messages: Message[] | null;
+  userName: string;
+  setMessages: React.Dispatch<React.SetStateAction<Message[] | null>>;
 }
 
-const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
+const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingProps) => {
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [inputMessage, setInputMessage] = useState<string>('');
   useEffect(() => {
@@ -24,10 +25,14 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
       const encoder = new TextEncoder();
       const data = encoder.encode(inputMessage);
       room.localParticipant.publishData(data, { reliable: true });
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: 'Me', content: inputMessage },
-      ]);
+      setMessages((prevMessages) => {
+
+        let newMessages = [];
+        if (prevMessages) newMessages = [...prevMessages];
+        else newMessages.push({ sender: 'Me', content: inputMessage });
+
+        return newMessages;
+      });
       setInputMessage('');
     }
   };
@@ -39,7 +44,7 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
         grid
         col-span-3
         grid-rows-12
-        h-[calc(100vh-200px)]
+        h-[calc(100vh-230px)]
       "
     >
       <div
@@ -72,28 +77,35 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
           bg-gray-200
         "
       >
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`
-              px-1 w-full my-2
-            `}
-          >
-            {msg.sender !== 'Me' && (
-              <div className="">
-                <strong className="pe-1">{msg.sender}:</strong>
-              </div>
-            )}{' '}
+        <>
+          {!messages && (
+            <div className='flex justify-center items-center flex-wrap'> 
+              <span className='max-w-60 text-center mt-10'>{userName}님, 반갑습니다! <br/><br/> 따뜻한 시간 되세요~!!!</span>  
+            </div>
+          )}
+          {messages && messages.map((msg, index) => (
             <div
-              className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}
+              key={index}
+              className={`
+                px-1 w-full my-2
+              `}
             >
-              <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">
-                {msg.content}
+              {msg.sender !== 'Me' && (
+                <div className="">
+                  <strong className="pe-1">{msg.sender}:</strong>
+                </div>
+              )}{' '}
+              <div
+                className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}
+              >
+                <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">
+                  {msg.content}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        <div ref={messageEndRef}></div>
+          ))}
+          <div ref={messageEndRef}></div>
+        </>
       </div>
       <div
         id="chat-footer"
@@ -105,29 +117,25 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
           pt-3 pb-3
         "
       >
-        <input
-          type="text"
+        <textarea
           className="
-            border border-gray-300 
+            border border-gray-300 rounded-3xl
             h-2/4 w-full 
-            rounded-3xl
-            mx-2 ps-3
+            mx-2 ps-3 py-3 pe-14
             outline-none
           "
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          wrap='hard'
         />
         <button
           className="
-            absolute
-            right-2
-            bg-blue-500 
-            hover:bg-blue-600
-            text-2xl text-white 
+            absolute right-2
+            bg-blue-500 hover:bg-blue-600 transition-colors
+            text-3xl text-white 
             px-3 py-2 me-2
             rounded-full 
-            transition-colors
           "
           onClick={sendMessage}
         >

@@ -1,6 +1,7 @@
 import { Room } from 'livekit-client';
 import { useCallback } from 'react';
-import { GoShare } from 'react-icons/go';
+import { LuScreenShare } from "react-icons/lu";
+
 
 interface RoomSharingButtonProps {
   room: Room;
@@ -40,7 +41,7 @@ export default function RoomSharingButton({
           }
           `}
       >
-        <GoShare />
+        <LuScreenShare />
       </button>
     </>
   );

@@ -12,7 +12,8 @@ export default function TeatimeRoom() {
     boardId,
     boardType
   }} = useLocation();
-  const { userName, teatimeToken } = useAuthStore((state) => ({
+  const { userName, teatimeToken, token } = useAuthStore((state) => ({
+    token: state.token,
     userName: state.currentUsername,
     teatimeToken: state.teatimeToken,
   }));
@@ -34,7 +35,7 @@ export default function TeatimeRoom() {
 
   useEffect(() => {
     joinRoom();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     return () => {
@@ -43,7 +44,7 @@ export default function TeatimeRoom() {
       }
       cleanUp();
     }
-  }, [room])
+  }, [room, token])
 
   const apiData = {
     roomName,
@@ -73,6 +74,7 @@ export default function TeatimeRoom() {
             />
             <RoomChatting
               room={room}
+              userName={userName}
               messages={messages}
               setMessages={setMessages}
             />
