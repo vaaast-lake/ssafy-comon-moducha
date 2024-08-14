@@ -73,6 +73,7 @@ export default function TeatimeRoom() {
             />
             <RoomChatting
               room={room}
+              userName={userName}
               messages={messages}
               setMessages={setMessages}
             />

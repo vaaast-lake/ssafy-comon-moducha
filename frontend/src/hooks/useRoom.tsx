@@ -34,7 +34,7 @@ export const useRoom = ({
 }: UseRoomProps) => {
   const [room, setRoom] = useState<Room | undefined>(undefined);
   const [remoteTracks, setRemoteTracks] = useState<GroupedTracks>({});
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[] | null>(null);
   const [isScreenSharing, setIsScreenSharing] = useState<boolean>(false);
   const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
     undefined

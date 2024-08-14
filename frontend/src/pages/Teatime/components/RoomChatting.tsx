@@ -8,11 +8,12 @@ import { BiSolidLeaf } from 'react-icons/bi';
 
 interface RoomChattingProps {
   room: Room;
-  messages: Message[];
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  messages: Message[] | null;
+  userName: string;
+  setMessages: React.Dispatch<React.SetStateAction<Message[] | null>>;
 }
 
-const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
+const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingProps) => {
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [inputMessage, setInputMessage] = useState<string>('');
   useEffect(() => {
@@ -24,10 +25,14 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
       const encoder = new TextEncoder();
       const data = encoder.encode(inputMessage);
       room.localParticipant.publishData(data, { reliable: true });
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: 'Me', content: inputMessage },
-      ]);
+      setMessages((prevMessages) => {
+
+        let newMessages = [];
+        if (prevMessages) newMessages = [...prevMessages];
+        else newMessages.push({ sender: 'Me', content: inputMessage });
+
+        return newMessages;
+      });
       setInputMessage('');
     }
   };
@@ -73,10 +78,12 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
         "
       >
         <>
-          {!messages && 
-            (<div> {} </div>)
-          }
-          {messages.map((msg, index) => (
+          {!messages && (
+            <div className='flex justify-center items-center flex-wrap'> 
+              <span className='max-w-60 text-center mt-10'>{userName}님, 반갑습니다! <br/><br/> 따뜻한 시간 되세요.</span>  
+            </div>
+          )}
+          {messages && messages.map((msg, index) => (
             <div
               key={index}
               className={`
