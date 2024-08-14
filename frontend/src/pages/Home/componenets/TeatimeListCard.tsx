@@ -29,15 +29,11 @@ const TeatimeListCard = ({
         style={{ backgroundImage: `url(${imageUrl || defaultImage})` }}
       ></figure>
       <main className="p-4 pt-2">
-        <header className="font-semibold">{title}</header>
+        <header className="truncate font-semibold">{title}</header>
         <p className="text-sm line-clamp-2 text-disabled">
           {parsedContent.textContent}
         </p>
-        <footer className="flex gap-1 text-sm text-tea mt-1 antialiased truncate">
-          <span>#나눔</span>
-          <span>#세션</span>
-          <span>#나눔</span>
-          <span>#나눔</span>
+        <footer className="flex gap-1 text-sm text-tea mt-1 truncate">
         </footer>
       </main>
     </Link>

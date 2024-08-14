@@ -1,5 +1,4 @@
 import ShareCard from './components/ShareCard';
-import ShareHeader from './components/ShareHeader';
 import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
 import { ShareListItem } from '../../types/ShareType';
@@ -8,6 +7,7 @@ import SideLayout from '../../components/Layout/SideLayout';
 import MainLayout from '../../components/Layout/MainLayout';
 import useFetchList from '../../hooks/useFetchList';
 import LoadWrapper from '../../components/Loading/LoadWrapper';
+import SortAndSearch from '../../components/Search/SortAndSearch';
 
 const Share = () => {
   const {
@@ -34,10 +34,10 @@ const Share = () => {
           </TitleCard>
           <div className="divider"></div>
         </header>
-        
+
         <LoadWrapper isLoading={isLoading} listLength={shareList.length}>
           <div className="flex justify-between">
-            <ShareHeader {...{ sort, setSort }} />
+            <SortAndSearch {...{ sort, setSort, pageData }} />
           </div>
           <section
             id="share-list"

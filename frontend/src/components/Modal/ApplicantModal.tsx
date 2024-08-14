@@ -14,7 +14,7 @@ const ApplicantModal = ({ boardType, boardId }: ApplicantModalProps) => {
         <header className="mb-4">
           <h1 className="text-xl font-bold text-blue-500">신청자 목록</h1>
         </header>
-        {!!applicantList.length ? (
+        {applicantList.length ? (
           <main>
             <div className="w-full overflow-x-auto">
               <table className="min-w-full border-collapse">

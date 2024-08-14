@@ -47,28 +47,11 @@ const AccountDeactivation = () => {
   const handleSaveClick = async () => {
     try {
       const response = await updateNickname({ nickname });
-
       if (response.error) {
         const { status, message } = response.error;
 
-        if (status === 400) {
-          if (message === '변경 전과 동일한 닉네임입니다.') {
-            toast.info('변경 전과 동일한 닉네임입니다.');
-          } else if (message === '이미 존재하는 닉네임입니다.') {
-            toast.error('이미 존재하는 닉네임입니다.');
-          } else {
-            toast.error('잘못된 요청입니다.');
-          }
-        } else if (status === 401) {
-          toast.error('로그인 정보가 없습니다. 다시 로그인해 주세요.');
-        } else if (status === 403) {
-          toast.error('권한이 없습니다.');
-        } else if (status === 409) {
-          toast.error('닉네임 충돌이 발생했습니다.');
-        } else if (status === 500) {
-          toast.error('서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-        } else {
-          toast.error('알 수 없는 오류가 발생했습니다.');
+        if (status >= 400 && message) {
+          toast.error(message);
         }
         return;
       }

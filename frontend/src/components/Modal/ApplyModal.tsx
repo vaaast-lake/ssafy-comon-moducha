@@ -72,7 +72,7 @@ const ApplyModal = ({ boardType, boardId }: ModalType) => {
     if (validateForm()) {
       axiosInstance
         .post(`/${boardType}/${boardId}/participants`, formData)
-        .then((_res) => {
+        .then(() => {
           window.location.reload();
         })
         .catch((err) => {

@@ -9,9 +9,9 @@ import useFetchDetail from '../../hooks/useFetchDetail';
 
 const ShareDetail = () => {
   const { boardId } = useParams();
-  if (!boardId) return null;
   const { articleDetail: shareDetail, isLoading } =
-    useFetchDetail<ShareDetailItem>('shares', boardId);
+    useFetchDetail<ShareDetailItem>('shares', boardId!);
+  if (!boardId) return null;
   if (isLoading) return <ArticleLoading />;
   if (!shareDetail) return null;
   return (
