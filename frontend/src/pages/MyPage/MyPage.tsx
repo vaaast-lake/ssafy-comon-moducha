@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import MyPageToggle from './components/MyPageToggle';
 
 const MyPage = () => {
-  const [currentTab, setCurrentTab] = useState('privacySetting'); // 초기 기본 탭. 디버그를 위해 기본 탭 privacysetting으로 둠
+  const [currentTab, setCurrentTab] = useState('myTeatimes'); // 초기 기본 탭
   const navigate = useNavigate();
   const { isLoggedIn, currentUsername } = useAuthStore();
   useEffect(() => {

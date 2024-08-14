@@ -6,6 +6,8 @@ import { IoVideocamOffOutline, IoVideocamOutline } from 'react-icons/io5';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 import { useMemo, useState } from 'react';
 import axiosInstance from '../../../api/axiosInstance';
+import { useQuery } from '@tanstack/react-query';
+import { RiVipCrownFill } from 'react-icons/ri';
 
 interface RoomRemoteTrackProps {
   remoteTracks: GroupedTracks;
@@ -18,6 +20,17 @@ export default function RoomRemoteTrack({
 }: RoomRemoteTrackProps) {
   const [showFirstGroup, setShowFirstGroup] = useState<boolean>(true);
   const { roomName, boardId, boardType } = apiData;
+  const { data, isSuccess, isLoading } = useQuery({
+    queryKey: ['teatimes'],
+    queryFn: fetchTeatimeData,
+  });
+
+  async function fetchTeatimeData() {
+    return axiosInstance
+      .get(`/${boardType}/${boardId}`)
+      .then((res) => res.data.data);
+  }
+
   const remoteTrackArray = useMemo(
     () => Object.entries(remoteTracks),
     [remoteTracks]
@@ -31,11 +44,12 @@ export default function RoomRemoteTrack({
     trackSid: string | undefined,
     isMute: boolean
   ) => {
-    axiosInstance.post(`${boardType}/${boardId}/lives/mute`, {
-      userId: `${participantIdentity}`,
-      trackSid: `${trackSid}`,
-      isMute: `${!isMute}`
-    })
+    axiosInstance
+      .post(`${boardType}/${boardId}/lives/mute`, {
+        userId: `${participantIdentity}`,
+        trackSid: `${trackSid}`,
+        isMute: `${!isMute}`,
+      })
       .then((res) => {
         console.log(res);
       })
@@ -49,11 +63,12 @@ export default function RoomRemoteTrack({
     trackSid: string | undefined,
     isMute: boolean
   ) => {
-    axiosInstance.post(`${boardType}/${boardId}/lives/mute`, {
-      userId: `${participantIdentity}`,
-      trackSid: `${trackSid}`,
-      isMute: `${!isMute}`
-    })
+    axiosInstance
+      .post(`${boardType}/${boardId}/lives/mute`, {
+        userId: `${participantIdentity}`,
+        trackSid: `${trackSid}`,
+        isMute: `${!isMute}`,
+      })
       .then((res) => {
         console.log(res);
       })
@@ -63,9 +78,8 @@ export default function RoomRemoteTrack({
   };
 
   const handleKickUser = (participantIdentity: string) => {
-    axiosInstance.post(`${boardType}/${boardId}/lives/kick`, (
-      `${participantIdentity}`
-    ))
+    axiosInstance
+      .post(`${boardType}/${boardId}/lives/kick`, `${participantIdentity}`)
       .then((res) => {
         console.log(res);
       })
@@ -83,7 +97,7 @@ export default function RoomRemoteTrack({
       className="
         remote-camera-container
         row-span-3
-        pt-2
+        pt-4
         flex flex-col
         w-full h-full
       "
@@ -99,15 +113,17 @@ export default function RoomRemoteTrack({
                 <div
                   key={participantIdentity}
                   className="
-                      participant-container 
-                      relative
-                      col-span-4
-                      rounded-2xl overflow-hidden
-                    "
+              participant-container 
+              relative
+              col-span-4
+              "
                 >
+                  {tracks.camera?.participantName === data.nickname && (
+                    <RiVipCrownFill className="absolute text-3xl m-2 text-tea z-50 -translate-x-6 -translate-y-6 -rotate-45 " />
+                  )}
                   <div
                     className={`
-                      participant-screen w-full h-full
+                      participant-screen w-full h-full overflow-hidden rounded-2xl
                       ${tracks.camera?.isMute && 'bg-black bg-opacity-40'}
                     `}
                   >
@@ -129,7 +145,7 @@ export default function RoomRemoteTrack({
                       />
                     )}
                   </div>
-                  {participantIdentity !== '1' && (
+                  {tracks.camera?.participantName !== data.nickname && (
                     <div
                       className="
                           participant-controller 
@@ -164,7 +180,11 @@ export default function RoomRemoteTrack({
                             )
                           }
                         >
-                          {tracks.microphone?.isMute ? <GoMute /> : <GoUnmute />}
+                          {tracks.microphone?.isMute ? (
+                            <GoMute />
+                          ) : (
+                            <GoUnmute />
+                          )}
                         </button>
                         <button
                           className={`
