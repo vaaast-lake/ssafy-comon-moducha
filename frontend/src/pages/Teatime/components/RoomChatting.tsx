@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Room } from 'livekit-client';
 import { Message } from '../../../types/WebRTCType';
 import { RiMailSendLine } from 'react-icons/ri';
+import { FaLeaf } from 'react-icons/fa';
+import { LuLeaf } from 'react-icons/lu';
+import { BiSolidLeaf } from 'react-icons/bi';
 
 interface RoomChattingProps {
   room: Room;
@@ -44,7 +47,9 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
           chat-header 
           flex justify-center items-center
           row-span-1
-          text-3xl
+          text-3xl text-tea
+          flex-wrap
+          gap-6
         "
       >
         {/* <div 
@@ -57,7 +62,7 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
           '
         >
         </div> */}
-        Chat header
+        <FaLeaf /> <LuLeaf /> <BiSolidLeaf /> 
       </div>
       <div
         id="chat-message-box"
@@ -75,12 +80,16 @@ const RoomChatting = ({ room, messages, setMessages }: RoomChattingProps) => {
             `}
           >
             {msg.sender !== 'Me' && (
-              <div className=''>
+              <div className="">
                 <strong className="pe-1">{msg.sender}:</strong>
-              </div> 
+              </div>
             )}{' '}
-            <div className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}>
-              <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">{msg.content}</div>
+            <div
+              className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}
+            >
+              <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">
+                {msg.content}
+              </div>
             </div>
           </div>
         ))}
