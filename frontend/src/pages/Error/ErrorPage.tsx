@@ -7,9 +7,9 @@ const ErrorPage = () => {
   return (
     <div className="flex flex-col items-center mt-20 gap-10">
       <TbError404 className="size-96 text-tea rounded-full p-8 border shadow-lg" />
-      <div className="flex gap-2 items-center text-warning">
-        <BiError className="size-10" />
-        <h1 className="text-3xl font-bold ">
+      <div className="flex gap-1 items-center text-warning">
+        <BiError className="size-8" />
+        <h1 className="text-2xl mt-1 font-bold ">
           요청하신 페이지를 찾지 못했습니다
         </h1>
       </div>
