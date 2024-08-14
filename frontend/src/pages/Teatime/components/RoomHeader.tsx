@@ -25,6 +25,7 @@ const RoomHeader = ({ roomName }: RoomHeaderProps) => {
           {roomName}
         </h2>
       </div>
+      
     </div>
   );
 };

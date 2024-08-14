@@ -127,7 +127,7 @@ const RoomVideoAudioTracks = ({
           room-controller 
           row-span-2 flex 
           items-center relative justify-between
-          lg:justify-center 
+          md:justify-center 
         "
       >
         <div
@@ -173,7 +173,7 @@ const RoomVideoAudioTracks = ({
               leave-room-button 
               bg-red-500 hover:bg-red-600 rounded
               text-white text-lg
-              lg:absolute end-1 lg:me-3 
+              md:absolute end-1 lg:me-3 
               px-4 py-3 me-3
             "
           onClick={leaveRoom}
