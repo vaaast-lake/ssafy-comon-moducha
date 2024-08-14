@@ -80,7 +80,7 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
         <>
           {!messages && (
             <div className='flex justify-center items-center flex-wrap'> 
-              <span className='max-w-60 text-center mt-10'>{userName}님, 반갑습니다! <br/><br/> 따뜻한 시간 되세요.</span>  
+              <span className='max-w-60 text-center mt-10'>{userName}님, 반갑습니다! <br/><br/> 따뜻한 시간 되세요~!!!</span>  
             </div>
           )}
           {messages && messages.map((msg, index) => (

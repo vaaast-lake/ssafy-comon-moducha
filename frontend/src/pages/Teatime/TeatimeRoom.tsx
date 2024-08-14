@@ -39,9 +39,6 @@ export default function TeatimeRoom() {
   }, [token]);
 
   useEffect(() => {
-    if(!token) {
-      navigate('/login')
-    }
     return () => {
       const cleanUp = async () =>{
         await room?.disconnect();
