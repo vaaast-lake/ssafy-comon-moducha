@@ -127,7 +127,7 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
             h-2/4 w-full 
             mx-2 ps-3 py-5 pe-14 align-middle
             outline-none
-            scroll-p-0
+            overflow-hidden
           "
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
