@@ -26,7 +26,6 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
       const data = encoder.encode(inputMessage);
       room.localParticipant.publishData(data, { reliable: true });
       setMessages((prevMessages) => {
-
         let newMessages = [];
         if (prevMessages) newMessages = [...prevMessages];
         else newMessages.push({ sender: 'Me', content: inputMessage });
@@ -126,8 +125,9 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
           className="
             border border-gray-300 rounded-3xl
             h-2/4 w-full 
-            mx-2 ps-3 py-5 pe-14 align-bottom
+            mx-2 ps-3 py-5 pe-14 align-middle
             outline-none
+            scroll-p-0
           "
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
