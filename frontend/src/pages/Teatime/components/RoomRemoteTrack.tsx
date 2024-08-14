@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import axiosInstance from '../../../api/axiosInstance';
 import { useQuery } from '@tanstack/react-query';
 import { RiVipCrownFill } from 'react-icons/ri';
+import useAuthStore from '../../../stores/authStore';
 
 interface RoomRemoteTrackProps {
   remoteTracks: GroupedTracks;
@@ -24,14 +25,15 @@ export default function RoomRemoteTrack({
     queryKey: ['teatimes'],
     queryFn: fetchTeatimeData,
   });
+  const { currentUserName } = useAuthStore((state) => ({
+    currentUserName: state.currentUsername,
+  }));
 
   async function fetchTeatimeData() {
-    return axiosInstance
-      .get(`/${boardType}/${boardId}`)
-      .then((res) => {
-        console.log(res.data.data);
-        return res.data.data
-      });
+    return axiosInstance.get(`/${boardType}/${boardId}`).then((res) => {
+      console.log(res.data.data);
+      return res.data.data;
+    });
   }
 
   const remoteTrackArray = useMemo(
@@ -122,7 +124,7 @@ export default function RoomRemoteTrack({
               "
                 >
                   {tracks.camera?.participantName === data.nickname && (
-                    <RiVipCrownFill className="absolute text-3xl m-2 text-tea z-50 -translate-x-6 -translate-y-6 -rotate-45 " />
+                    <RiVipCrownFill className="absolute text-3xl m-2 text-warning z-50 -translate-x-5 -translate-y-5 -rotate-45 " />
                   )}
                   <div
                     className={`
@@ -148,7 +150,7 @@ export default function RoomRemoteTrack({
                       />
                     )}
                   </div>
-                  {tracks.camera?.participantName !== data.nickname && (
+                  {currentUserName === data.nickname && (
                     <div
                       className="
                           participant-controller 
