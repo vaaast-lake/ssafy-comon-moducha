@@ -10,9 +10,12 @@ const ShareListCard = ({ boardId, title, content }: ShareListItem) => {
     `../../../assets/defaultcard/share${(boardId % 4) + 1}.jpg`,
     import.meta.url
   ).href;
+  // 절대 경로 사용 - 재사용 목적
+  const linkTo = `/shares/${boardId}`;
+
   return (
     <Link
-      to={`shares/${boardId}`}
+      to={linkTo}
       className="flex flex-col gap-3 rounded group/sharecard duration-300 delay-50 transition ease-in-out hover:text-tea"
     >
       <figure

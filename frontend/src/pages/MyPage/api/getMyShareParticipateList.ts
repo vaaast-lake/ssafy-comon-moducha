@@ -1,4 +1,3 @@
-//getMyShareParticipateList.ts;
 import axiosInstance from '../../../api/axiosInstance';
 import useAuthStore from '../../../stores/authStore';
 import { AxiosResponse } from 'axios';
@@ -24,13 +23,11 @@ interface MypageShareParticipateListResponseItem {
 }
 
 interface MypageShareParticipateListResponse {
-  data: {
-    items: MypageShareParticipateListResponseItem[];
-    pagination: {
-      total: number;
-      page: number;
-      perPage: number;
-    };
+  data: MypageShareParticipateListResponseItem[]; // 응답 데이터가 배열입니다.
+  pagination: {
+    total: number;
+    page: number;
+    perPage: number;
   };
 }
 

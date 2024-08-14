@@ -92,7 +92,7 @@ const AccountDeactivation = () => {
       }, 2000);
     } catch (error) {
       console.error('Error updating nickname: ', error.message);
-      toast.error('닉네임 수정 중 오류가 발생했습니다.');
+      toast.error('닉네임 변경 규칙을 읽으세요!!!');
     }
   };
 

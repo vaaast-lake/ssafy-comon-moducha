@@ -1,11 +1,10 @@
 import TabButton from '../../../components/Button/TabButton';
 
-interface TeatimeListToggle {
-  sort: string;
-  setSort: (data: string) => void;
+interface MyShareListToggleProps {
+  sort: 'before' | 'ongoing';
+  setSort: (sort: 'before' | 'ongoing') => void;
 }
-
-const TeatimeListToggle = ({ sort, setSort }: TeatimeListToggle) => (
+const MyShareListToggle = ({ sort, setSort }: MyShareListToggleProps) => (
   <>
     <TabButton
       className="h-8"
@@ -32,4 +31,4 @@ const TeatimeListToggle = ({ sort, setSort }: TeatimeListToggle) => (
   </>
 );
 
-export default TeatimeListToggle;
+export default MyShareListToggle;
