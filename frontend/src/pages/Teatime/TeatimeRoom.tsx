@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useRoom } from '../../hooks/useRoom';
 import useAuthStore from '../../stores/authStore';
 import { useEffect } from 'react';
@@ -17,7 +17,6 @@ export default function TeatimeRoom() {
     userName: state.currentUsername,
     teatimeToken: state.teatimeToken,
   }));
-  const navigate = useNavigate();
   const {
     joinRoom,
     room,

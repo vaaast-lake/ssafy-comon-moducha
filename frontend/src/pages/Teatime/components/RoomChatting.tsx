@@ -44,7 +44,7 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
         grid
         col-span-3
         grid-rows-12
-        h-[calc(100vh-200px)]
+        h-[calc(100vh-230px)]
       "
     >
       <div

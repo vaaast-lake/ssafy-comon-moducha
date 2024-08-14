@@ -68,7 +68,7 @@ const RoomVideoAudioTracks = ({
         grid
         grid-rows-12
         border-e-2 border-e-gray-300
-        h-[calc(100vh-200px)]
+        h-[calc(100vh-230px)]
       "
     >
       <div className="local-share-bg row-span-10 bg-gray-200 grid grid-row-10 p-5">
