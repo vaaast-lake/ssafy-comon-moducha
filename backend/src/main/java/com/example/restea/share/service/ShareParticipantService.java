@@ -65,6 +65,7 @@ public class ShareParticipantService {
         return ShareJoinResponse.of(shareParticipant);
     }
 
+    @Transactional
     public ShareCancelResponse cancel(Integer shareBoardId, Integer targetId, Integer userId) {
         checkAuthorized(userId, targetId);
         User activatedUser = getActivatedUser(userRepository, targetId);
@@ -76,7 +77,7 @@ public class ShareParticipantService {
         }
 
         ShareParticipant shareParticipant = getShareParticipant(activatedUser, activatedShareBoard);
-        shareParticipantRepository.deleteById(shareParticipant.getId());
+        activatedShareBoard.getShareParticipants().remove(shareParticipant);
 
         return ShareCancelResponse.of(shareBoardId, targetId);
     }
