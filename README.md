@@ -36,7 +36,7 @@
 <br>
 
 ## 👇 모두차 소개 및 시연 영상 👇
-[<img src="./docs/logo.png" width="250">](https://www.youtube.com/watch?v=_U6xNSv4kFM)
+[<img src="./images/logo.png" width="250">](https://www.youtube.com/watch?v=_U6xNSv4kFM)
 
 모두차 시나리오는 👉[여기](./docs/시연%20시나리오.md)👈에서 더 자세히 보실 수 있습니다.
 
@@ -145,7 +145,6 @@
 - Nginx SSL Termination을 통한 백엔드 서버 부하 감소
 - FE, BE, MediaServer, DB를 각 docker 컨테이너로 관리하여 빌드 및 배포. 안정적인 CI / CD 구축
 - Google OAuth2 + Spring Security + JWT 를 통한 로그인 로직 구현으로 안정적이며 stateless한 인증/인가 구현
-- ~~생성형 AI를 사용한 맞춤형 차 추천 기능 제공~~
 
 <br>
 
@@ -158,7 +157,6 @@
      - 음소거 및 해제
      - 화면 끄기 및 켜기
      - 강제퇴장
-   - ~~방송 화면에서 작성자가 차 관련 정보 제공 기능~~
 
 - 차를 나눔할 수 있는 커뮤니티 제공
    - 게시글 쓰기 및 댓글/대댓글을 통해 소통 가능
@@ -166,6 +164,9 @@
 
 - 마이페이지
    - 자신이 작성한 글, 참여한 글 목록 제공
+
+- 설명서
+  - 모두차 사이트의 설명서 제공
 
 <br>
 <br>
@@ -217,19 +218,19 @@
 
 ### <ins>서비스 아키텍처
 
-![서비스 아키텍처 이미지]()
+![서비스 아키텍처 이미지](./images/서비스_아키텍처.png)
 
 <br>
 
 ### <ins>ERDiagram
 
-![ERD 이미지](./docs/ERD.png)
+![ERD 이미지](./images/ERD.png)
 
 <br>
 
 ### <ins>API 명세서
 
-[API 명세서]([./docs/ERD.png](https://tired-i.notion.site/API-1ed3e038a21040c28d5e6d658a20edb2?pvs=4))
+[API 명세서](https://tired-i.notion.site/API-1ed3e038a21040c28d5e6d658a20edb2?pvs=4)
 
 <br>
 
