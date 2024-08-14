@@ -1,5 +1,4 @@
 import TeatimeCard from './components/TeatimeCard';
-import TeatimeHeader from './components/TeatimeHeader';
 import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
 import { TeatimeListItem } from '../../types/TeatimeType';
@@ -8,6 +7,7 @@ import SideLayout from '../../components/Layout/SideLayout';
 import MainLayout from '../../components/Layout/MainLayout';
 import useFetchList from '../../hooks/useFetchList';
 import LoadWrapper from '../../components/Loading/LoadWrapper';
+import SortAndSearch from '../../components/Search/SortAndSearch';
 
 const Teatime = () => {
   const {
@@ -35,7 +35,7 @@ const Teatime = () => {
         </header>
         <LoadWrapper isLoading={isLoading} listLength={teatimeList.length}>
           <div className="flex justify-between">
-            <TeatimeHeader {...{ sort, setSort }} />
+            <SortAndSearch {...{ sort, setSort }} />
           </div>
           <section
             id="share-list"

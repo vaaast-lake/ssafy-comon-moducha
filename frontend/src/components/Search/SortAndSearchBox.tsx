@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 
-const ShareHeaderSearch = ({ className }: { className: string }) => {
-  // const [searchInput, setSearchInput] = useState('');
-  // const handleSearchInput = (searchValue: string): void => {
-  //   setSearchInput(searchValue);
-  // };
+const SearchBox = ({ className }: { className: string }) => {
+  const [searchInput, setSearchInput] = useState('');
+  const handleSearchInput = (searchValue: string): void => {
+    setSearchInput(searchValue);
+  };
   return (
     <div className={className}>
       <input
@@ -17,7 +18,7 @@ const ShareHeaderSearch = ({ className }: { className: string }) => {
         <option value="author">작성자</option>
       </select>
       <div className="indicator">
-        <button className="btn join-item bg-teabg text-white hover:bg-tea rounded-xl">
+        <button className="btn join-item bg-tea text-white hover:bg-emerald-600 rounded-xl">
           <CiSearch size={36} />
         </button>
       </div>
@@ -25,4 +26,4 @@ const ShareHeaderSearch = ({ className }: { className: string }) => {
   );
 };
 
-export default ShareHeaderSearch;
+export default SearchBox;

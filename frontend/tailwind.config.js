@@ -14,6 +14,19 @@ export default {
         teabg: '#E6F9E4',
         disabled: '#626262',
         dborder: '#EEEEEE',
+        emerald: {
+          50: '#f0fdf5',
+          100: '#ddfbe9',
+          200: '#bdf5d6',
+          300: '#89ecb5',
+          400: '#4fd98c',
+          500: '#26bb69',
+          600: '#1a9f56',
+          700: '#187d46',
+          800: '#18633b',
+          900: '#165132',
+          950: '#062d19',
+        },
       },
       gridTemplateRows: {
         // Simple 16 row grid
@@ -22,7 +35,5 @@ export default {
       },
     },
   },
-  plugins: [
-    daisyui
-  ],
+  plugins: [daisyui],
 };
