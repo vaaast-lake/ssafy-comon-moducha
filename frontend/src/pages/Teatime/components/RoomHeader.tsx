@@ -21,7 +21,7 @@ const RoomHeader = ({ roomName }: RoomHeaderProps) => {
         "
       >
         <img src={roomIcon} alt="" className="w-20 h-28 pe-6 border-e-2 py-5" />
-        <h2 id="room-title" className="ps-6 text-4xl font-bold">
+        <h2 id="room-title" className="ps-6 text-4xl font-bold ">
           {roomName}
         </h2>
       </div>

@@ -59,7 +59,7 @@ export default function TeatimeParticipantButton({
         onClick={handleButtonClick}
         disabled={checkDisableButton()}
       >
-        {isApplied ? '티타임 시작하기' : '티타임 참여하기'}
+        {isApplied ? '티타임 시작하기' : '티타임 신청하기'}
       </button>
       <ApplyModal {...{ boardType, boardId: Number(boardId) }} />
     </>
