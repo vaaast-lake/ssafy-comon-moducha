@@ -27,7 +27,7 @@ const TeatimeListToggle = ({ sort, setSort }: TeatimeListToggle) => (
       value="before"
       currentTab={sort}
     >
-      이전
+      마감
     </TabButton>
   </>
 );
