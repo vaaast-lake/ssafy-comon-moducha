@@ -27,9 +27,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JWTFilter extends OncePerRequestFilter {
 
     private static final List<Pattern> EXEMPTED_PATTERNS = List.of(
-            Pattern.compile("^\\/api/v1/oauth2(?:\\/.*)?$"),
-            Pattern.compile("^\\/oauth2(?:\\/.*)?$"),
-            Pattern.compile("^\\/api/v1/reissue(?:\\/.*)?$")
+            Pattern.compile("^\\/api/v1/livekit/webhook(?:\\/.*)?$")
     );
 
     private final JWTUtil jwtUtil;
