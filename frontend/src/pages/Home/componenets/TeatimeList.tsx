@@ -30,7 +30,7 @@ const TeatimeList = ({ ...props }) => {
           + 모집하기
         </Link>
       </section>
-      <article className="grid grid-cols-2 grid-rows-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <article className="grid grid-cols-2 grid-rows-auto lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {teatimeList.map((el, index) => (
           <TeatimeListCard key={el.boardId} {...{ ...el, index }} />
         ))}
