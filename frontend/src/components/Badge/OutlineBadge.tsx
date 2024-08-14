@@ -1,8 +1,8 @@
-type BadgeProp = {
+type OutlineBadgeProp = {
   color: 'red' | 'yellow' | 'green' | 'blue';
   children: React.ReactNode;
 };
-const Badge = ({ color, children }: BadgeProp) => {
+const OutlineBadge = ({ color, children }: OutlineBadgeProp) => {
   const bgColor = {
     red: '#FFEDED',
     yellow: '#FFF3E7',
@@ -29,4 +29,4 @@ const Badge = ({ color, children }: BadgeProp) => {
   );
 };
 
-export default Badge;
+export default OutlineBadge;

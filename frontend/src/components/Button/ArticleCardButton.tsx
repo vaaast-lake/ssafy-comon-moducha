@@ -13,7 +13,7 @@ const ArticleCardButton = ({
 }: ArticleCardButtonProps) => {
   return (
     <button
-      className={`btn rounded-sm font-bold bg-tea hover:bg-green-700 text-white ${className}`}
+      className={`btn rounded font-bold bg-tea hover:bg-green-700 text-white ${className}`}
       {...props}
     >
       {children}
