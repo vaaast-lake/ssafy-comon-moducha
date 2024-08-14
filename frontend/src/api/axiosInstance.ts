@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse, AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify'; // Toastify 임포트
 import useAuthStore from '../stores/authStore'; // Zustand 상태 관리 훅
 

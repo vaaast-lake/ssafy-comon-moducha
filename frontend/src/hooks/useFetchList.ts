@@ -12,7 +12,7 @@ const useFetchList = (boardType: BoardType, perPage = 12) => {
   const [keyword, setKeyword] = useState('');
 
   useEffect(() => {
-    fetchArticleList({ boardType, sort, page, perPage })
+    fetchArticleList({ boardType, sort, page, perPage, searchBy, keyword })
       .then((res) => {
         if (res.status === 200) {
           setArticleList(res.data.data);
@@ -21,7 +21,7 @@ const useFetchList = (boardType: BoardType, perPage = 12) => {
       })
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
-  }, [sort, page, boardType, perPage]);
+  }, [sort, page, boardType, perPage, searchBy, keyword]);
 
   return {
     articleList,

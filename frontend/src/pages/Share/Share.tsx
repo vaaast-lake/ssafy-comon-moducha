@@ -34,10 +34,10 @@ const Share = () => {
           </TitleCard>
           <div className="divider"></div>
         </header>
-        
+
         <LoadWrapper isLoading={isLoading} listLength={shareList.length}>
           <div className="flex justify-between">
-            <SortAndSearch {...{ sort, setSort }} />
+            <SortAndSearch {...{ sort, setSort, pageData }} />
           </div>
           <section
             id="share-list"
