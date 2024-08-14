@@ -28,7 +28,10 @@ export default function RoomRemoteTrack({
   async function fetchTeatimeData() {
     return axiosInstance
       .get(`/${boardType}/${boardId}`)
-      .then((res) => res.data.data);
+      .then((res) => {
+        console.log(res.data.data);
+        return res.data.data
+      });
   }
 
   const remoteTrackArray = useMemo(
