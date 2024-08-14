@@ -56,7 +56,7 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     if (error.response?.status === 401) {
       try {
-        await tokenRefresh(axiosInstance); // 정상 작동 시 localStorage에 갱신된 accessToken이 저장됩니다
+        await tokenRefresh(); // 정상 작동 시 localStorage에 갱신된 accessToken이 저장됩니다
         // 갱신된 accessToken으로 request 재요청
         const accessToken = localStorage.getItem('authorization');
         if (accessToken && error.config) {
@@ -77,9 +77,9 @@ axiosInstance.interceptors.response.use(
 );
 
 // 리프레시 토큰으로 액세스 토큰을 갱신하는 함수
-const tokenRefresh = async (instance: AxiosInstance) => {
+const tokenRefresh = async () => {
   try {
-    const response = await instance.post(
+    const response = await axios.post(
       '/reissue',
       {},
       {
