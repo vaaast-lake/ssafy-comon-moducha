@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoom } from '../../hooks/useRoom';
 import useAuthStore from '../../stores/authStore';
 import { useEffect } from 'react';
@@ -12,10 +12,12 @@ export default function TeatimeRoom() {
     boardId,
     boardType
   }} = useLocation();
-  const { userName, teatimeToken } = useAuthStore((state) => ({
+  const { userName, teatimeToken, token } = useAuthStore((state) => ({
+    token: state.token,
     userName: state.currentUsername,
     teatimeToken: state.teatimeToken,
   }));
+  const navigate = useNavigate();
   const {
     joinRoom,
     room,
@@ -34,16 +36,19 @@ export default function TeatimeRoom() {
 
   useEffect(() => {
     joinRoom();
-  }, []);
+  }, [token]);
 
   useEffect(() => {
+    if(!token) {
+      navigate('/login')
+    }
     return () => {
       const cleanUp = async () =>{
         await room?.disconnect();
       }
       cleanUp();
     }
-  }, [room])
+  }, [room, token])
 
   const apiData = {
     roomName,

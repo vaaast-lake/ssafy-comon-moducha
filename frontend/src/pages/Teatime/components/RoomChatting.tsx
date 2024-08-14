@@ -117,29 +117,25 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
           pt-3 pb-3
         "
       >
-        <input
-          type="text"
+        <textarea
           className="
-            border border-gray-300 
+            border border-gray-300 rounded-3xl
             h-2/4 w-full 
-            rounded-3xl
-            mx-2 ps-3
+            mx-2 ps-3 py-3 pe-14
             outline-none
           "
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+          wrap='hard'
         />
         <button
           className="
-            absolute
-            right-2
-            bg-blue-500 
-            hover:bg-blue-600
-            text-2xl text-white 
+            absolute right-2
+            bg-blue-500 hover:bg-blue-600 transition-colors
+            text-3xl text-white 
             px-3 py-2 me-2
             rounded-full 
-            transition-colors
           "
           onClick={sendMessage}
         >
