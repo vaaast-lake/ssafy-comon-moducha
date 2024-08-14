@@ -9,7 +9,7 @@
 <p align=center>
   <a href="https://www.notion.so/tired-i/d5b073258ae04f59b37eab90347c40b5/">노션</a>
   &nbsp; | &nbsp; 
-  <a href="https://ssafy.atlassian.net/jira/software/c/projects/S11P11D202/boards/6756/backlog3">백로그</a>
+  <a href="https://ssafy.atlassian.net/jira/software/c/projects/S11P12D202/boards/7114/backlog">백로그</a>
   &nbsp; | &nbsp;
   <a href="https://www.figma.com/design/kZUTKdWf5ARZF35fuIjVdW/%EB%A7%88%EC%9E%90%EC%9A%A9-%ED%94%BC%EA%B7%B8%EB%A7%88?node-id=0-1&t=z6e2psECzDWzvf0l-0">피그마</a>
   &nbsp; | &nbsp; 
