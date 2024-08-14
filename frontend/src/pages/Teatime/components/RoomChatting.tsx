@@ -101,7 +101,7 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
               <div
                 className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}
               >
-                <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm text-wrap">
+                <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm break-words">
                   <p className='w-full text-wrap'>
                     {msg.content}
                   </p>
@@ -126,7 +126,7 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
           className="
             border border-gray-300 rounded-3xl
             h-2/4 w-full 
-            mx-2 ps-3 py-3 pe-14
+            mx-2 ps-3 py-5 pe-14 align-bottom
             outline-none
           "
           value={inputMessage}
