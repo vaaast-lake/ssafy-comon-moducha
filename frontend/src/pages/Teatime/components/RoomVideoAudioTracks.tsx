@@ -1,6 +1,6 @@
-import { LocalVideoTrack, Room } from 'livekit-client';
+import { Room } from 'livekit-client';
 import RoomVideo from './RoomVideo';
-import { GroupedTracks, SourceKind, TrackInfo } from '../../../types/WebRTCType';
+import { GroupedTracks, LocalTrack, SourceKind, TrackInfo } from '../../../types/WebRTCType';
 import { useEffect, useState } from 'react';
 import RoomSharingButton from './RoomSharingButton';
 import { GoUnmute, GoMute } from 'react-icons/go';
@@ -9,7 +9,7 @@ import { IoVideocamOffOutline, IoVideocamOutline } from 'react-icons/io5';
 
 interface RoomVideoAudioProps {
   room: Room;
-  localTrack: LocalVideoTrack | undefined;
+  localTrack: LocalTrack | undefined;
   participantName: string;
   remoteTracks: GroupedTracks;
   isScreenSharing: boolean;
@@ -107,9 +107,9 @@ const RoomVideoAudioTracks = ({
               `}
             >
               <RoomVideo
-                track={localTrack}
+                track={localTrack.localTrack}
                 participantIdentity={participantName}
-                participantName={participantName}
+                participantName={localTrack.participantName}
                 local={true}
               />
             </div>
@@ -134,7 +134,7 @@ const RoomVideoAudioTracks = ({
           className="
               local-contoller 
               flex gap-3
-              ms-2
+              ml-3
             "
         >
           <button
@@ -142,8 +142,8 @@ const RoomVideoAudioTracks = ({
             className={`
                 ${
                   !isAudioMuted
-                    ? 'bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600'
-                    : 'bg-red-500 text-white px-4 py-1 rounded ml-2 hover:bg-red-600'
+                    ? 'bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600'
+                    : 'bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600'
                 }
                 px-2 py-3
                 text-3xl
@@ -156,8 +156,8 @@ const RoomVideoAudioTracks = ({
             className={`
                 ${
                   !isVideoMuted
-                    ? 'bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600'
-                    : 'bg-red-500 text-white px-4 py-1 rounded ml-2 hover:bg-red-600'
+                    ? 'bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600'
+                    : 'bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600'
                 }
                 px-2 py-3
                 text-3xl

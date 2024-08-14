@@ -173,7 +173,7 @@ export default function RoomRemoteTrack({
                             rounded 
                             transition-all 
                             lg:px-5 lg:py-2 lg:ml-2 lg:text-3xl
-                            md:px-3 md:py-1 md:text-xl
+                            md:px-5 md:py-2 md:text-2xl
                             text-lg px-3 py-2 ml-1
 
                             ${
@@ -202,7 +202,7 @@ export default function RoomRemoteTrack({
                             rounded 
                             transition-all 
                             lg:px-5 lg:py-2 lg:ml-2 lg:text-3xl
-                            md:px-3 md:py-1 md:text-xl
+                            md:px-5 md:py-2 md:ml-2 md:text-2xl
                             text-lg px-3 py-2 ml-1
 
                             ${
@@ -229,7 +229,7 @@ export default function RoomRemoteTrack({
                           className="
                             bg-gray-500 text-white rounded hover:bg-gray-600
                             lg:px-5 lg:py-2 lg:ml-2 lg:text-3xl
-                            md:px-3 md:py-1 md:text-xl
+                            md:px-5 md:py-2 md:ml-2 md:text-2xl 
                             text-lg px-3 py-2 ml-1
                           "
                           onClick={() => handleKickUser(participantIdentity)}

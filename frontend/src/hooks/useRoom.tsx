@@ -8,9 +8,8 @@ import {
   Track,
   TrackPublication,
   Participant,
-  LocalVideoTrack,
 } from 'livekit-client';
-import { GroupedTracks, SourceKind } from '../types/WebRTCType';
+import { GroupedTracks, LocalTrack, SourceKind } from '../types/WebRTCType';
 import { liveKitURL } from '../api/mediaServer';
 import { useNavigate } from 'react-router-dom';
 
@@ -36,7 +35,7 @@ export const useRoom = ({
   const [remoteTracks, setRemoteTracks] = useState<GroupedTracks>({});
   const [messages, setMessages] = useState<Message[]>([]);
   const [isScreenSharing, setIsScreenSharing] = useState<boolean>(false);
-  const [localTrack, setLocalTrack] = useState<LocalVideoTrack | undefined>(
+  const [localTrack, setLocalTrack] = useState<LocalTrack | undefined>(
     undefined
   );
   const navigate = useNavigate();
@@ -59,13 +58,14 @@ export const useRoom = ({
     ): GroupedTracks => {
       const newGroupedTracks = { ...remoteTracks };
       if (newGroupedTracks[participant.identity]) {
-        newGroupedTracks[participant.identity][publication.source as SourceKind] =
-          {
-            ...newGroupedTracks[participant.identity][
-              publication.source as SourceKind
-            ],
-            isMute: publication.isMuted,
-          };
+        newGroupedTracks[participant.identity][
+          publication.source as SourceKind
+        ] = {
+          ...newGroupedTracks[participant.identity][
+            publication.source as SourceKind
+          ],
+          isMute: publication.isMuted,
+        };
       }
       return newGroupedTracks;
     },
@@ -155,10 +155,17 @@ export const useRoom = ({
     try {
       await newRoom.connect(liveKitURL, teatimeToken);
       await newRoom.localParticipant.enableCameraAndMicrophone();
-      setLocalTrack(
-        newRoom.localParticipant.videoTrackPublications.values().next().value
-          .videoTrack
-      );
+      setLocalTrack({
+        localTrack: newRoom.localParticipant.videoTrackPublications
+          .values()
+          .next().value.videoTrack,
+        participantName: newRoom.localParticipant.name,
+      });
+      console.log('*******************************************');
+      console.log('*******************************************');
+      console.log(newRoom.localParticipant);
+      console.log('*******************************************');
+      console.log('*******************************************');
     } catch (error) {
       console.log(
         'There was an error connecting to the room:',
