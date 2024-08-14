@@ -16,7 +16,7 @@ const ArticleCard = ({
   picture,
   userId,
 }: ArticleDetail) => {
-  const isEnded = dayjs() >= dayjs(endDate);
+  const isEnded = dayjs() >= dayjs(endDate) || participants === maxParticipants;
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
       <figure>
