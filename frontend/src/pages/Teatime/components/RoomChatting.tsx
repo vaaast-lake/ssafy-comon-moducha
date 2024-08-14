@@ -8,9 +8,9 @@ import { BiSolidLeaf } from 'react-icons/bi';
 
 interface RoomChattingProps {
   room: Room;
-  messages: Message[] | null;
+  messages: Message[];
   userName: string;
-  setMessages: React.Dispatch<React.SetStateAction<Message[] | null>>;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 }
 
 const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingProps) => {
@@ -31,7 +31,10 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
         if (prevMessages) newMessages = [...prevMessages];
         else newMessages.push({ sender: 'Me', content: inputMessage });
 
-        return newMessages;
+        // return newMessage;
+        return [
+           ...prevMessages, {sender: 'Me', content: inputMessage }
+        ]
       });
       setInputMessage('');
     }
@@ -78,12 +81,12 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
         "
       >
         <>
-          {!messages && (
+          {messages.length === 0 && (
             <div className='flex justify-center items-center flex-wrap'> 
               <span className='max-w-60 text-center mt-10'>{userName}님, 반갑습니다! <br/><br/> 따뜻한 시간 되세요~!!!</span>  
             </div>
           )}
-          {messages && messages.map((msg, index) => (
+          {messages.length !== 0 && messages.map((msg, index) => (
             <div
               key={index}
               className={`
@@ -98,8 +101,10 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
               <div
                 className={`w-full flex ${msg.sender === 'Me' ? 'justify-end pe-1' : 'justify-start ps-3'}`}
               >
-                <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm">
-                  {msg.content}
+                <div className="bg-white m-1 p-2 rounded-xl max-w-52 text-sm break-words">
+                  <p className='w-full text-wrap'>
+                    {msg.content}
+                  </p>
                 </div>
               </div>
             </div>
@@ -121,7 +126,7 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
           className="
             border border-gray-300 rounded-3xl
             h-2/4 w-full 
-            mx-2 ps-3 py-3 pe-14
+            mx-2 ps-3 py-5 pe-14 align-bottom
             outline-none
           "
           value={inputMessage}
