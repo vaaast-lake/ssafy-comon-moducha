@@ -22,7 +22,13 @@ export default function RoomVideo({
       // https://docs.livekit.io/realtime/client/receive/
       track.attach(videoElement.current);
     }
-
+    console.log('******participantName********');
+    console.log('******participantName********');
+    console.log(participantName);
+    console.log('******participantName********');
+    console.log('******participantName********');
+    
+    
     return () => {
       track.detach();
     };
@@ -42,7 +48,7 @@ export default function RoomVideo({
           participant-data
           flex flex-col absolute justify-center bottom-1
           rounded-full bg-gray-600/50 min-w-20 m-1 p-2
-          text-white text-center text-sm
+          text-white text-center text-sm z-10
         ">
         <p>{participantName + (local ? ' (You)' : '')}</p>
       </div>
