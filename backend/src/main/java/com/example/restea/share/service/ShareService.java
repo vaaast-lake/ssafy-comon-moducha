@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -55,12 +54,13 @@ public class ShareService {
         }
 
         // data
-        Page<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage, searchBy,
+        List<ShareBoard> shareBoards = getActivatedShareBoards(sort, page, perPage, searchBy,
                 keyword); // 아직 기간이 지나지 않고 활성화된 게시글
-        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards.getContent());
+        List<ShareListResponse> data = createResponseFormShareBoards(shareBoards);
+        int totalElements = shareBoardSearchRepository.countBySortAndKeyword(sort, searchBy, keyword);
 
         // pagination info
-        PaginationDTO pagination = PaginationDTO.of((int) shareBoards.getTotalElements(), page, perPage);
+        PaginationDTO pagination = PaginationDTO.of(totalElements, page, perPage);
 
         return Map.of("data", data, "pagination", pagination);
     }
@@ -146,7 +146,7 @@ public class ShareService {
         }
     }
 
-    private @NotNull Page<ShareBoard> getActivatedShareBoards(
+    private @NotNull List<ShareBoard> getActivatedShareBoards(
             String sort, Integer page, Integer perPage, String searchBy, String keyword) {
 
         return shareBoardSearchRepository.findAllBySortAndKeyword(
