@@ -38,11 +38,10 @@ public class ShareReplyController {
             @NotNull @Positive @RequestParam("perPage") Integer perPage,
             @NotNull @Positive @RequestParam("page") Integer page) {
 
-        // TODO : emtpy list
         ResponseDTO<List<ShareReplyViewResponse>> result
                 = shareReplyService.getShareReplyList(shareBoardId, shareCommentId, page, perPage);
-
-        return ResponseEntity.status(HttpStatus.OK)
+        HttpStatus status = result.getData().isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+        return ResponseEntity.status(status)
                 .body(result);
     }
 
