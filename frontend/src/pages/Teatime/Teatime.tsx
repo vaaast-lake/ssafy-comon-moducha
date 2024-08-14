@@ -1,7 +1,7 @@
 import TeatimeCard from './components/TeatimeCard';
 import TitleCard from '../../components/Title/TitleCard';
 import Pagination from '../../components/Pagination/Pagination';
-import { TeatimeListItem } from '../../types/TeatimeType';
+import { TeatimeDetailItem } from '../../types/TeatimeType';
 import { Link } from 'react-router-dom';
 import SideLayout from '../../components/Layout/SideLayout';
 import MainLayout from '../../components/Layout/MainLayout';
@@ -59,7 +59,7 @@ export default Teatime;
 const TeatimeCardList = ({
   teatimeItems,
 }: {
-  teatimeItems: TeatimeListItem[];
+  teatimeItems: TeatimeDetailItem[];
 }) => {
   return teatimeItems.map((shareItem) => (
     <TeatimeCard key={shareItem.boardId} {...shareItem} />
