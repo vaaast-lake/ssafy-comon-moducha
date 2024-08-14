@@ -80,7 +80,7 @@ axiosInstance.interceptors.response.use(
 const tokenRefresh = async () => {
   try {
     const response = await axios.post(
-      '/reissue',
+      `${import.meta.env.VITE_API_URL}/reissue`,
       {},
       {
         headers: { 'Content-Type': 'application/json' },
