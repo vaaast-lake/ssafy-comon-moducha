@@ -13,7 +13,7 @@ const FilledBadge = ({ color, children }: FilledBadgeProp) => {
 
   return (
     <div
-      className={`flex items-center justify-center px-2 py-1 rounded-lg text-xs text-white`}
+      className="flex items-center justify-center px-2 py-1 rounded-lg text-xs text-white shrink-0"
       style={{
         backgroundColor: bgColor[color],
       }}

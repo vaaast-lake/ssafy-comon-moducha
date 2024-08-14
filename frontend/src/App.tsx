@@ -1,19 +1,20 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
-import Home from './pages/Home/Home';
-import Login from './pages/Login/LoginPage';
-import MyPage from './pages/MyPage/MyPage';
-import Teatime from './pages/Teatime/Teatime';
-import Share from './pages/Share/Share';
-import Notifications from './pages/Notifications/Notifications';
-import ShareDetail from './pages/Share/ShareDetail';
-import TeatimeDetail from './pages/Teatime/TeatimeDetail';
-import ShareWrite from './pages/Share/ShareWrite';
-import AccessPage from './pages/Login/AccessPage';
-import TeatimeWrite from './pages/Teatime/TeatimeWrite';
-import ArticleUpdate from './pages/Article/ArticleUpdate';
-import TeatimeRoom from './pages/Teatime/TeatimeRoom';
-import ErrorPage from './pages/Error/ErrorPage';
+import { lazy, Suspense } from 'react';
+const Home = lazy(() => import('./pages/Home/Home'));
+const Login = lazy(() => import('./pages/Login/LoginPage'));
+const MyPage = lazy(() => import('./pages/MyPage/MyPage'));
+const Teatime = lazy(() => import('./pages/Teatime/Teatime'));
+const Share = lazy(() => import('./pages/Share/Share'));
+const Notifications = lazy(() => import('./pages/Notifications/Notifications'));
+const ShareDetail = lazy(() => import('./pages/Share/ShareDetail'));
+const TeatimeDetail = lazy(() => import('./pages/Teatime/TeatimeDetail'));
+const ShareWrite = lazy(() => import('./pages/Share/ShareWrite'));
+const AccessPage = lazy(() => import('./pages/Login/AccessPage'));
+const TeatimeWrite = lazy(() => import('./pages/Teatime/TeatimeWrite'));
+const ArticleUpdate = lazy(() => import('./pages/Article/ArticleUpdate'));
+const TeatimeRoom = lazy(() => import('./pages/Teatime/TeatimeRoom'));
+const ErrorPage = lazy(() => import('./pages/Error/ErrorPage'));
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -90,10 +91,12 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ToastContainer />
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Suspense>
+          <RouterProvider router={router} />
+        </Suspense>
+        <ToastContainer />
+      </QueryClientProvider>
     </>
   );
 };

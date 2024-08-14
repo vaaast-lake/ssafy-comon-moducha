@@ -29,7 +29,7 @@ const TeatimeListCard = ({
         style={{ backgroundImage: `url(${imageUrl || defaultImage})` }}
       ></figure>
       <main className="p-4 pt-2">
-        <header className="font-semibold">{title}</header>
+        <header className="truncate font-semibold">{title}</header>
         <p className="text-sm line-clamp-2 text-disabled">
           {parsedContent.textContent}
         </p>
