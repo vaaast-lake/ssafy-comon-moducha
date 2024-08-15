@@ -228,6 +228,12 @@
 
 <br>
 
+### <ins>Sequence Diagram
+
+[Sequence Diagram](https://tired-i.notion.site/Sequence-Diagram-74a589799ddd45c191c920350a6a937f?pvs=4)
+
+<br>
+
 ### <ins>API 명세서
 
 [API 명세서](https://tired-i.notion.site/API-1ed3e038a21040c28d5e6d658a20edb2?pvs=4)
