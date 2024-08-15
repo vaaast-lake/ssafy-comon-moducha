@@ -50,7 +50,10 @@ export default function TeatimeParticipantButton({
   };
 
   const checkDisableButton = () => {
-    if (!isLogin || !isApplied || !isRoomOpen || dayjs() > dayjs(`${endDate}`)) return true;
+    if (!isLogin) return true;
+    if (!isApplied && dayjs() > dayjs(`${endDate}`)) return true;
+    if (isApplied && !isRoomOpen) return true;
+    
     return false;
   };
 
