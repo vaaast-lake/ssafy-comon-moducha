@@ -55,7 +55,7 @@ const RoomChatting = ({ room, messages, userName, isChatVisible, setMessages }: 
         }
         lg:grid lg:col-span-3 lg:translate-y-full lg:transform-none
         lg:flex-none lg:w-auto lg:mt-0 lg:mx-0 lg:static lg:transition-none
-        lg:opacity-1 lg:h-[calc(100vh-250px)]
+        lg:opacity-1 lg:h-[calc(100vh-250px)] lg:opacity-100
       `}
     >
       <div
