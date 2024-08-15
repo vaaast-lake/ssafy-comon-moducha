@@ -50,11 +50,12 @@ const RoomChatting = ({ room, messages, userName, isChatVisible, setMessages }: 
         h-[calc(100vh-250px)]
         transition-all duration-300 transform
         ${isChatVisible ? 
-          'translate-none opacity-1'
+          'translate-y-0 opacity-1'
           : 'translate-y-full opacity-0 h-0'
         }
         lg:grid lg:col-span-3 lg:translate-y-full lg:transform-none
-        lg:flex-none lg:w-auto lg:mt-0 lg:mx-0 lg:static
+        lg:flex-none lg:w-auto lg:mt-0 lg:mx-0 lg:static lg:transition-none
+        lg:opacity-1 lg:h-[calc(100vh-250px)]
       `}
     >
       <div
