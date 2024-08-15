@@ -68,7 +68,7 @@ export default function TeatimeRoom() {
             md:col-span-12
           "
         >
-          <RoomHeader roomName={roomName} onToggleChat={toggleChatVisibility} />
+          <RoomHeader roomName={roomName} onToggleChat={toggleChatVisibility} isChatVisible={isChatVisible} />
           <div
             className="
               room-container 
