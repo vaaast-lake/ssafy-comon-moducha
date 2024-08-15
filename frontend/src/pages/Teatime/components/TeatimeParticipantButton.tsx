@@ -8,13 +8,13 @@ import dayjs from 'dayjs';
 interface TeatimeParticipantButtonProps {
   boardType: string;
   title: string;
-  broadcastDate: string;
+  endDate: string;
 }
 
 export default function TeatimeParticipantButton({
   boardType,
   title,
-  broadcastDate,
+  endDate,
 }: TeatimeParticipantButtonProps) {
   const { isLogin } = useAuthStore((state) => ({
     teatimeToken: state.teatimeToken,
@@ -52,7 +52,7 @@ export default function TeatimeParticipantButton({
   const checkDisableButton = () => {
     if (!isLogin) return true;
     if (isApplied && !isRoomOpen) return true;
-    if (dayjs() > dayjs(`${broadcastDate}`)) return true;
+    if (dayjs() > dayjs(`${endDate}`)) return true;
     return false;
   };
 

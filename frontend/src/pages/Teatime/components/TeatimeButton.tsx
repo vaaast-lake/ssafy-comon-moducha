@@ -33,6 +33,10 @@ export default function TeatimeButton({
   return nickname === userName ? (
     <TeatimeHostButton boardType={boardType} title={title} isLoading={isLoading} isSuccess={isSuccess} data={data} />
   ) : (
-    <TeatimeParticipantButton boardType={boardType} title={title} broadcastDate={data.broadcastDate} />
+    <TeatimeParticipantButton
+      boardType={boardType}
+      title={title}
+      endDate={data.endDate}
+    />
   );
 }
