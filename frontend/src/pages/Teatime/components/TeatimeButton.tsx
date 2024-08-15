@@ -43,7 +43,7 @@ export default function TeatimeButton({
     <TeatimeParticipantButton
       boardType={boardType}
       title={title}
-      broadcastDate={data.broadcastDate}
+      endDate={data.endDate}
     />
   );
 }
