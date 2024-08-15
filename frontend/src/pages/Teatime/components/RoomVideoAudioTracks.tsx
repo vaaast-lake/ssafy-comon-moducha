@@ -1,6 +1,6 @@
-import { LocalVideoTrack, Room } from 'livekit-client';
+import { Room } from 'livekit-client';
 import RoomVideo from './RoomVideo';
-import { GroupedTracks, SourceKind, TrackInfo } from '../../../types/WebRTCType';
+import { GroupedTracks, LocalTrack, SourceKind, TrackInfo } from '../../../types/WebRTCType';
 import { useEffect, useState } from 'react';
 import RoomSharingButton from './RoomSharingButton';
 import { GoUnmute, GoMute } from 'react-icons/go';
@@ -9,7 +9,7 @@ import { IoVideocamOffOutline, IoVideocamOutline } from 'react-icons/io5';
 
 interface RoomVideoAudioProps {
   room: Room;
-  localTrack: LocalVideoTrack | undefined;
+  localTrack: LocalTrack | undefined;
   participantName: string;
   remoteTracks: GroupedTracks;
   isScreenSharing: boolean;
@@ -64,15 +64,15 @@ const RoomVideoAudioTracks = ({
     <div
       className="
         screen-container 
-        col-span-9
-        grid
-        grid-rows-12
+        col-span-12
+        lg:col-span-9
+        grid grid-rows-12
         border-e-2 border-e-gray-300
-        h-[calc(100vh-230px)]
+        h-[calc(100vh-250px)]
       "
     >
       <div className="local-share-bg row-span-10 bg-gray-200 grid grid-row-10 p-5">
-        <div className="local-share-container relative row-span-7 rounded-2xl overflow-hidden">
+        <div className="local-share-container relative row-span-6 rounded-2xl overflow-hidden">
           {/* screen_share video start */}
           {screenShare.isScreenShare && screenShare.screenShareTrack?.screen_share && (
             <div className="screen-share-container w-full h-full">
@@ -107,9 +107,9 @@ const RoomVideoAudioTracks = ({
               `}
             >
               <RoomVideo
-                track={localTrack}
+                track={localTrack.localTrack}
                 participantIdentity={participantName}
-                participantName={participantName}
+                participantName={localTrack.participantName}
                 local={true}
               />
             </div>
@@ -122,11 +122,19 @@ const RoomVideoAudioTracks = ({
         {/* remote video end */}
       </div>
 
-      <div className="room-controller row-span-2 flex justify-center items-center relative">
+      <div 
+        className="
+          room-controller 
+          row-span-2 flex 
+          items-center relative justify-between
+          md:justify-center 
+        "
+      >
         <div
           className="
               local-contoller 
               flex gap-3
+              ml-3
             "
         >
           <button
@@ -134,8 +142,8 @@ const RoomVideoAudioTracks = ({
             className={`
                 ${
                   !isAudioMuted
-                    ? 'bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600'
-                    : 'bg-red-500 text-white px-4 py-1 rounded ml-2 hover:bg-red-600'
+                    ? 'bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600'
+                    : 'bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600'
                 }
                 px-2 py-3
                 text-3xl
@@ -148,8 +156,8 @@ const RoomVideoAudioTracks = ({
             className={`
                 ${
                   !isVideoMuted
-                    ? 'bg-blue-500 text-white px-4 py-1 rounded ml-2 hover:bg-blue-600'
-                    : 'bg-red-500 text-white px-4 py-1 rounded ml-2 hover:bg-red-600'
+                    ? 'bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600'
+                    : 'bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600'
                 }
                 px-2 py-3
                 text-3xl
@@ -163,10 +171,10 @@ const RoomVideoAudioTracks = ({
         <button
           className="
               leave-room-button 
-              absolute end-1
               bg-red-500 hover:bg-red-600 rounded
               text-white text-lg
-              me-3 px-4 py-3
+              md:absolute end-1 lg:me-3 
+              px-4 py-3 me-3
             "
           onClick={leaveRoom}
         >

@@ -1,4 +1,4 @@
-import { RemoteTrackPublication } from 'livekit-client';
+import { LocalVideoTrack, RemoteTrackPublication } from 'livekit-client';
 
 export type SourceKind = 'camera' | 'microphone' | 'screen_share';
 
@@ -19,3 +19,12 @@ export interface GroupedTracks {
     [key in SourceKind]?: TrackInfo;
   };
 };
+
+
+/**
+ * livekit-client에도 동일한 이름을 사용하기 떄문에 차후 수정 필요
+ */
+export interface LocalTrack {
+  localTrack: LocalVideoTrack;
+  participantName?: string;
+}
