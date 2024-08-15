@@ -32,7 +32,7 @@ export default function TeatimeHostButton({
   return (
     !isLoading &&
     <button
-      className="btn rounded bg-tea hover:bg-rose-400 text-white"
+      className="btn rounded bg-tea hover:bg-green-700 text-white"
       onClick={startTeatime}
       disabled={checkButtonDisable()}
     >
