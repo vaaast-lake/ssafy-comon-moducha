@@ -9,14 +9,14 @@ import InputDate from '../../components/Form/InputDate';
 import dayJsNow from '../../utils/dayJsNow';
 import InputBroadcastDate from '../../components/Form/InputBroadcastDate';
 import InputParticipants from '../../components/Form/InputParticipants';
-import InputError from '../../components/Form/InputError';
 import TitleCard from '../../components/Title/TitleCard';
+import { toast } from 'react-toastify';
 
-const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
+const ArticleUpdate = () => {
+  const { boardType } = useParams() as { boardType: BoardType };
   const [pickedDate, setPickedDate] = useState<string>(dayJsNow());
   const [broadcastDate, setBroadcastDate] = useState<string>(dayJsNow());
   const [content, setContent] = useState<string>('');
-  const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState<string>('');
   const [maxParticipants, setMaxParticipants] = useState<number>(1);
   const { boardId } = useParams<{ boardId: string }>();
@@ -44,7 +44,7 @@ const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
         }
         setContent(articleData.content);
       } catch (error) {
-        setError('게시글 데이터를 불러오는 데 실패하였습니다.');
+        toast.error('게시글 데이터를 불러오는 데 실패하였습니다.');
       }
     };
 
@@ -54,7 +54,7 @@ const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (content === '') {
-      setError('본문을 입력해 주세요.');
+      toast.error('본문을 입력해 주세요.');
       return;
     }
     const formData = new FormData(event.currentTarget);
@@ -73,12 +73,14 @@ const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
       await axiosInstance.patch(`/${boardType}/${boardId}`, inputData);
       navigate(`/${boardType}/${boardId}`);
     } catch (error) {
-      setError('글 수정에 실패하였습니다. 잠시 후 다시 시도해 주세요.');
+      toast.error('글 수정에 실패하였습니다. 잠시 후 다시 시도해 주세요.');
     }
   };
   // 비로그인 상태인 경우 useEffect 훅 이전에 표시되지 않도록 null 리턴
   if (!isLoggedIn) return null;
-
+  if (!(boardType == 'shares' || boardType == 'teatimes')) {
+    throw new Error();
+  }
   return (
     <div className="grid grid-cols-12">
       <aside className="hidden lg:flex col-span-3"></aside>
@@ -88,7 +90,6 @@ const ArticleUpdate = ({ boardType }: { boardType: BoardType }) => {
         </TitleCard>
         <hr />
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {error && <InputError error={error} />}
           <InputTitle title={title} setTitle={setTitle} />
           <InputDate
             pickedDate={pickedDate}

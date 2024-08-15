@@ -5,7 +5,7 @@ export type ImageList = {
   url: string;
 }[];
 
-export interface ArticleDetail {
+export interface ArticleDetailProp {
   boardType: BoardType;
   boardId: number;
   title: string;
