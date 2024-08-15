@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { useRoom } from '../../hooks/useRoom';
 import useAuthStore from '../../stores/authStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import RoomHeader from './components/RoomHeader';
 import RoomVideoAudioTracks from './components/RoomVideoAudioTracks';
 import RoomChatting from './components/RoomChatting';
@@ -32,6 +32,11 @@ export default function TeatimeRoom() {
     teatimeToken,
     boardId
   });
+  
+  const [isChatVisible, setIsChatVisible] = useState<boolean>(false);
+  const toggleChatVisibility = () => {
+    setIsChatVisible((prev) => !prev)
+  }
 
   useEffect(() => {
     joinRoom();
@@ -63,11 +68,13 @@ export default function TeatimeRoom() {
             md:col-span-12
           "
         >
-          <RoomHeader roomName={roomName} />
+          <RoomHeader roomName={roomName} onToggleChat={toggleChatVisibility} />
           <div
             className="
               room-container 
-              grid grid-cols-12
+              lg:grid lg:grid-cols-12
+              flex flex-col
+              items-center
             "
           >
             <RoomVideoAudioTracks
@@ -83,6 +90,7 @@ export default function TeatimeRoom() {
               room={room}
               userName={userName}
               messages={messages}
+              isChatVisible={isChatVisible}
               setMessages={setMessages}
             />
           </div>

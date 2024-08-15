@@ -10,10 +10,11 @@ interface RoomChattingProps {
   room: Room;
   messages: Message[];
   userName: string;
+  isChatVisible: boolean;
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 }
 
-const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingProps) => {
+const RoomChatting = ({ room, messages, userName, isChatVisible, setMessages }: RoomChattingProps) => {
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const [inputMessage, setInputMessage] = useState<string>('');
   useEffect(() => {
@@ -41,24 +42,31 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
 
   return (
     <div
-      className="
+      id='chat-container'
+      className={`
         chat-container
-        hidden
-        lg:grid
-        lg:col-span-3
-        grid-rows-12
+        grid-rows-12 col-span-12
+        absolute flex flex-col w-11/12 z-20 mt-10 mx-auto
         h-[calc(100vh-250px)]
-      "
+        transition-all duration-300 transform
+        ${isChatVisible ? 
+          'translate-none opacity-1'
+          : 'translate-y-full opacity-0 h-0'
+        }
+        lg:grid lg:col-span-3 lg:translate-y-full lg:transform-none
+        lg:flex-none lg:w-auto lg:mt-0 lg:mx-0 lg:static
+      `}
     >
       <div
-        className="
+        className={`
           chat-header 
           flex justify-center items-center
           row-span-1
           text-3xl text-tea
           flex-wrap
           gap-6
-        "
+          ${isChatVisible ? 'h-20 bg-white' : ''}
+        `}
       >
         {/* <div 
           className='
@@ -74,11 +82,12 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
       </div>
       <div
         id="chat-message-box"
-        className="
+        className={`
           overflow-y-auto
           row-span-9
           bg-gray-200
-        "
+          ${isChatVisible ? 'h-full' : ''}
+        `}
       >
         <>
           {messages.length === 0 && (
@@ -114,18 +123,19 @@ const RoomChatting = ({ room, messages, userName, setMessages }: RoomChattingPro
       </div>
       <div
         id="chat-footer"
-        className="
+        className={`
           relative
           row-span-2
           flex justify-center items-center 
           w-full 
           pt-3 pb-3
-        "
-      >
+          ${isChatVisible ? 'bg-white h-40' : ''}
+        `}
+      > 
         <textarea
           className="
             border border-gray-300 rounded-3xl
-            h-2/4 w-full 
+            h-3/4 w-full 
             mx-2 ps-3 py-5 pe-14 align-middle
             outline-none
             overflow-hidden

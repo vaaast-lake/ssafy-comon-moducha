@@ -2,9 +2,11 @@ import roomIcon from '/logo/room-icon.svg';
 
 interface RoomHeaderProps {
   roomName: string;
+  onToggleChat: () => void;
 }
 
-const RoomHeader = ({ roomName }: RoomHeaderProps) => {
+const RoomHeader = ({ roomName, onToggleChat }: RoomHeaderProps) => {
+
   return (
     <div
       className="
@@ -25,7 +27,12 @@ const RoomHeader = ({ roomName }: RoomHeaderProps) => {
           {roomName}
         </h2>
       </div>
-      
+      <button 
+        className='lg:hidden'
+        onClick={onToggleChat}
+      >
+        chatting button
+      </button>
     </div>
   );
 };
