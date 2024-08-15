@@ -5,7 +5,7 @@ const ArticleLoading = () => {
   useEffect(() => {
     setTimeout(() => {
       setIsVisible(true);
-    }, 100);
+    }, 200);
   }, []);
   if (!isVisible) return null;
   return (

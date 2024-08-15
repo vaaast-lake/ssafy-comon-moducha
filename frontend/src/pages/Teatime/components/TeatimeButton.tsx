@@ -30,9 +30,20 @@ export default function TeatimeButton({
       .get(`/${boardType}/${boardId}`)
       .then((res) => res.data.data);
   }
+  if (isLoading) return null;
   return nickname === userName ? (
-    <TeatimeHostButton boardType={boardType} title={title} isLoading={isLoading} isSuccess={isSuccess} data={data} />
+    <TeatimeHostButton
+      boardType={boardType}
+      title={title}
+      isLoading={isLoading}
+      isSuccess={isSuccess}
+      data={data}
+    />
   ) : (
-    <TeatimeParticipantButton boardType={boardType} title={title} broadcastDate={data.broadcastDate} />
+    <TeatimeParticipantButton
+      boardType={boardType}
+      title={title}
+      broadcastDate={data.broadcastDate}
+    />
   );
 }
