@@ -95,7 +95,7 @@ const CommentWrite = ({
           className="btn rounded bg-teabg text-tea hover:bg-tea hover:text-white"
           disabled={isSending || !isLoggedIn}
         >
-          삭제
+          리셋
         </button>
       </div>
     </form>

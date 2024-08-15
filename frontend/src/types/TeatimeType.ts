@@ -7,6 +7,10 @@ export interface TeatimeListItem {
   content: string;
   createdDate: string;
   lastUpdated: string;
+  endDate: string;
+  viewCount: number;
+  nickname: string;
+  broadcastDate: string;
 }
 
 export interface TeatimeDTO {

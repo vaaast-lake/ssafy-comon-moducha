@@ -1,4 +1,3 @@
-import ShareHeaderSearch from './ShareHeaderSearch';
 import {
   Disclosure,
   DisclosureButton,
@@ -6,20 +5,31 @@ import {
 } from '@headlessui/react';
 import { XMarkIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { Dispatch, SetStateAction } from 'react';
-import TabButton from '../../../components/Button/TabButton';
+import SearchBox from './SortAndSearchBox';
+import TabButton from '../Button/TabButton';
 
 interface Prop {
   sort: string;
   setSort: Dispatch<SetStateAction<string>>;
 }
+export interface PageDataType {
+  page: number;
+  totalPage: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  setSearchBy: Dispatch<SetStateAction<string>>;
+  setKeyword: Dispatch<SetStateAction<string>>;
+}
 
-const ShareHeader = ({ sort, setSort }: Prop) => {
+interface SearchProps extends Prop {
+  pageData: PageDataType;
+}
+const SortAndSearch = ({ sort, setSort, pageData }: SearchProps) => {
   return (
     <Disclosure as="div" className="justify-between w-full">
       <div className="flex justify-between">
         <CollapseButton />
         {/* md 이상인 경우 검색창 노출 */}
-        <ShareHeaderSearch className="hidden md:flex join" />
+        <SearchBox pageData={pageData} className="hidden md:flex join" />
         <ToggleSort {...{ sort, setSort }} />
       </div>
 
@@ -28,7 +38,7 @@ const ShareHeader = ({ sort, setSort }: Prop) => {
         transition
         className="md:hidden transition duration-200 ease-out data-[closed]:-translate-y-6 data-[closed]:opacity-0"
       >
-        <ShareHeaderSearch className="join w-full mt-3" />
+        <SearchBox pageData={pageData} className="join w-full mt-3" />
       </DisclosurePanel>
     </Disclosure>
   );
@@ -66,4 +76,4 @@ const ToggleSort = ({ sort, setSort }: Prop) => (
   </div>
 );
 
-export default ShareHeader;
+export default SortAndSearch;

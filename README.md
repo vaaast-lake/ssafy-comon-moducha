@@ -161,13 +161,12 @@
 
 - 차를 나눔할 수 있는 커뮤니티 제공
    - 게시글 쓰기 및 댓글/대댓글을 통해 소통 가능
-   - 작성자에게 배송정보 리스트 제공
+   - 작성자에게 참가자 배송정보 리스트 제공
 
 - 마이페이지
    - 자신이 작성한 글, 참여한 글 목록 제공
 
-- 설명서
-  - 모두차 사이트의 설명서 제공
+- 반응형 웹
 
 <br>
 <br>
@@ -226,6 +225,12 @@
 ### <ins>ERDiagram
 
 ![ERD 이미지](./images/ERD.png)
+
+<br>
+
+### <ins>Sequence Diagram
+
+[Sequence Diagram](https://tired-i.notion.site/Sequence-Diagram-74a589799ddd45c191c920350a6a937f?pvs=4)
 
 <br>
 

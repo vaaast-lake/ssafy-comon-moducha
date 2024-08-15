@@ -1,9 +1,14 @@
 import { ShareListItem } from '../../../types/ShareType';
 import { Link } from 'react-router-dom';
-import { HeartIcon } from '@heroicons/react/16/solid';
+import { PiEyesBold } from 'react-icons/pi';
 import { parse } from 'node-html-parser';
 
-const ShareListCard = ({ boardId, title, content }: ShareListItem) => {
+const ShareListCard = ({
+  boardId,
+  title,
+  content,
+  viewCount,
+}: ShareListItem) => {
   const parsedContent = parse(content);
   const imageUrl = parsedContent.querySelector('img')?.getAttribute('src');
   const defaultImage = new URL(
@@ -34,8 +39,8 @@ const ShareListCard = ({ boardId, title, content }: ShareListItem) => {
           </p>
         </article>
         <footer className="flex items-center text-sm gap-0.5 text-gray-400">
-          <HeartIcon className="size-5 text-error" />
-          <span>12</span>
+          <PiEyesBold className="size-4 text-neutral-600" />
+          <span>{viewCount}</span>
         </footer>
       </main>
     </Link>

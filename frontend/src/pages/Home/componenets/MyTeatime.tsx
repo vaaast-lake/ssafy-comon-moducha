@@ -10,7 +10,7 @@ const MyTeatime = ({ ...props }) => {
     <section {...props}>
       <header className="flex justify-between items-center">
         <h1 className="font-semibold text-2xl">나의 티타임</h1>
-        <Link to={'teatimes'} className="text-disabled">
+        <Link to={'/mypage'} className="text-disabled">
           모두보기
         </Link>
       </header>

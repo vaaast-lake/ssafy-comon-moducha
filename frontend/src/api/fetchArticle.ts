@@ -6,6 +6,8 @@ interface ArticleList {
   sort?: string;
   page?: number;
   perPage?: number;
+  searchBy?: string;
+  keyword?: string;
 }
 
 export const fetchArticleList = ({
@@ -13,9 +15,11 @@ export const fetchArticleList = ({
   sort,
   page,
   perPage,
+  searchBy,
+  keyword,
 }: ArticleList) => {
   return axiosInstance.get(`/${boardType}`, {
-    params: { sort, page, perPage },
+    params: { sort, page, perPage, searchBy, keyword },
   });
 };
 

@@ -1,8 +1,9 @@
-import { ArticleDetail } from '../../types/ArticleType';
+import { ArticleDetailProp } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 import TeatimeButton from '../../pages/Teatime/components/TeatimeButton';
 import ApplyButton from '../Button/ApplyButton';
 import dayjs from 'dayjs';
+import { PencilSquareIcon } from '@heroicons/react/24/solid';
 const ArticleCard = ({
   title,
   boardType,
@@ -15,7 +16,7 @@ const ArticleCard = ({
   maxParticipants,
   picture,
   userId,
-}: ArticleDetail) => {
+}: ArticleDetailProp) => {
   const isEnded = dayjs() >= dayjs(endDate) || participants === maxParticipants;
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">
@@ -28,7 +29,8 @@ const ArticleCard = ({
       </figure>
       <div id="card-body" className="text-disabled">
         <header>
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
+            <PencilSquareIcon className='size-5 mb-1 text-slate-400'/>
             <span>{nickname}</span>
           </div>
         </header>

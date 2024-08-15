@@ -1,22 +1,21 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
-import Home from './pages/Home/Home';
-import Login from './pages/Login/LoginPage';
-import MyPage from './pages/MyPage/MyPage';
-import Teatime from './pages/Teatime/Teatime';
-import Share from './pages/Share/Share';
-import Notifications from './pages/Notifications/Notifications';
-import ShareDetail from './pages/Share/ShareDetail';
-import TeatimeDetail from './pages/Teatime/TeatimeDetail';
-import ShareWrite from './pages/Share/ShareWrite';
-import AccessPage from './pages/Login/AccessPage';
-import TeatimeWrite from './pages/Teatime/TeatimeWrite';
-import ArticleUpdate from './pages/Article/ArticleUpdate';
-import TeatimeRoom from './pages/Teatime/TeatimeRoom';
-import ErrorPage from './pages/Error/ErrorPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+const Home = lazy(() => import('./pages/Home/Home'));
+const Login = lazy(() => import('./pages/Login/LoginPage'));
+const MyPage = lazy(() => import('./pages/MyPage/MyPage'));
+const Teatime = lazy(() => import('./pages/Teatime/Teatime'));
+const ArticleDetail = lazy(() => import('./pages/Article/ArticleDetail'));
+const Share = lazy(() => import('./pages/Share/Share'));
+const Notifications = lazy(() => import('./pages/Notifications/Notifications'));
+const AccessPage = lazy(() => import('./pages/Login/AccessPage'));
+const ArticleWrite = lazy(() => import('./pages/Article/ArticleWrite'));
+const ArticleUpdate = lazy(() => import('./pages/Article/ArticleUpdate'));
+const TeatimeRoom = lazy(() => import('./pages/Teatime/TeatimeRoom'));
+const ErrorPage = lazy(() => import('./pages/Error/ErrorPage'));
 
 const queryClient = new QueryClient();
 
@@ -42,36 +41,24 @@ const router = createBrowserRouter([
         element: <Teatime />,
       },
       {
-        path: 'teatimes/write',
-        element: <TeatimeWrite />,
-      },
-      {
-        path: 'teatimes/:boardId/update',
-        element: <ArticleUpdate boardType="teatimes" />,
-      },
-      {
-        path: 'teatimes/:boardId',
-        element: <TeatimeDetail />,
-      },
-      {
-        path: 'teatimes/room',
-        element: <TeatimeRoom />,
-      },
-      {
         path: 'shares',
         element: <Share />,
       },
       {
-        path: 'shares/:boardId',
-        element: <ShareDetail />,
+        path: ':boardType/write',
+        element: <ArticleWrite />,
       },
       {
-        path: 'shares/write',
-        element: <ShareWrite />,
+        path: ':boardType/:boardId/update',
+        element: <ArticleUpdate />,
       },
       {
-        path: 'shares/:boardId/update',
-        element: <ArticleUpdate boardType="shares" />,
+        path: ':boardType/:boardId',
+        element: <ArticleDetail />,
+      },
+      {
+        path: 'teatimes/room',
+        element: <TeatimeRoom />,
       },
       {
         path: 'mypage',
@@ -90,10 +77,12 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <ToastContainer />
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <Suspense>
+          <RouterProvider router={router} />
+        </Suspense>
+        <ToastContainer />
+      </QueryClientProvider>
     </>
   );
 };

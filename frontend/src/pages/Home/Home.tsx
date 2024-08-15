@@ -11,8 +11,8 @@ const Home = () => {
       <SideLayout></SideLayout>
       <main className="col-span-10 m-5 lg:col-span-6 flex flex-col gap-14">
         {isLoggedIn && <MyTeatime className="flex flex-col gap-4" />}
-        <TeatimeList className="flex flex-col gap-4" />
-        <ShareList className="flex flex-col gap-4" />
+        <TeatimeList className="flex flex-col gap-4 pt-2" />
+        <ShareList className="flex flex-col gap-4 pt-2" />
       </main>
       <SideLayout></SideLayout>
     </div>

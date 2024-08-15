@@ -19,7 +19,7 @@ const TabButton = ({
         `hover:bg-teabg flex rounded-xl border-2 px-4 py-2 items-center font-semibold ${className} ` +
         (value === currentTab
           ? 'bg-teabg text-tea border-teabg'
-          : 'text-disabled')
+          : 'text-neutral-500 border-dborder')
       }
       onClick={onClick}
     >

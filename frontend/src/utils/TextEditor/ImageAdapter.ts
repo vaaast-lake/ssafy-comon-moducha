@@ -1,6 +1,7 @@
 import { Editor, FileLoader, UploadAdapter } from 'ckeditor5';
 import axiosInstance from '../../api/axiosInstance';
 import { MutableRefObject } from 'react';
+import { toast } from 'react-toastify';
 
 class ImageAdapter implements UploadAdapter {
   loader: FileLoader;
@@ -27,8 +28,12 @@ class ImageAdapter implements UploadAdapter {
               resolve({ default: uploadedUrl });
             })
             .catch((err) => {
-              console.log(err);
-              reject('이미지 업로드 중 오류가 발생했습니다.');
+              if (err && err.response.status === 413) {
+                toast.error('5MB 이하의 이미지를 업로드 해 주세요.');
+              } else {
+                toast.error('이미지 업로드 중 오류가 발생했습니다.');
+              }
+              reject();
             });
         })
     );

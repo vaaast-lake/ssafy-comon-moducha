@@ -41,7 +41,7 @@ const useApplyButtonStatus = ({
   useEffect(() => {
     if (!isLoggedIn) {
       if (!isEnded) {
-        setButtonValue('참여하시려면 로그인 하세요');
+        setButtonValue('참여하려면 로그인 하세요');
         buttonHandler.current = () => {
           navigate('/login');
         };
@@ -80,6 +80,7 @@ const useApplyButtonStatus = ({
                         ) as HTMLDialogElement
                       )?.showModal();
                     };
+                    window.location.reload();
                   }
                 });
             };

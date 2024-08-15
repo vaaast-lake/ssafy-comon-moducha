@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';
 import { handleLogout } from '../../api/logout'; // handleLogout 함수 import
 import navModucha from '/logo/nav-moducha.svg'; // navModucha 이미지 경로
-
+import navModuchaMini from '/logo/nav-moducha-mini.svg';
 const NavBar = () => {
   const navigate = useNavigate();
   const { isLoggedIn, setLoggedIn, setCurrentUsername } = useAuthStore(
@@ -24,8 +24,17 @@ const NavBar = () => {
   return (
     <div className="flex justify-center border-b-2 border-[#eee]">
       <nav className="flex justify-between w-full lg:w-3/5 h-16 items-center">
-        <Link to="/" className="btn btn-ghost rounded-xl hover:bg-teabg">
-          <img src={navModucha} alt="Nav Logo" />
+        <Link
+          to="/"
+          className="btn btn-ghost hover:bg-none rounded-xl hover:bg-inherit hidden sm:flex"
+        >
+          <img src={navModucha} alt="nav-logo" />
+        </Link>
+        <Link
+          to="/"
+          className="btn btn-ghost hover:bg-none rounded-xl hover:bg-inherit sm:hidden"
+        >
+          <img src={navModuchaMini} alt="nav-logo_mini" />
         </Link>
         <ul className="flex shrink-0 justify-between items-center gap-4 mr-5">
           {!isLoggedIn && (

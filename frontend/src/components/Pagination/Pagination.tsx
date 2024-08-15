@@ -33,7 +33,7 @@ const Pagination = ({ page, totalPage, setPage }: Page) => {
     const buttons = Array.from({ length: end - start + 1 }, (_, i) => (
       <button
         key={`page_${i + start}`}
-        className={`join-item btn rounded-2xl hover:bg-[#ccd5ae] border-none font-bold text-white disabled:bg-[#ccd5ae] disabled:text-white ${
+        className={`join-item btn rounded-2xl hover:bg-[#ccd5ae] border-none font-bold text-white focus:bg-[#ccd5ae] active:bg-[#ccd5ae] disabled:bg-[#ccd5ae] disabled:text-white ${
           i + start === page ? 'bg-[#ccd5ae]' : 'bg-[#e9edc9]'
         }`}
         onClick={() => setPage(i + start)}
@@ -91,7 +91,7 @@ const PageNavigation = ({
 }) => (
   <button
     className={
-      'join-item btn rounded-2xl hover:bg-[#ccd5ae] border-none text-white bg-[#e9edc9] disabled:bg-[#ccd5ae] disabled:text-white'
+      'join-item btn rounded-2xl hover:bg-[#ccd5ae] border-none text-white bg-[#e9edc9] disabled:bg-[#e9edc9] focus:bg-[#ccd5ae] active:bg-[#ccd5ae]  disabled:text-white'
     }
     onClick={onClick}
     disabled={disabled}
