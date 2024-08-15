@@ -11,7 +11,7 @@ const useFetchDetail = <T>(boardType: BoardType, boardId: string) => {
     fetchArticleDetail({ boardType, boardId })
       .then((res) => {
         if (res.status === 200) {
-          setArticleDetail(res.data.data);
+          setArticleDetail(() => ({ ...res.data.data, boardType }));
         }
       })
       .catch((err) => {

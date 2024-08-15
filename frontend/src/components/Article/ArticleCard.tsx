@@ -1,4 +1,4 @@
-import { ArticleDetail } from '../../types/ArticleType';
+import { ArticleDetailProp } from '../../types/ArticleType';
 import dateParser from '../../utils/dateParser';
 import TeatimeButton from '../../pages/Teatime/components/TeatimeButton';
 import ApplyButton from '../Button/ApplyButton';
@@ -15,7 +15,7 @@ const ArticleCard = ({
   maxParticipants,
   picture,
   userId,
-}: ArticleDetail) => {
+}: ArticleDetailProp) => {
   const isEnded = dayjs() >= dayjs(endDate) || participants === maxParticipants;
   return (
     <div className="md:sticky md:top-2 flex flex-col overflow-clip p-4 border shadow gap-4">

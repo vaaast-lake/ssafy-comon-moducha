@@ -1,12 +1,10 @@
-import { ShareDetailItem } from '../../types/ShareType';
 import useAuthStore from '../../stores/authStore';
 import axiosInstance from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import { BoardType } from '../../types/BoardType';
 import DropdownMenu from './ArticleContentDropdown';
-interface ArticleProp extends ShareDetailItem {
-  children?: React.ReactNode;
-  boardType: BoardType;
+import { ArticleDetailProp } from '../../types/ArticleType';
+interface ArticleContentProp extends ArticleDetailProp {
+  children: React.ReactNode
 }
 const ArticleContent = ({
   boardType,
@@ -15,7 +13,7 @@ const ArticleContent = ({
   content,
   children,
   userId,
-}: ArticleProp) => {
+}: ArticleContentProp) => {
   const currentUserId = useAuthStore((state) => state.currentUserId);
   const navigate = useNavigate();
   const handleDelete = () => {

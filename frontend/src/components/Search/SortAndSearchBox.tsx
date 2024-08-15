@@ -40,7 +40,7 @@ const SearchBox = ({
       >
         <option value="title">제목</option>
         <option value="content">내용</option>
-        <option value="author">작성자</option>
+        <option value="writer">작성자</option>
       </select>
       <div className="indicator">
         <button
