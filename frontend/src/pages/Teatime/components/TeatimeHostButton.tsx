@@ -1,30 +1,23 @@
 import { useTeatime } from '../../../hooks/useTeatime';
-import { useQuery } from '@tanstack/react-query';
-import axiosInstance from '../../../api/axiosInstance';
-import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 
 interface TeatimeHostButtonProps {
   boardType: string;
   title: string;
+  isLoading: boolean;
+  isSuccess: boolean;
+  data: any;
 }
 
 export default function TeatimeHostButton({
   boardType,
   title,
+  isLoading,
+  isSuccess,
+  data,
 }: TeatimeHostButtonProps) {
-  const { boardId } = useParams<{ boardId: string }>();
   const { startTeatime } = useTeatime(boardType, title);
-  const { data, isSuccess, isLoading } = useQuery({
-    queryKey: ['teatimes'],
-    queryFn: fetchTeatimeData,
-  });
-
-  async function fetchTeatimeData() {
-    return axiosInstance
-      .get(`/${boardType}/${boardId}`)
-      .then((res) => res.data.data);
-  }
+  
 
   const checkButtonDisable = () => {
     const { broadcastDate } = isSuccess && data;

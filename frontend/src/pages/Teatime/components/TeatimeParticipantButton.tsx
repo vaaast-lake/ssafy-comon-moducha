@@ -3,15 +3,18 @@ import { useTeatime } from '../../../hooks/useTeatime';
 import useAuthStore from '../../../stores/authStore';
 import ApplyModal from '../../../components/Modal/ApplyModal';
 import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 interface TeatimeParticipantButtonProps {
   boardType: string;
   title: string;
+  broadcastDate: string;
 }
 
 export default function TeatimeParticipantButton({
   boardType,
   title,
+  broadcastDate,
 }: TeatimeParticipantButtonProps) {
   const { isLogin } = useAuthStore((state) => ({
     teatimeToken: state.teatimeToken,
@@ -49,6 +52,7 @@ export default function TeatimeParticipantButton({
   const checkDisableButton = () => {
     if (!isLogin) return true;
     if (isApplied && !isRoomOpen) return true;
+    if (dayjs() > dayjs(`${broadcastDate}`)) return true;
     return false;
   };
 
